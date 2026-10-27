@@ -1,0 +1,67 @@
+\section{Experimental Design (Formalized Math Demo)}
+\label{sec:experimental_design_math}
+
+This section details the formal experimental methodology established to evaluate affective classification on the MultiEMiT corpus. We evaluate three distinct tasks: Emotion Detection, Irony Detection, and Semiotic Relation Detection. The experiments are designed to quantify the performance differential between unimodal textual baselines, a discriminative multimodal architecture (Dual-Encoder), and a modern generative Large Multimodal Model (Pixtral 12B), while measuring the empirical impact of explicit correlation prompting across architectures.
+
+\noindent\textbf{Task Formulation and Evaluation Metrics:} Let $\mathcal{D} = \{(x_t^{(i)}, x_v^{(i)}, \mathbf{y}^{(i)})\}_{i=1}^N$ denote a multimodal corpus of $N$ instances, where $x_t \in \mathcal{X}_T$ represents the textual tweet, $x_v \in \mathcal{X}_V$ denotes the associated image, and $\mathbf{y}$ denotes the task ground-truth label. We formalize three distinct classification objectives:
+\begin{itemize}
+    \item \textbf{Emotion Detection:} Multi-label classification over $C_e = 10$ emotion categories (\textit{Anger}, \textit{Anticipation}, \textit{Disgust}, \textit{Fear}, \textit{Joy}, \textit{Love}, \textit{Neutral}, \textit{Sadness}, \textit{Surprise}, and \textit{Trust}). The target is a binary vector $\mathbf{y}_e \in \{0, 1\}^{10}$, where each component $y_{e,c} \in \{0, 1\}$ indicates the presence of emotion $c$.
+    \item \textbf{Irony Detection:} Single-label classification over $C_i = 3$ mutually exclusive pragmatic states: $\mathbf{y}_i \in \{\textit{Unironic}, \textit{Irony}, \textit{Sarcasm}\}$.
+    \item \textbf{Semiotic Relation Detection:} Single-label classification identifying the semiotic interaction between text and image: $\mathbf{y}_r \in \{\textit{Additive}, \textit{Parallel}, \textit{Divergent}\}$.
+\end{itemize}
+
+Due to severe class imbalance, accuracy is uninformative. Model performance is evaluated using Precision ($P$), Recall ($R$), and F1-score ($F_1$). In global evaluations across tasks, Macro $F_1$ serves as the primary metric:
+\begin{equation}
+\label{eq:macro_f1}
+\text{Macro } F_1 = \frac{1}{C} \sum_{c=1}^{C} \frac{2 \cdot P_c \cdot R_c}{P_c + R_c}
+\end{equation}
+where $P_c$ and $R_c$ denote precision and recall for class $c$. For fine-grained subset evaluations across semiotic relations (Section~\ref{sec:results}), we adopt Micro $F_1$ to guarantee metric stability against class sparsity within small data partitions.
+
+\noindent\textbf{Unimodal Textual Baselines:} To establish competitive text-only reference points, we evaluated discriminative models based on the RoBERTa architecture. For Irony and Semiotic Relation detection, we employed \textit{UmBERTo} \cite{musixmatch-2020-umberto}, a RoBERTa-based language model pre-trained on Italian Common Crawl. For Irony detection, UmBERTo was first fine-tuned on the IronITA dataset \cite{ironita2018} before adaptation to MultiEMiT. For Emotion Detection, we used \textit{FEEL-IT} \cite{bianchi2021feel}, fine-tuned on the combined MultiEMiT textual split and the external EMiT dataset \cite{emit} to adapt its latent space to our ten-class taxonomy. These text-only models process raw text $x_t$ without access to visual metadata $x_v$.
+
+\noindent\textbf{Multimodal Dual-Encoder Architecture:} To capture cross-modal interactions, we implemented a discriminative multimodal Dual-Encoder framework (illustrated in Fig.~\ref{fig:dual_encoder_arch}). 
+The textual modality $x_t$ is processed by the domain-adapted language encoder $f_{\text{text}}$, while the visual modality $x_v$ is processed in parallel by a Vision Transformer (ViT-base-patch16-224) $f_{\text{img}}$ \cite{dosovitskiy2021vit}.
+
+Formally, each unimodal encoder maps its respective input to a 768-dimensional latent representation:
+\begin{align}
+\mathbf{h}_t &= f_{\text{text}}(x_t) \in \mathbb{R}^{768} \\
+\mathbf{h}_v &= f_{\text{img}}(x_v) \in \mathbb{R}^{768}
+\end{align}
+where $\mathbf{h}_t$ corresponds to the final `[CLS]` hidden state of the text transformer, and $\mathbf{h}_v$ corresponds to the pooled representation from the ViT encoder. Both vectors are concatenated into a joint multimodal embedding:
+\begin{equation}
+\label{eq:joint_embedding}
+\mathbf{h}_{\text{joint}} = [\mathbf{h}_t \,\|\, \mathbf{h}_v] \in \mathbb{R}^{1536}
+\end{equation}
+
+To predict class labels from $\mathbf{h}_{\text{joint}}$, we employ Classifier Chains \cite{pedregosa2011scikit}. A classifier chain $\mathcal{C} = (g_1, g_2, \dots, g_C)$ decomposes multi-label prediction into a sequence of binary classifications, where each model $g_j$ conditions its prediction on both the input features and preceding label predictions:
+\begin{equation}
+\label{eq:classifier_chains}
+\hat{y}_j = g_j(\mathbf{h}_{\text{joint}}, \hat{y}_1, \dots, \hat{y}_{j-1})
+\end{equation}
+Specifically, each base estimator $g_j$ is an \texttt{SGDClassifier} optimized with logistic loss ($L(\theta) = \sum \log(1 + e^{-y \mathbf{w}^T \mathbf{x}})$), $L_2$ regularization, and fixed random seeding. This linear discriminative classifier head efficiently maps the high-dimensional latent space to class probabilities while preventing overfitting on compact training splits.
+
+\noindent\textbf{Correlation Prompting Framework:} Motivated by the empirical label dependencies discovered during corpus analysis (Section~\ref{sec:dataset_analysis}), we introduced a structured \textit{Correlation Prompting} strategy. Formally, let $R = \{r_{j,k}\}$ represent the matrix of empirical Pearson correlation coefficients computed across annotation dimensions. We define a prompt injection operator $\pi_k(R)$ that synthesizes significant correlations into natural language context:
+\begin{equation}
+\label{eq:prompt_injection}
+\tilde{x}_t = x_t \oplus \pi_k(R)
+\end{equation}
+where $\oplus$ denotes string concatenation. To evaluate model sensitivity to the magnitude of injected priors, we structured prompts across three distinct correlation tiers based on Pearson coefficient thresholds: (i) \textbf{Short prompts}, incorporating only strong associations with $|r| \ge 0.25$; (ii) \textbf{Medium prompts}, including moderate-to-strong correlations with $|r| \ge 0.20$; and (iii) \textbf{Long prompts}, providing detailed contextual priors with all correlations satisfying $|r| \ge 0.15$. All prompt instructions were formulated in English, motivated by findings from the BRIGHTER benchmark \cite{brighter_project} showing that multilingual LLMs exhibit superior instruction adherence and lower variance when prompted in English.
+
+\noindent\textbf{Large Multimodal Model (Pixtral 12B):} To evaluate modern generative vision-language models against discriminative systems, we benchmarked \textbf{Pixtral 12B} \cite{pixtral}, an open-weights multimodal language model based on Mistral Nemo featuring a dedicated 400M-parameter vision encoder capable of processing arbitrary image resolutions.
+We evaluated Pixtral across three experimental regimes:
+\begin{itemize}
+    \item \textbf{Zero-Shot Prompting:} Out-of-the-box reasoning across prompt tiers (Short, Medium, and three Long prompt formulations: \textit{long\_v1}, \textit{long\_v2}, \textit{long\_v3}), testing generation with and without correlation context.
+    \item \textbf{Few-Shot (Three-Shot) Prompting:} In-context learning for Semiotic Relation Detection, providing three complete multimodal exemplars within the prompt window.
+    \item \textbf{LoRA Fine-Tuning:} Low-Rank Adaptation on the MultiEMiT multimodal training partition ($r=16$, $\alpha=32$, \texttt{use\_rslora=True}, \texttt{target\_modules="all-linear"}, dropout $0.1$). This configuration adapted 66,322,432 parameters out of 12.75 billion (0.52\% trainable parameters). Training was conducted with per-device batch size 1, 8 gradient accumulation steps (effective batch size 8), learning rate $3 \times 10^{-5}$, FP16 mixed precision, and gradient checkpointing over 2 epochs.
+\end{itemize}
+
+All generative experiments were evaluated over three independent runs at two decoding temperatures: $T=0.1$ (greedy, low-variance decoding) and $T=0.9$ (stochastic exploratory decoding).
+
+\noindent\textbf{Generative Hallucinations and the Truncation Parameter ($n$):} Unlike discriminative encoders that output bounded probability vectors over predefined classes, Pixtral generates labels autoregressively: $P(\mathbf{y} \mid x_t, x_v) = \prod_{t=1}^T P(y_t \mid y_{<t}, x_t, x_v)$. During multi-label emotion fine-tuning, we observed a systematic failure mode termed \textit{Generative Hallucinations}: when prompted to generate a list of emotions, Pixtral frequently entered repetitive token loops or produced unconstrained synonyms outside the ten-class taxonomy.
+
+To remedy this without retraining, we formalize a post-processing truncation operator $\tau_n(\cdot)$. Let $\hat{\mathcal{Y}} = (e_1, e_2, \dots, e_m)$ denote the ordered sequence of valid emotion tokens generated by the LLM. The truncation operator extracts the top-$n$ unique valid emotions:
+\begin{equation}
+\label{eq:truncation_operator}
+\tau_n(\hat{\mathcal{Y}}) = \{e_j \in \hat{\mathcal{Y}} \mid 1 \le j \le \min(n, m)\}
+\end{equation}
+For multi-label emotion detection, setting $n=2$ proved optimal, filtering out unconstrained tail hallucinations and aligning model outputs with the empirical distribution of the gold standard, where the overwhelming majority of posts express one or two concurrent emotions.

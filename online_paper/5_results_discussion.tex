@@ -1,0 +1,228 @@
+\section{Results and Discussion}
+\label{sec:results}
+
+This section presents the empirical evaluation of the unimodal and multimodal architectures across the three tasks: Emotion Detection, Irony Detection, and Semiotic Relation Detection. We analyze the quantitative impact of integrating visual features (comparing blind text baselines to the Dual-Encoder), the performance gains induced by correlation prompting, and the strengths and failure modes of Pixtral 12B. We also examine model behavior disaggregated across semiotic relational subsets.
+
+Emotion detection represents the most challenging benchmark due to the high cardinality of the ten-class label space and the multi-label nature of affective expression in social media.
+
+On the textual dataset, the baseline discriminative model (FEEL-IT fine-tuned on MultiEMiT and EMiT) achieved a Macro $F_1$-score of 0.460, increasing to 0.540 when trained with correlation prompting, and reaching 0.590 when retrained across two isolated phases with correlation context. When evaluating exclusively on the multimodal test set, the blind text-only baseline (evaluating only the text of multimodal posts) achieves a Macro $F_1$-score of 0.300 without correlations and 0.370 with correlations.
+
+Introducing visual features via the Dual-Encoder architecture substantially enhances classification performance: the multimodal system achieves a Macro $F_1$-score of 0.430 without correlations and 0.450 with correlations. This marked improvement (+13\% absolute over the blind unprompted text baseline) empirically confirms that visual context provides essential disambiguating cues for recognizing emotional expressions in social commentary, with correlation prompting providing a complementary gain.
+
+Turning to generative foundation models, fine-tuned Pixtral 12B achieved an $F_1$-score of 0.426 ($T=0.1$). While competitive with the discriminative Dual-Encoder without correlations (0.430), it remains below the correlation-prompted Dual-Encoder (0.450), showing that task-adapted discriminative representations remain superior for multi-label Italian emotion classification. Complete comparisons across prompt tiers and temperatures are reported in Table~\ref{tab:emotion_pixtral}.
+
+\begin{table}[!t]
+\centering
+\caption{Complete Comparison: Pixtral 12B versus Dual-Encoder in Emotion Detection ($T=0.1$ and $T=0.9$)}
+\label{tab:emotion_pixtral}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular}{l l c c}
+\hline
+\textbf{Model} & \textbf{Configuration} & \textbf{T = 0.1 F1} & \textbf{T = 0.9 F1} \\
+\hline
+\multicolumn{4}{l}{\textit{Discriminative Multimodal (Dual-Encoder)}} \\
+BERT-ViT & FT (With Corr.) & \textbf{0.450} & \textbf{0.450} \\
+BERT-ViT & FT (No Corr.) & 0.430 & 0.430 \\
+\hline
+\multicolumn{4}{l}{\textit{Generative (Pixtral 12B)}} \\
+Pixtral (long\_v1) & FT ($n=2$) & \textbf{0.426} & 0.359 \\
+Pixtral (short) & FT ($n=2$) & 0.397 & \textbf{0.373} \\
+Pixtral (short) & FT (all predictions) & 0.318 & 0.312 \\
+Pixtral (short) & ZS (With Corr.) & 0.291 & 0.251 \\
+Pixtral (long\_v1) & ZS (With Corr.) & 0.275 & 0.266 \\
+Pixtral (medium) & ZS (With Corr.) & 0.269 & 0.262 \\
+Pixtral (long\_v2) & ZS (No Corr.) & 0.266 & 0.237 \\
+Pixtral (long\_v1) & ZS (No Corr.) & 0.261 & 0.261 \\
+Pixtral (short) & ZS (No Corr.) & 0.261 & 0.291 \\
+Pixtral (long\_v3) & ZS (With Corr.) & 0.258 & 0.262 \\
+Pixtral (medium) & ZS (No Corr.) & 0.254 & 0.250 \\
+Pixtral (long\_v2) & ZS (With Corr.) & 0.253 & 0.286 \\
+Pixtral (long\_v1) & FT (all predictions) & 0.238 & 0.290 \\
+Pixtral (long\_v3) & ZS (No Corr.) & 0.220 & 0.215 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!t]
+\centering
+\caption{Impact of Truncation Parameter ($n$) on Pixtral Emotion Detection Performance}
+\label{table:truncation_parameter}
+\small
+\begin{tabular}{c c}
+\hline
+\textbf{Number of Predictions ($n$)} & \textbf{Mean Macro F1} \\
+\hline
+1 & 0.338 \\
+2 & \textbf{0.389} \\
+3 & 0.339 \\
+4 & 0.325 \\
+5 & 0.308 \\
+\hline
+\end{tabular}
+\end{table}
+
+During Pixtral fine-tuning, autoregressive decoding generated repetitive loops and extra-taxonomical tokens when predicting emotion lists. However, qualitative analysis revealed that predicted emotions were ordered by descending model confidence. Implementing the truncation parameter $n$ to retain the top-$n$ unique valid emotions effectively eliminated generative noise. As detailed in Table~\ref{table:truncation_parameter}, performance peaks distinctly at $n=2$ (Mean Macro $F_1 = 0.389$). Allowing unconstrained generation ($n \ge 5$) degrades performance to 0.308, as spurious tail predictions incur heavy false-positive penalties. Setting $n=2$ matches the empirical ground truth, where the vast majority of posts express one or two concurrent emotions.
+
+Disaggregating model performance across the Additive (ADD), Parallel (PAR), and Divergent (DIV) semiotic partitions reveals striking structural variations (Table~\ref{tab:subset_emotion}). 
+
+\begin{table}[!t]
+\centering
+\caption{Emotion Detection Micro F1-score across Semiotic Subsets}
+\label{tab:subset_emotion}
+\small
+\begin{tabular}{l c c c}
+\hline
+\textbf{Model Setting} & \textbf{ADD} & \textbf{PAR} & \textbf{DIV} \\
+\hline
+\multicolumn{4}{l}{\textit{Dual-Encoder (BERT--ViT)}} \\
+No correlations & 0.47 & 0.52 & 0.38 \\
+With correlations & \textbf{0.54} & \textbf{0.60} & 0.42 \\
+\hline
+\multicolumn{4}{l}{\textit{Generative LLM (Pixtral 12B)}} \\
+Zero-Shot (No corr.) & 0.29 & 0.23 & \textbf{0.44} \\
+Zero-Shot (With corr.) & 0.32 & 0.30 & 0.43 \\
+Fine-tuned (No corr.) & 0.33 & 0.41 & 0.41 \\
+\hline
+\end{tabular}
+\end{table}
+
+Both model families experience their lowest scores on the \textit{Divergent} subset (Micro $F_1 = 0.38$ to $0.42$). In divergent posts, intentional tension between text and imagery disrupts emotional coherence, confounding automated classifiers. Conversely, models perform best on the \textit{Parallel} partition ($F_1 = 0.60$ for the prompted Dual-Encoder), where redundant visual information reinforces literal textual meaning. For the dominant \textit{Additive} subset, correlation prompting delivers a $+0.07$ boost for the Dual-Encoder, demonstrating that statistical priors help integrate complementary cross-modal evidence.
+
+Irony detection presents an inverted dynamic compared to emotion recognition. In figurative discourse, visual content frequently introduces pragmatic incongruity rather than semantic convergence. Table~\ref{tab:irony_pixtral} summarizes comparative results.
+
+\begin{table}[!t]
+\centering
+\caption{Complete Comparison: Pixtral 12B versus Dual-Encoder in Irony Detection ($T=0.1$ and $T=0.9$)}
+\label{tab:irony_pixtral}
+\footnotesize
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular}{l l c c}
+\hline
+\textbf{Model} & \textbf{Configuration} & \textbf{T = 0.1 F1} & \textbf{T = 0.9 F1} \\
+\hline
+\multicolumn{4}{l}{\textit{Discriminative Multimodal (Dual-Encoder)}} \\
+BERT-ViT & FT (With Corr.) & \textbf{0.740} & \textbf{0.740} \\
+BERT-ViT & FT (No Corr.) & 0.630 & 0.630 \\
+\hline
+\multicolumn{4}{l}{\textit{Generative (Pixtral 12B)}} \\
+Pixtral (long\_v2) & ZS (With Corr.) & \textbf{0.512} & 0.396 \\
+Pixtral (long\_v2) & FT (all predictions) & 0.405 & \textbf{0.454} \\
+Pixtral (short) & ZS (With Corr.) & 0.348 & 0.298 \\
+Pixtral (long\_v3) & ZS (With Corr.) & 0.340 & 0.281 \\
+Pixtral (short) & FT (all predictions) & 0.329 & 0.394 \\
+Pixtral (medium) & ZS (With Corr.) & 0.264 & 0.270 \\
+Pixtral (long\_v1) & ZS (With Corr.) & 0.248 & 0.295 \\
+Pixtral (long\_v2) & ZS (No Corr.) & 0.165 & 0.218 \\
+Pixtral (long\_v3) & ZS (No Corr.) & 0.148 & 0.198 \\
+Pixtral (long\_v1) & ZS (No Corr.) & 0.126 & 0.158 \\
+Pixtral (short) & ZS (No Corr.) & 0.054 & 0.108 \\
+Pixtral (medium) & ZS (No Corr.) & 0.051 & 0.137 \\
+\hline
+\end{tabular}
+\end{table}
+
+When evaluated on the multimodal test set, the blind textual baseline achieves an $F_1$-score of 0.670 without correlations and 0.710 with correlations. In sharp contrast, the multimodal Dual-Encoder without correlations achieves an $F_1$-score of only 0.630, underperforming the blind text model by $-0.040$. This degradation points to a core multimodal challenge: unguided visual features act as semantic noise. Because irony relies on incongruity, raw visual embeddings pull the multimodal vector away from the textual signal. This pattern aligns with findings on the \textit{Modality Gap} \cite{liang2022mindgap}: concatenating representations from separately pre-trained encoders (UmBERTo and ViT) without joint cross-modal pre-training leaves a geometric misalignment in latent space.
+
+Injecting statistical correlations reverses this drop: the correlation-prompted Dual-Encoder reaches an $F_1$-score of \textbf{0.740}, outperforming both the blind textual baseline (0.710) and unprompted multimodal fusion (0.630). Explicit priors help the classifier treat visual dissonance as evidence of irony rather than noise.
+
+In the generative regime, Pixtral 12B struggles severely in zero-shot settings without correlations ($F_1$ ranging between 0.051 and 0.165 across prompt variants at $T=0.1$). However, incorporating correlation prompts triggers a dramatic recovery, elevating zero-shot performance to 0.512 with the \textit{long\_v2} prompt (+0.347 gain). After LoRA fine-tuning, Pixtral achieves an $F_1$-score of 0.454 ($T=0.9$). Although competitive, it remains substantially below the specialized Dual-Encoder (0.740).
+
+Examining irony detection across semiotic subsets (Table~\ref{tab:subset_irony}) elucidates how models process multimodal dissonance.
+
+\begin{table}[!t]
+\centering
+\caption{Irony Detection Micro F1-score across Semiotic Subsets}
+\label{tab:subset_irony}
+\small
+\begin{tabular}{l c c c}
+\hline
+\textbf{Model Setting} & \textbf{ADD} & \textbf{PAR} & \textbf{DIV} \\
+\hline
+\multicolumn{4}{l}{\textit{Dual-Encoder (BERT--ViT)}} \\
+No correlations & 0.83 & \textbf{1.00} & 0.55 \\
+With correlations & \textbf{0.88} & \textbf{1.00} & \textbf{0.68} \\
+\hline
+\multicolumn{4}{l}{\textit{Generative LLM (Pixtral 12B)}} \\
+Zero-Shot (No corr.) & 0.14 & 0.00 & 0.18 \\
+Zero-Shot (With corr.) & 0.57 & 0.78 & 0.57 \\
+Fine-tuned (No corr.) & 0.87 & \textbf{1.00} & 0.58 \\
+\hline
+\end{tabular}
+\end{table}
+
+On the \textit{Parallel} partition, both the Dual-Encoder and fine-tuned Pixtral achieve a perfect score of 1.00. This outcome arises because the gold multimodal test set contains zero ironic posts with a parallel relation; the trained models correctly classify all instances as sincere (\textit{Unironic}). Conversely, unprompted zero-shot Pixtral collapses on parallel instances (0.00), hallucinating false-positive irony. On the challenging \textit{Divergent} subset, where irony is concentrated, the Dual-Encoder without correlations attains only 0.55; injecting correlation prompting raises this to 0.68 (+0.13 gain), confirming that correlation priors are vital for decoding divergent visual irony.
+
+Semiotic relation detection requires the model to directly categorize the semantic interaction between modalities into Additive, Parallel, or Divergent. Table~\ref{tab:relation_pixtral} presents the complete evaluation.
+
+\begin{table}[!t]
+\centering
+\caption{Complete Comparison: Pixtral 12B versus Dual-Encoder in Semiotic Relation Detection ($T=0.1$ and $T=0.9$)}
+\label{tab:relation_pixtral}
+\footnotesize
+\renewcommand{\arraystretch}{0.90}
+\begin{tabular}{l l c c}
+\hline
+\textbf{Model} & \textbf{Configuration} & \textbf{T = 0.1 F1} & \textbf{T = 0.9 F1} \\
+\hline
+\multicolumn{4}{l}{\textit{Discriminative Multimodal (Dual-Encoder)}} \\
+BERT-ViT & FT (With Corr.) & \textbf{0.690} & \textbf{0.690} \\
+BERT-ViT & FT (No Corr.)  & 0.640 & 0.640 \\
+\hline
+\multicolumn{4}{l}{\textit{Generative (Pixtral 12B)}} \\
+Pixtral (long\_v1) & FT (all predictions) & \textbf{0.613} & \textbf{0.574} \\
+Pixtral (short) & FT (all predictions) & 0.555 & 0.546 \\
+Pixtral (long\_v3) & ZS (With Corr.) & 0.517 & 0.486 \\
+Pixtral (long\_v3) & TS (With Corr.) & 0.487 & 0.508 \\
+Pixtral (long\_v2) & TS (With Corr.) & 0.483 & 0.530 \\
+Pixtral (medium) & TS (With Corr.) & 0.480 & 0.469 \\
+Pixtral (long\_v1) & TS (With Corr.) & 0.467 & 0.495 \\
+Pixtral (medium) & ZS (With Corr.) & 0.429 & 0.414 \\
+Pixtral (long\_v2) & TS (No Corr.) & 0.424 & 0.402 \\
+Pixtral (medium) & TS (No Corr.) & 0.403 & 0.381 \\
+Pixtral (long\_v1) & ZS (With Corr.) & 0.394 & 0.409 \\
+Pixtral (medium) & ZS (No Corr.) & 0.388 & 0.359 \\
+Pixtral (long\_v3) & TS (No Corr.) & 0.387 & 0.359 \\
+Pixtral (long\_v1) & ZS (No Corr.) & 0.387 & 0.408 \\
+Pixtral (short) & TS (With Corr.) & 0.387 & 0.448 \\
+Pixtral (long\_v2) & ZS (With Corr.) & 0.382 & 0.367 \\
+Pixtral (long\_v1) & TS (No Corr.) & 0.369 & 0.414 \\
+Pixtral (short) & ZS (With Corr.) & 0.359 & 0.392 \\
+Pixtral (short) & TS (No Corr.) & 0.355 & 0.378 \\
+Pixtral (long\_v3) & ZS (No Corr.) & 0.344 & 0.391 \\
+Pixtral (long\_v2) & ZS (No Corr.) & 0.323 & 0.315 \\
+Pixtral (short) & ZS (No Corr.) & 0.242 & 0.304 \\
+\hline
+\end{tabular}
+\end{table}
+
+The Dual-Encoder with correlation prompting achieves the highest performance across all configurations (Macro $F_1 = 0.690$), outperforming its unprompted counterpart (0.640). Fine-tuned Pixtral peaks at 0.613 ($T=0.1$), while zero-shot prompted variants reach 0.517. Although Pixtral possesses vast pre-trained visual knowledge, discerning abstract semiotic relationships remains challenging for generalist vision-language models, whereas task-specific discriminative classification heads with Classifier Chains effectively map the cross-modal feature space.
+
+Disaggregating performance across individual relation categories (Table~\ref{tab:subset_relation}) highlights architectural differences under class imbalance.
+
+\begin{table}[!t]
+\centering
+\caption{Semiotic Relation Detection Micro F1-score across Target Classes}
+\label{tab:subset_relation}
+\footnotesize
+\renewcommand{\arraystretch}{0.90}
+\begin{tabular}{l c c c}
+\hline
+\textbf{Model Setting} & \textbf{ADD} & \textbf{PAR} & \textbf{DIV} \\
+\hline
+\multicolumn{4}{l}{\textit{Custom Baselines (UmBERTo and Dual-Encoder)}} \\
+Text-only (No corr.) & 0.65 & 0.53 & 0.61 \\
+Text+Image (No corr.) & 0.73 & \textbf{0.61} & 0.59 \\
+Text-only (With corr.) & 0.75 & 0.54 & 0.68 \\
+Text+Image (With corr.) & \textbf{0.77} & 0.59 & \textbf{0.72} \\
+\hline
+\multicolumn{4}{l}{\textit{Generative LLM (Pixtral 12B -- long\_v1)}} \\
+Zero-Shot (No corr.) & 0.62 & 0.00 & 0.56 \\
+Zero-Shot (With corr.) & 0.61 & 0.00 & 0.56 \\
+Three-Shot (With corr.) & 0.60 & 0.17 & 0.64 \\
+Fine-tuned (No corr.) & 0.71 & 0.28 & 0.60 \\
+\hline
+\end{tabular}
+\end{table}
+
+The Dual-Encoder exhibits balanced competence across classes, reaching 0.77 on Additive, 0.59 on Parallel, and 0.72 on Divergent. Conversely, Pixtral fails on the minority \textit{Parallel} class (scoring 0.00 in zero-shot and 0.28 under fine-tuning), repeatedly defaulting to the majority class (Additive) due to autoregressive frequency bias. Discriminative classifiers with balanced class weighting maintain stable decision thresholds despite this acute skew.

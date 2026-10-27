@@ -1,0 +1,19 @@
+\section{Introduction}
+\IEEEPARstart{T}{elevision} audiences no longer watch broadcasts in silence. During live debates, political talk shows, and reality competitions, viewers actively turn to second-screen platforms like Twitter to share commentary, memes, and screenshots \cite{SocialTV}. This stream of real-time viewer feedback offers broadcasters far richer signals than traditional audience ratings, providing immediate insight into public controversy, approval, and emotional engagement \cite{memorai}. 
+
+Capturing these affective signals computationally is difficult. Social TV commentary is short, colloquial, and inherently multimodal. Viewers attach screengrabs and reaction images that do not merely mirror the written text; they exaggerate emotional tone, introduce sarcasm, or invert the literal message completely. 
+
+While multilingual initiatives have advanced text-based emotion analysis, computational resources for Italian remain scarce. Existing Italian benchmarks focus exclusively on unimodal text \cite{bianchi2021feel, emit, MultiEmotion} .
+
+To study these dynamics, we introduce \textbf{MultiEMiT}, a multimodal dataset of Italian Twitter commentary gathered from television broadcasts. MultiEMiT provides annotations across five pragmatic layers: fine-grained emotions under Plutchik's taxonomy \cite{Plutchik}, irony and sarcasm, hate speech, target orientation (program container versus broadcast content), and semiotic text--image relationships \cite{MultiM}. Our benchmarking focuses on three primary classification tasks: Emotion Detection, Irony Detection, and Semiotic Relation Detection. The remaining annotations (hate speech and target) serve as contextual signals. To expand training coverage for baseline text encoders, we also draw on the larger unimodal EMiT (for Emotions) \cite{emit} and IronITA (for Irony) \cite{ironita2018} corpora.
+
+Our exploratory analysis uncovered strong empirical correlations between annotation layers: irony correlates with joy, sarcasm pairs with disgust and hostility, and trust associates with program loyalty. Rather than leaving neural models to discover these sparse associations on their own, we propose \textbf{Correlation Prompting}. This approach converts empirical Pearson correlation statistics directly into textual prompt prefixes, providing explicit inductive priors during training and inference.
+
+To evaluate these methods, we frame our study around three core research questions:
+\begin{itemize}
+    \item \textbf{RQ1 (Visual Context):} Does adding visual context help models detect emotion and irony, or do images introduce distracting noise in non-literal posts?
+    \item \textbf{RQ2 (Correlation Prompting):} Does injecting statistical label correlations directly into text inputs improve accuracy across discriminative and generative architectures?
+    \item \textbf{RQ3 (Architectural Paradigms):} How do compact, task-specialized discriminative models (BERT--ViT Dual-Encoders with Classifier Chains) compare with a 12-billion-parameter foundation model (Pixtral 12B)?
+\end{itemize}
+
+The rest of this paper explores these questions systematically. Section~\ref{sec:related_works} situates MultiEMiT within Italian affective computing, Social TV analytics, and multimodal document intent. Section~\ref{sec:dataset_analysis} describes the corpus collection, annotation protocol, and cross-dimensional correlations. Section~\ref{sec:experimental_design} defines our classification tasks, Dual-Encoder architecture, correlation prompting strategy, and Pixtral configurations. Section~\ref{sec:results} presents comparative evaluations and subset analyses across semiotic relations. Section~\ref{sec:conclusion} summarizes our findings and outlines next steps for real-time broadcast monitoring.
