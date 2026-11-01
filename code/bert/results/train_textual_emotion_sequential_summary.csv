@@ -1,0 +1,4 @@
+Task,Modality,Notebook,Configuration,Micro F1,Macro F1,Weighted F1,Accuracy / Subset Acc
+Emotion Detection (10-Label Multi-Label),Textual (EMit Validation),train_textual_emotion_sequential.ipynb,Step 1: FEEL-IT on EMit A (80/20 Val Split),0.5830437804030577,0.48790823942092854,0.57089643396905,0.4472361809045226
+Emotion Detection (10-Label Multi-Label),Textual (Sequential),train_textual_emotion_sequential.ipynb,Step 2: FEEL-IT Sequential (EMit A -> MultiEMit No Correlations),0.5107142857142857,0.49619223243032035,0.5103122026697947,0.2962962962962963
+Emotion Detection (10-Label Multi-Label),Textual (Sequential),train_textual_emotion_sequential.ipynb,Step 3: FEEL-IT Sequential (EMit A -> MultiEMit With Correlations),0.5711805555555556,0.5479440982216038,0.5690274580211044,0.32592592592592595

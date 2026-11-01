@@ -21,7 +21,7 @@ import os
 import requests
 from io import BytesIO
 from tqdm import tqdm
-from peft import PeftModel
+#from peft import PeftModel
 
 def parse_args(args):
     """
@@ -54,7 +54,7 @@ def parse_args(args):
         '--labels',
         type=str,
         required=True,
-        choices=['emotions','relations'],
+        choices=['emotions','relations', 'irony'],
         help='Labels to classify.'
     )
     # Optional Arguments
@@ -213,21 +213,6 @@ def load_model_processor(args, device):
     return model, processor
 
 
-# def load_prompt(experiment_name: str) -> str:
-#     prompt_mapping = {
-#         "emotions": prompts.EMOTIONS_PROMPT,
-#         "emotions_correlations": prompts.EMOTIONS_CORRELATIONS_PROMPT,
-#         "relations": prompts.RELATIONS_PROMPT,
-#         "relations_correlations": prompts.RELATIONS_CORRELATIONS_PROMPT,
-#     }
-
-#     if experiment_name not in prompt_mapping:
-#         raise ValueError(f"Unknown experiment name: '{experiment_name}'. "
-#                          f"Please choose from: {list(prompt_mapping.keys())}")
-
-#     return prompt_mapping[experiment_name]
-
-
 def load_image_from_url_or_path(path_or_url):
     if os.path.isfile(path_or_url):
         # local path
@@ -248,42 +233,7 @@ def load_image_from_url_or_path(path_or_url):
             print(f"Unable to load image from path: {e}")
             return None
         
-
-def extract_text_after_emotions(text):
-    """
-    Detects variations of 'Emotions detected' in the input text and returns the remaining text after the match.
-
-    Args:
-        text (str): The input text to search.
-
-    Returns:
-        str: The text after the first detected variation, or None if no match is found.
-    """
-    # Define a regular expression pattern for variations of "Emotions detected"
-    pattern = r"(?:Emotion(?:s)?(?:\s*Detected)?(?:\s*[:\(]?)|###\s*Emotion\(s\)\s*Detected\s*[:\(]?)"
     
-    # Search for the pattern in the text
-    match = re.search(pattern, text, re.IGNORECASE)
-    
-    if match:
-        # Return the text after the match
-        return text[match.end():].strip()
-    else:
-        return None  # No match found
-    
-
-def extract_text_after_relationship(text):
-    # Define a pattern to match 'Relationship detected:' with optional whitespace or formatting
-    pattern = r"(?:Relationship\s*Detected\s*[:\(]?)"
-    
-    # Search for the pattern
-    match = re.search(pattern, text, re.IGNORECASE)
-    
-    if match:
-        return text[match.end():].strip()
-    else:
-        return None
-
 
 def main(args):
     # printing args
@@ -298,23 +248,23 @@ def main(args):
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
         print(f"DEVICE IS: {device}")
 
-    # MULTIMODAL LABELS
-    # columns = ["uri","text","Additiva","Amore","Anticipazione","Citazione","Contenitore","Contenuto","Disgusto","Divergente","Fiducia","Gioia","Hate speech","Incomprensibile","Ironia","Neutro","Offensivita","Parallela","Paura","Rabbia","Sarcasmo","Sorpresa","Tristezza","img","img_path"]
-
     # LOAD DATASET
     print("\nLOADING DATASET... \n\n")
     df = pd.read_csv(args.dataset_path)
     if args.labels == "emotions":
         to_keep=["text","Additiva","Amore","Anticipazione","Disgusto","Divergente","Fiducia","Gioia","Neutro","Parallela","Paura","Rabbia","Sorpresa","Tristezza","img_path"]
         target_names = ['Amore','Anticipazione','Disgusto','Fiducia','Gioia','Neutro','Paura','Rabbia','Sorpresa','Tristezza']
-    else:
+    elif args.labels == "relations":
         to_keep=["text",'Additiva','Divergente','Parallela',"img_path"]
         target_names = ['Additiva','Divergente','Parallela']
+    elif args.labels == "irony":
+        to_keep=["text",'Ironia','Sarcasmo','None',"img_path", 'Additiva', 'Divergente', 'Parallela']
+        target_names = ['Ironia','Sarcasmo','None']
 
     df = df[to_keep]
     df['type'] = df.apply(create_type_column, axis=1)
 
-    if args.labels == "emotions":
+    if args.labels == "emotions" or args.labels == "irony":
         df.drop(['Additiva', 'Parallela', 'Divergente'], axis=1, inplace=True)
 
     df1, train_df = train_test_split(df, test_size=0.2, random_state=42) 
@@ -322,8 +272,10 @@ def main(args):
     train_df.reset_index(drop=True, inplace=True)
     if args.labels == 'emotions':
         labels = ['Love', 'Anticipation', 'Disgust', 'Trust', 'Joy', 'Neutral', 'Fear', 'Anger', 'Surprise', 'Sadness']
-    else:
+    elif args.labels == 'relations':
         labels = ['Additive', 'Divergent', 'Parallel']
+    elif args.labels == 'irony':
+        labels = ['Irony', 'Sarcasm', 'None']
 
     id2label = {idx:label for idx, label in enumerate(labels)}
     label2id = {label:idx for idx, label in enumerate(labels)}
@@ -333,8 +285,10 @@ def main(args):
     dataset = DatasetDict({"train": train_dict})
     if args.labels == "emotions":
         encoded_dataset = dataset.map(preprocess_data, batched=True, fn_kwargs={"target_names": target_names}, remove_columns=["text","Rabbia","Anticipazione","Disgusto","Paura","Gioia","Amore","Neutro","Tristezza","Sorpresa","Fiducia"])
-    else:
+    elif args.labels == "relations":
         encoded_dataset = dataset.map(preprocess_data, batched=True, fn_kwargs={"target_names": target_names}, remove_columns=["text",'Additiva','Divergente','Parallela'])
+    elif args.labels == "irony":
+        encoded_dataset = dataset.map(preprocess_data, batched=True, fn_kwargs={"target_names": target_names}, remove_columns=["text",'Ironia','Sarcasmo','None'])
 
     add_df = pd.DataFrame(columns=to_keep)
     par_df = pd.DataFrame(columns=to_keep)
@@ -383,28 +337,6 @@ def main(args):
                 "div_res": (
                     "Relationship detected: Divergent"
                 )
-                # "add_res": (
-                #     "The image shows a kid in winter clothes watching something on a smartphone. "
-                #     "The author of the post express in the text hope that the kid will sleep in a hot bed dreaming."
-                #     "Given the image and the text the most probable relation between the two is Additive, "
-                #     "since the author adds context to the image."
-                #     "Relationship detected: Additive"
-                # ),
-                # "par_res": (
-                #     "The image shows a drink inside a glass mug and a television show in the backgroud "
-                #     "which probably is PropagandaLive. The text says 'moscow mule e #propagandalive.' "
-                #     "which is the exact context of the image."
-                #     "The most probable relation between the text and image is Parallel since the text describes the image"
-                #     "Relationship detected: Parallel"
-                # ),
-                # "div_res": (
-                #     "The image shows a man, most likely a football player, smiling with his eyes closed. "
-                #     "The text seems detatched from image, by saying 'la reazione di zoro:' it looks like "
-                #     "the author is saying that Zoro had the same reaction as the person in the image."
-                #     "Analyzing the image and the text, there's a humorous context which suggest it's a meme, "
-                #     "since the text is not adding any meaning to the image but is creating a new one the most probable relation is Divergent"
-                #     "Relationship detected: Divergent"
-                # )
             }
         else: 
             prompt_kwards = {}
@@ -443,10 +375,9 @@ def main(args):
 
     true_y = np.array(encoded_dataset["train"]["labels"])
 
-    print(f"\nEXAMPLE: {train_df.iloc[0].text_proce}\n\n")
 
     # Open the file in write mode
-    f = open(f"{args.output_dir}{args.output_name}.txt", "w")
+    f = open(f"{args.output_dir}{args.output_name}.txt", "w", encoding="utf-8")
     for idx, row in tqdm(train_df.iterrows(), total=len(train_df), leave=True):
         input_text = row["text_proce"]
         input_img = row["img"]
@@ -454,11 +385,11 @@ def main(args):
         if args.icl_strategy == 'zero_shot':
             inputs = processor(images=[input_img], 
                                 text=input_text, 
-                                return_tensors="pt").to(model.device, dtype=torch.half)
+                                return_tensors="pt").to(device, dtype=torch.half)
         elif args.icl_strategy == 'three_shots':
             inputs = processor(images=[add_example, par_example, div_example, input_img], 
                                 text=input_text, 
-                                return_tensors="pt").to(model.device, dtype=torch.half)
+                                return_tensors="pt").to(device, dtype=torch.half)
         
         with torch.no_grad():
             generate_ids = model.generate(**inputs, 
@@ -468,7 +399,7 @@ def main(args):
         
         cut_output = [ out_ids[len(in_ids) :] for in_ids, out_ids in zip(inputs.input_ids, generate_ids) ]
         output = processor.batch_decode(cut_output, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-    
+
         f.write("\n")
         f.write(f" {idx} out of 129\n")
         f.write("------------------------------INPUT------------------------------\n")
@@ -476,28 +407,27 @@ def main(args):
         f.write("------------------------------OUTPUT------------------------------\n")
         f.write(f"{output}\n")
 
-        # if args.labels == "emotions":
-        #     text_after_emotions = extract_text_after_emotions(output)
-        # else: 
-        #     text_after_emotions = extract_text_after_relationship(output)
+
         text_after_emotions = output.strip()
 
         if text_after_emotions != None:
-            res = word_tokenize(text_after_emotions)
             encode = np.zeros(len(labels))
-            for label in res:
-                label = label.capitalize()            
-                if label in label2id:
+            for label in labels:
+                if label.lower() in text_after_emotions.lower():
                     k = label2id[label]
                     encode[k] = 1
-                    if label == 'Neutral':
-                        encode = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-                        break
+            
+            if 'Neutral' in label2id and encode[label2id['Neutral']] == 1:
+                encode = np.zeros(len(labels))
+                encode[label2id['Neutral']] = 1
         else:
             if args.labels == "emotions":
                  encode = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-            else:
+            elif args.labels == "relations":
                 encode = [0, 0, 0]
+            elif args.labels == "irony":
+                encode = [0, 0, 1]
+
 
         pred_y.append(encode)
 
@@ -505,6 +435,7 @@ def main(args):
         f.write(f'Predicted labels: {",".join(pred_lab)}\n')
         true_lab = [id2label[i] for i, val in enumerate(true_y[idx]) if val == 1]
         f.write(f'True labels: {",".join(true_lab)}\n')
+        sys.exit("Stopping here to check data before loading model.") 
 
         rel = row['type']
         if rel == 1:
@@ -536,7 +467,7 @@ def main(args):
 
     # Convert dictionaries to DataFrames
     df1 = pd.DataFrame(report_normal).T.round(3)
-    if args.labels == "emotions":
+    if args.labels == "emotions" or args.labels == "irony":
         df2 = pd.DataFrame(report_add).T.round(3)
         df3 = pd.DataFrame(report_div).T.round(3)
         df4 = pd.DataFrame(report_par).T.round(3)
@@ -544,7 +475,7 @@ def main(args):
     # Create a Pandas Excel writer
     with pd.ExcelWriter(f'{args.output_dir}{args.output_name}_reports.xlsx') as writer:
         df1.to_excel(writer, sheet_name='normal', index=True)
-        if args.labels == "emotions":
+        if args.labels == "emotions" or args.labels == "irony":
             df2.to_excel(writer, sheet_name='add', index=True)
             df3.to_excel(writer, sheet_name='div', index=True)
             df4.to_excel(writer, sheet_name='par', index=True)

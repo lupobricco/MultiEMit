@@ -1,0 +1,23 @@
+=== Step 1: Concatenated (IronITA + MultiEMit Textual) WITHOUT Correlations ===
+              precision    recall  f1-score   support
+
+        None     0.8249    0.8742    0.8489       318
+      Ironia     0.3846    0.3165    0.3472        79
+    Sarcasmo     0.0000    0.0000    0.0000         8
+
+    accuracy                         0.7481       405
+   macro avg     0.4032    0.3969    0.3987       405
+weighted avg     0.7227    0.7481    0.7342       405
+
+
+=== Step 2: Step 1 -> (MultiEMit Textual + Multimodal Train) WITH Correlations ===
+              precision    recall  f1-score   support
+
+        None     0.8457    0.8962    0.8702       318
+      Ironia     0.4754    0.3671    0.4143        79
+    Sarcasmo     0.1429    0.1250    0.1333         8
+
+    accuracy                         0.7778       405
+   macro avg     0.4880    0.4628    0.4726       405
+weighted avg     0.7596    0.7778    0.7667       405
+

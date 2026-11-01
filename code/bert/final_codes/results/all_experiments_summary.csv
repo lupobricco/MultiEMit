@@ -1,0 +1,20 @@
+Task,Modality,Notebook,Configuration,Micro F1,Macro F1,Weighted F1,Accuracy / Subset Acc
+Emotion Detection (10-Label Multi-Label),Textual,train_textual_emotion.ipynb,FEEL-IT (EMit A + MultiEMit Textual) — No Correlations,0.5403,0.5092,0.5371,0.3210
+Emotion Detection (10-Label Multi-Label),Textual,train_textual_emotion.ipynb,FEEL-IT (Textual + Multimodal Train) — With Correlations,0.5530,0.5349,0.5507,0.3259
+Emotion Detection (10-Label Multi-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_emotion.ipynb,Text-Only (FEEL-IT) — No Correlations,0.3073,0.3033,0.3465,0.1628
+Emotion Detection (10-Label Multi-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_emotion.ipynb,Multimodal Dual-Encoder (FEEL-IT + ViT-224) — No Correlations,0.4013,0.3759,0.3942,0.2403
+Emotion Detection (10-Label Multi-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_emotion.ipynb,Text-Only (FEEL-IT) — With Correlations,0.5378,0.4464,0.5457,0.3876
+Emotion Detection (10-Label Multi-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_emotion.ipynb,Multimodal Dual-Encoder (FEEL-IT + ViT-224) — With Correlations,0.5590,0.5000,0.5538,0.3721
+Irony & Sarcasm Detection (3-Class Single-Label),Textual,train_textual_irony.ipynb,UmBERTo (IronITA Pre-trained -> MultiEMit No Correlations),0.7852,0.4054,0.7535,0.7852
+Irony & Sarcasm Detection (3-Class Single-Label),Textual,train_textual_irony.ipynb,UmBERTo (IronITA Pre-trained -> MultiEMit With Correlations),0.7901,0.5094,0.7648,0.7901
+Irony & Sarcasm Detection (3-Class Single-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_irony.ipynb,Text-Only (UmBERTo) — No Correlations,0.6512,0.4603,0.7012,0.6512
+Irony & Sarcasm Detection (3-Class Single-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_irony.ipynb,Multimodal Dual-Encoder (UmBERTo + ViT-224) — No Correlations,0.7674,0.4280,0.7561,0.7674
+Irony & Sarcasm Detection (3-Class Single-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_irony.ipynb,Text-Only (UmBERTo) — With Correlations,0.7597,0.4905,0.7711,0.7597
+Irony & Sarcasm Detection (3-Class Single-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_irony.ipynb,Multimodal Dual-Encoder (UmBERTo + ViT-224) — With Correlations,0.7984,0.4906,0.7782,0.7984
+Semiotic Relation Classification (3-Class Single-Label),Textual (on Multimodal Split),train_textual_relation.ipynb,UmBERTo Semiotic Relation (Text-Only Fine-Tuned, No Correlations),0.6512,0.4928,0.5975,0.6512
+Semiotic Relation Classification (3-Class Single-Label),Textual (on Multimodal Split),train_textual_relation.ipynb,UmBERTo Semiotic Relation (Text-Only Fine-Tuned, With Correlations),0.6357,0.5486,0.6136,0.6357
+Semiotic Relation Classification (3-Class Single-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_relation.ipynb,Text-Only (UmBERTo) — No Correlations,0.5969,0.5784,0.5961,0.5969
+Semiotic Relation Classification (3-Class Single-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_relation.ipynb,Multimodal Dual-Encoder (UmBERTo + ViT-224) — No Correlations,0.5969,0.5154,0.5840,0.5969
+Semiotic Relation Classification (3-Class Single-Label),Multimodal Split (Text-Only SGD),multimodal_dual_encoder_relation.ipynb,Text-Only (UmBERTo) — With Correlations,0.6589,0.6384,0.6564,0.6589
+Semiotic Relation Classification (3-Class Single-Label),Multimodal Dual-Encoder (Text + ViT-224),multimodal_dual_encoder_relation.ipynb,Multimodal Dual-Encoder (UmBERTo + ViT-224) — With Correlations,0.6589,0.6373,0.6579,0.6589
+

@@ -1,0 +1,3 @@
+Task,Modality,Notebook,Configuration,Micro F1,Macro F1,Weighted F1,Accuracy / Subset Acc
+Emotion Detection (10-Label Multi-Label),Textual (Concatenated),train_textual_emotion_concatenated.ipynb,Step 1: FEEL-IT on (EMit A + MultiEMit Textual) — No Correlations,0.5403445149592022,0.5091674567839571,0.5371104084044526,0.32098765432098764
+Emotion Detection (10-Label Multi-Label),Textual (Concatenated -> Correlated Textual+MM Train),train_textual_emotion_concatenated.ipynb,Step 2: Step 1 Model -> (MultiEMit Textual + Multimodal Train) With Correlations,0.5529622980251346,0.5348744352112516,0.5507096772579304,0.32592592592592595

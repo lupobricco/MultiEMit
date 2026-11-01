@@ -1,0 +1,47 @@
+=== [1/4] Text-Only (UmBERTo) — WITHOUT Correlations ===
+              precision    recall  f1-score   support
+
+    Additiva     0.6406    0.6029    0.6212        68
+  Divergente     0.5556    0.6579    0.6024        38
+   Parallela     0.5500    0.4783    0.5116        23
+
+    accuracy                         0.5969       129
+   macro avg     0.5821    0.5797    0.5784       129
+weighted avg     0.5994    0.5969    0.5961       129
+
+
+=== [2/4] Multimodal Dual-Encoder (UmBERTo + ViT-224) — WITHOUT Correlations ===
+              precision    recall  f1-score   support
+
+    Additiva     0.6857    0.7059    0.6957        68
+  Divergente     0.5106    0.6316    0.5647        38
+   Parallela     0.4167    0.2174    0.2857        23
+
+    accuracy                         0.5969       129
+   macro avg     0.5377    0.5183    0.5154       129
+weighted avg     0.5862    0.5969    0.5840       129
+
+
+=== [3/4] Text-Only (UmBERTo) — WITH Correlations ===
+              precision    recall  f1-score   support
+
+    Additiva     0.6667    0.7353    0.6993        68
+  Divergente     0.6471    0.5789    0.6111        38
+   Parallela     0.6500    0.5652    0.6047        23
+
+    accuracy                         0.6589       129
+   macro avg     0.6546    0.6265    0.6384       129
+weighted avg     0.6579    0.6589    0.6564       129
+
+
+=== [4/4] Multimodal Dual-Encoder (UmBERTo + ViT-224) — WITH Correlations ===
+              precision    recall  f1-score   support
+
+    Additiva     0.6901    0.7206    0.7050        68
+  Divergente     0.6471    0.5789    0.6111        38
+   Parallela     0.5833    0.6087    0.5957        23
+
+    accuracy                         0.6589       129
+   macro avg     0.6402    0.6361    0.6373       129
+weighted avg     0.6584    0.6589    0.6579       129
+

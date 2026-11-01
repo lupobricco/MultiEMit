@@ -1,0 +1,93 @@
+# ==============================================================================
+# MultiEMit — .gitignore
+# Purpose: Keep the GitHub repository clean, lightweight, and publication-ready.
+# Prevents large binary model checkpoints (>100GB), virtual environments,
+# cache files, and intermediate backups from being tracked.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Virtual Environments & Package Managers
+# ------------------------------------------------------------------------------
+.conda/
+.env
+.venv
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# ------------------------------------------------------------------------------
+# 2. Python Caches & Bytecode
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ------------------------------------------------------------------------------
+# 3. Jupyter Notebook Checkpoints
+# ------------------------------------------------------------------------------
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ------------------------------------------------------------------------------
+# 4. Model Weights, Checkpoints & Training States (>100 GB)
+# GitHub enforces a 100MB per-file hard limit. Checkpoints are excluded.
+# ------------------------------------------------------------------------------
+**/checkpoints/
+checkpoint-*/
+code/bert/checkpoints/
+*.safetensors
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.h5
+*.onnx
+
+# ------------------------------------------------------------------------------
+# 5. Intermediate Backups, Scratch & Exploratory Test Codes
+# Final, reproducible codes are maintained in `code/bert/final_codes/`.
+# ------------------------------------------------------------------------------
+code/bert/backups/
+code/bert/test_codes/
+**/OLD_*
+claude_review.txt
+*.bak
+*.backup
+*~
+
+# ------------------------------------------------------------------------------
+# 6. LaTeX Auxiliary Build Files (Keep .tex, .pdf, .bib and figures)
+# ------------------------------------------------------------------------------
+*.aux
+*.fls
+*.fdb_latexmk
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+
+# ------------------------------------------------------------------------------
+# 7. OS & IDE Metadata
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ------------------------------------------------------------------------------
+# 8. Experiment Tracking & Logs
+# ------------------------------------------------------------------------------
+wandb/
+runs/
+*.log
+
