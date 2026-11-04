@@ -1,3 +1,0 @@
-Task,Modality,Notebook,Configuration,Micro F1,Macro F1,Weighted F1,Accuracy / Subset Acc
-Irony & Sarcasm Detection (3-Class Single-Label),Textual,train_textual_irony.ipynb,UmBERTo (IronITA Pre-trained -> MultiEMit No Correlations),0.7851851851851852,0.4054264401259624,0.7534989327965609,0.7851851851851852
-Irony & Sarcasm Detection (3-Class Single-Label),Textual,train_textual_irony.ipynb,UmBERTo (IronITA Pre-trained -> MultiEMit With Correlations),0.7901234567901234,0.5093735324504555,0.7647841680320312,0.7901234567901234

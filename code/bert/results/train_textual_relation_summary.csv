@@ -1,3 +1,0 @@
-Task,Modality,Notebook,Configuration,Micro F1,Macro F1,Weighted F1,Accuracy / Subset Acc
-Semiotic Relation Classification (3-Class Single-Label),Textual (on Multimodal Split),train_textual_relation.ipynb,"UmBERTo Semiotic Relation (Text-Only Fine-Tuned, No Correlations)",0.6511627906976745,0.4928431675419627,0.5975075016823406,0.6511627906976745
-Semiotic Relation Classification (3-Class Single-Label),Textual (on Multimodal Split),train_textual_relation.ipynb,"UmBERTo Semiotic Relation (Text-Only Fine-Tuned, With Correlations)",0.6356589147286822,0.548613222526266,0.6135682091192708,0.6356589147286822

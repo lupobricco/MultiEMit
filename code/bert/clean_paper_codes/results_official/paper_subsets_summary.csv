@@ -1,0 +1,5 @@
+Task,Model Setting,ADD,PAR,DIV
+Emotion Detection,Dual-Encoder (Step 1 Base (No corr)),0.4623655913978494,0.5172413793103449,0.3168316831683168
+Emotion Detection,Dual-Encoder (Step 2 Oracle (With corr)),0.5614035087719298,0.6296296296296297,0.4946236559139785
+Irony Detection,"Dual-Encoder (Step 1 Base (No corr, std))",0.8676470588235294,0.9130434782608696,0.631578947368421
+Irony Detection,"Dual-Encoder (Step 2 Oracle (With corr, std))",0.8970588235294118,0.8695652173913043,0.6052631578947368

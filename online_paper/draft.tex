@@ -17,13 +17,13 @@
 
 \begin{document}
 
-\title{MultiEMiT: Multimodal Emotion, Irony, and Semiotic Relation Detection in Italian Social TV via Correlation Prompting}
+\title{MultiEMiT: Multimodal Emotion, Irony, and Semiotic Relation Detection in Italian Social TV}
 
-\author{Andrea~Author,~\IEEEmembership{Graduate Student Member,~IEEE,}
+\author{Author~Author,~\IEEEmembership{Graduate Student Member,~IEEE,}
         Co-Author~One,~\IEEEmembership{Member,~IEEE,}
         and~Co-Author~Two,~\IEEEmembership{Senior Member,~IEEE}%
-\thanks{Manuscript received October 27, 2026. This work was conducted within the M.EMO.RAI collaboration between the Department of Computer Science, University of Turin, 10149 Turin, Italy, and the ICT Directorate of Rai (Radiotelevisione Italiana), Turin, Italy.}%
-\thanks{Corresponding author: Andrea Author (e-mail: andrea.author@unito.it).}}
+\thanks{TODO}%
+\thanks{TODO}}
 
 % The paper headers
 \markboth{IEEE Transactions on Affective Computing,~Vol.~XX, No.~X, October~2026}%
@@ -32,11 +32,11 @@
 \maketitle
 
 \begin{abstract}
-During live television broadcasts, viewers react on social media with a blend of text, screengrabs, and memes. Decoding affective intent in this context is hard: posts are short, labels are heavily skewed, and images often twist or invert the written message. We present MultiEMiT, a multimodal dataset of Italian Social Media posts and comments annotated across five dimensions: fine-grained emotions under Plutchik's taxonomy, irony and sarcasm, hate speech, target orientation (broadcast content versus program container), and semiotic text--image relationships (additive, parallel, divergent). We evaluate task-specialized Encoders models (BERT and Vision Transformer) against an open-weights generative model, Pixtral 12B.  To exploit label dependencies, we introduce correlation prompting: directly injecting labels from other levels of annotation into the input text as support of the classification. Visual context improves multi-label emotion recognition, lifting Macro $F_1$ by $+13$\% over text-only models. In irony detection, raw visual features introduce semantic noise and degrade performance through the modality gap; injecting correlation priors resolves this misalignment and pushes Dual-Encoder accuracy to $F_1 = 0.740$. Across all tasks, lightweight discriminative models outperform the fine-tuned 12-billion-parameter foundation model.
+During live television broadcasts, viewers actively share second-screen commentary on social media, providing real-time signals of public emotional engagement. Decoding affective intent in this domain is challenging: posts are brief, informal, heavily skewed, and inherently multimodal. Rather than merely duplicating the text, accompanying images such as reaction memes and broadcast screenshots frequently alter, amplify, or invert the literal message. In this work, we present MultiEMiT, a multimodal dataset of Italian Social TV commentary annotated across multiple schemas, including Plutchik's fine-grained emotions, irony and sarcasm, offensiveness, target orientation, and semiotic text-image relations. We evaluate task-specialized encoders against a generative vision-language decoder across four experimental setups: text alone, text with visual context, and both settings augmented with correlation prompting. Here, prompting injects labels from auxiliary annotation layers directly into the input text to guide prediction on the primary task. Our experiments reveal distinct cross-modal behaviors. Visual context substantially improves multi-label emotion recognition by resolving textual ambiguity. In contrast, for figurative discourse such as irony, unguided visual features introduce noise and degrade performance; injecting correlation priors resolves this conflict and leads to the highest classification performance. Overall, our findings show that visual context alone is insufficient for non-literal commentary: coupling images with cross-task label prompts provides the necessary guidance to interpret complex and satirical social media interactions.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Affective computing, emotion detection, irony detection, multimodal fusion, Social TV, correlation prompting, vision-language models, Italian NLP.
+Affective computing, multimodal emotion recognition, irony detection, vision-language models, Social TV.
 \end{IEEEkeywords}
 
 \input{1_introduction.tex}
@@ -47,7 +47,7 @@ Affective computing, emotion detection, irony detection, multimodal fusion, Soci
 \input{6_conclusion.tex}
 
 \section*{Acknowledgments}
-This work was conducted within the M.EMO.RAI collaboration between the University of Turin and Rai ICT Directorate. We thank the annotators for their valuable contributions.
+This work was conducted with the collaboration between the University of Turin and Polytechnic University of Madrid. We thank the annotators for their valuable contributions.
 
 \bibliographystyle{IEEEtran}
 
@@ -64,7 +64,7 @@ This work was conducted within the M.EMO.RAI collaboration between the Universit
 
 \bibitem{propagandalive} LA7, ``Propaganda Live,'' 2024. [Online]. Available: \url{https://www.la7.it/propagandalive}.
 
-\bibitem{pechinoexpress} Sky Italia, ``Pechino Express,'' 2024. [Online]. Available: \url{https://pechinoexpress.sky.it}.
+\bibitem{pechinoexpress} Rai2, ``Pechino Express -- Season 8 (Le stagioni dell'Oriente),'' 2020. [Online]. Available: \url{https://www.raiplay.it/programmi/pechinoexpress}.
 
 \bibitem{MultiEmotion} R. Sprugnoli, "MultiEmotions-It: a New Dataset for Opinion Polarity and Emotion Analysis for Italian," in \textit{Proceedings of the Seventh Italian Conference on Computational Linguistics}, 2020, Accademia University Press. Available: \url{https://doi.org/10.4000/books.aaccademia.8910}.
 
@@ -84,7 +84,8 @@ This work was conducted within the M.EMO.RAI collaboration between the Universit
 
 \bibitem{pedregosa2011scikit} F.~Pedregosa \textit{et al.}, ``Scikit-learn: Machine learning in Python,'' \textit{Journal of Machine Learning Research}, vol. 12, pp. 2825--2830, 2011.
 
-\bibitem{pixtral} Mistral AI, "Pixtral 12B," [Online]. Available: \url{https://mistral.ai/news/pixtral-12b/}, 2024.
+\bibitem{pixtral} P. Agrawal, S. Antoniak, E. Bou Hanna, B. Bout, D. Chaplot, J. Chudnovsky, \textit{et al.}, ``Pixtral 12B,'' \textit{arXiv preprint arXiv:2410.07073}, 2024. [Online]. Available: \url{https://arxiv.org/abs/2410.07073}.
+
 
 \bibitem{brighter_project} S.~H. Muhammad, N.~Ousidhoum, I.~Abdulmumin, \textit{et al.}, ``BRIGHTER: BRIdging the Gap in Human-Annotated Textual Emotion Recognition Datasets for 28 Languages,'' in \textit{Proc. ACL}, 2025, pp. 8895--8916.
 

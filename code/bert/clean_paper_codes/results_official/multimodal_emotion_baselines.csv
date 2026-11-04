@@ -1,0 +1,5 @@
+Configuration,Prompting,Model,Macro F1,Micro F1,Subset Acc.
+"Multimodal test set (without images, Step 1 Base (No corr))",None (Raw),Blind Text (ClassifierChain),0.3564811577311577,0.43137254901960786,0.26356589147286824
+"Multimodal test set with images (Dual-Encoder, Step 1 Base (No corr))",None (Raw),Dual-Encoder (BERT + ViT-224),0.4067854303883716,0.4289855072463768,0.27906976744186046
+"Multimodal test set (without images, Step 2 Oracle (With corr))",Oracle,Blind Text (ClassifierChain),0.4343221775543939,0.5183098591549296,0.3488372093023256
+"Multimodal test set with images (Dual-Encoder, Step 2 Oracle (With corr))",Oracle,Dual-Encoder (BERT + ViT-224),0.4967442831808514,0.5534591194968553,0.35658914728682173

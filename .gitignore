@@ -36,9 +36,8 @@ __pycache__/
 # 4. Model Weights, Checkpoints & Training States (>100 GB)
 # GitHub enforces a 100MB per-file hard limit. Checkpoints are excluded.
 # ------------------------------------------------------------------------------
-**/checkpoints/
+**/checkpoints*/
 checkpoint-*/
-code/bert/checkpoints/
 *.safetensors
 *.pt
 *.pth
@@ -48,8 +47,7 @@ code/bert/checkpoints/
 *.onnx
 
 # ------------------------------------------------------------------------------
-# 5. Intermediate Backups, Scratch & Exploratory Test Codes
-# Final, reproducible codes are maintained in `code/bert/final_codes/`.
+# 5. Intermediate Backups, Scratch & Exploratory Test Runs
 # ------------------------------------------------------------------------------
 code/bert/backups/
 code/bert/test_codes/
@@ -58,6 +56,9 @@ claude_review.txt
 *.bak
 *.backup
 *~
+*_test/
+results_test/
+scratch*/
 
 # ------------------------------------------------------------------------------
 # 6. LaTeX Auxiliary Build Files (Keep .tex, .pdf, .bib and figures)

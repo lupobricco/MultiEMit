@@ -1,0 +1,5 @@
+Configuration,Prompting,Model,Macro F1,Micro F1 (= Acc.),Weighted F1
+"Multimodal test set (without images, Step 1 Base (No corr, std))",None (Raw),"Blind Text (SGD, std)",0.4329759239621382,0.7596899224806202,0.754514656707066
+"Multimodal test set with images (Dual-Encoder, Step 1 Base (No corr, std))",None (Raw),"Dual-Encoder (BERT + ViT-224, std)",0.4458225667527993,0.8062015503875969,0.7819722372453579
+"Multimodal test set (without images, Step 2 Oracle (With corr, std))",Oracle,"Blind Text (SGD, std)",0.4278669043374926,0.6589147286821705,0.69820917796294
+"Multimodal test set with images (Dual-Encoder, Step 2 Oracle (With corr, std))",Oracle,"Dual-Encoder (BERT + ViT-224, std)",0.5423513375647041,0.8062015503875969,0.8035508663924968
