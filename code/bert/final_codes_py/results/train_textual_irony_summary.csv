@@ -1,0 +1,4 @@
+Task,Stage,Regime,Prefix,Model,Features,N Test,Micro F1,Macro F1,Weighted F1,Accuracy,Notes
+Irony & Sarcasm Detection (3-Class Single-Label),Textual (me_test),Step 1: IronITA + ME Textual,No,UmBERTo (fine-tuned),-,405,0.7234567901234568,0.4411237571951858,0.7221660658565422,0.7234567901234568,
+Irony & Sarcasm Detection (3-Class Single-Label),Textual (me_test),Step 2 Raw: Step 1 -> ME + MM Train,No,UmBERTo (fine-tuned),-,405,0.7358024691358025,0.43122314861445304,0.7313560397296307,0.7358024691358025,A3 ablation
+Irony & Sarcasm Detection (3-Class Single-Label),Textual (me_test),Step 2 Oracle: Step 1 -> ME + MM Train,Oracle (no rel),UmBERTo (fine-tuned),-,405,0.7604938271604939,0.4994825280539566,0.7611953322006232,0.7604938271604939,

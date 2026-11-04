@@ -1,3 +1,0 @@
-Task,Step 1 Base (Raw),Step 2 Raw Ablation,Step 2 Oracle (With Corr),Delta (Oracle vs Step 2 Raw)
-Emotion Detection,0.5403 Micro / 0.5092 Macro,0.5383 Micro / 0.5235 Macro,0.5530 Micro / 0.5349 Macro,+0.0146 Micro / +0.0114 Macro
-Irony Detection,0.7235 Acc / 0.4411 Macro,0.7358 Acc / 0.4312 Macro,0.7605 Acc / 0.4995 Macro,+0.0247 Acc / +0.0683 Macro
