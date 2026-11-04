@@ -104,7 +104,7 @@ def main():
         {
             "name": "Stage A Raw",
             "dir_name": "relation_textual_no_corr",
-            "train_df": df_tr,
+            "train_df": df_tr.sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text",
             "eval_ds": ds_te_raw,
             "prompt": "Raw",
@@ -112,7 +112,7 @@ def main():
         {
             "name": "Stage B Oracle",
             "dir_name": "relation_textual_corr",
-            "train_df": df_tr_corr,
+            "train_df": df_tr_corr.sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text_corr",
             "eval_ds": ds_te_corr,
             "prompt": "Oracle",
@@ -143,6 +143,7 @@ def main():
         )
 
         if need_train:
+            seed_everything(args.seed)
             print(f"\nTraining {st['name']} -> {out_p} ...")
             model = AutoModelForSequenceClassification.from_pretrained(
                 BASE_MODEL,

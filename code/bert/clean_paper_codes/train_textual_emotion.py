@@ -115,7 +115,7 @@ def main():
             "name": "Step 1 Base (Raw)",
             "dir_name": "emotion_textual_no_corr",
             "init_from": BASE_MODEL,
-            "train_df": pd.concat([emit_tr[["text"] + EMOTION_LABELS], me_tr[["text"] + EMOTION_LABELS]], ignore_index=True),
+            "train_df": pd.concat([emit_tr[["text"] + EMOTION_LABELS], me_tr[["text"] + EMOTION_LABELS]], ignore_index=True).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text",
             "eval_ds": ds_me_te_raw,
             "prompt": "Raw",
@@ -124,7 +124,7 @@ def main():
             "name": "Step 2 Raw (Ablation)",
             "dir_name": "emotion_textual_step2_raw",
             "init_from": "emotion_textual_no_corr",
-            "train_df": pd.concat([me_tr[["text"] + EMOTION_LABELS], df_mm_tr[["text"] + EMOTION_LABELS]], ignore_index=True),
+            "train_df": pd.concat([me_tr[["text"] + EMOTION_LABELS], df_mm_tr[["text"] + EMOTION_LABELS]], ignore_index=True).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text",
             "eval_ds": ds_me_te_raw,
             "prompt": "Raw",
@@ -136,7 +136,7 @@ def main():
             "train_df": (
                 lambda: (
                     df_comb := pd.concat([me_tr, df_mm_tr], ignore_index=True),
-                    df_comb.assign(text_corr=oracle_prompt(df_comb, "emotion", with_relation=False))
+                    df_comb.assign(text_corr=oracle_prompt(df_comb, "emotion", with_relation=False)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
                 )[1]
             )(),
             "text_col": "text_corr",
@@ -169,6 +169,7 @@ def main():
         )
 
         if need_train:
+            seed_everything(args.seed)
             print(f"\nTraining {st['name']} -> {out_p} ...")
             init_path = st["init_from"]
             if init_path != BASE_MODEL:
