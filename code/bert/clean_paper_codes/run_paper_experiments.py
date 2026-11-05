@@ -1,16 +1,15 @@
 """
 Master Runner for MultiEMiT Clean Paper Experiments.
-Executes the streamlined, paper-specific experiments and aggregates them dynamically
-into the exact tables and structures specified in PAPER_RESULTS_SYNTHESIS.md.
-
-Produces:
-  * results/PAPER_TABLES.md
-  * results/paper_baselines_summary.csv
-  * results/paper_subsets_summary.csv
-  * results/paper_ablation_matrix.csv
-  * results/paper_tables.xlsx
-  * results/paper_tables.tex
-  * results/paper_summary_tables.md
+Executes all textual and multimodal experiments across Task 1 (Emotion), Task 2 (Irony),
+and Task 3 (Semiotic Relation) and dynamically generates:
+  1. results/ALL_EXPERIMENTS_COMPLETE_REPORT.md  (Exhaustive case-by-case report with all tables, classification_reports, & confusion matrices)
+  2. results/PAPER_TABLES.md                     (Streamlined publication tables using unified 'raw' protocol with Step 1 Base & Step 2 Raw)
+  3. results/paper_summary_tables.md
+  4. results/paper_baselines_summary.csv
+  5. results/paper_subsets_summary.csv
+  6. results/paper_ablation_matrix.csv
+  7. results/paper_tables.xlsx
+  8. results/paper_tables.tex
 """
 
 import sys
@@ -19,13 +18,18 @@ from pathlib import Path
 import pandas as pd
 import subprocess
 
-from common_utils import setup_console
+from common_utils import EMOTION_LABELS, IRONY_LABELS, RELATION_LABELS, setup_console
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="MultiEMiT Clean Paper Runner")
+    parser = argparse.ArgumentParser(description="MultiEMiT Clean Paper Master Runner")
     parser.add_argument("--task", type=str, default="all", choices=["all", "emotion", "irony", "relation"])
     parser.add_argument("--force-retrain", action="store_true", default=False, help="Force retrain textual models from scratch.")
+    parser.add_argument("--report-only", action="store_true", default=False, help="Skip training/eval and only regenerate reports from existing CSVs.")
+    parser.add_argument("--epochs", type=int, default=10)
+    parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--eval-batch-size", type=int, default=32)
+    parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--checkpoints-dir", type=str, default="./checkpoints")
     parser.add_argument("--results-dir", type=str, default="./results")
     return parser.parse_args()
@@ -39,8 +43,20 @@ def run_script(script_name: str, extra_args: list):
     return res.returncode
 
 
+def _read_csv_if_exists(path: Path):
+    return pd.read_csv(path) if path.exists() else None
+
+
+def _df_to_md(df: pd.DataFrame, floatfmt: str = ".4f") -> str:
+    if df is None or df.empty:
+        return "_No data available._"
+    try:
+        return df.to_markdown(index=False, floatfmt=floatfmt)
+    except Exception:
+        return df.to_string(index=False)
+
+
 def find_row(df: pd.DataFrame, col: str, pattern: str):
-    """Safely retrieves a row matching a substring without relying on fragile positional indices."""
     if df is None or df.empty or col not in df.columns:
         return None
     matches = df[df[col].astype(str).str.contains(pattern, case=False, na=False, regex=False)]
@@ -49,405 +65,507 @@ def find_row(df: pd.DataFrame, col: str, pattern: str):
     return None
 
 
-def generate_dynamic_latex_tables(df_baselines: pd.DataFrame, df_subsets: pd.DataFrame, df_ablation: pd.DataFrame, df_rel_cls: pd.DataFrame) -> str:
-    """Dynamically generates publication-ready LaTeX tables matching IEEE Transactions on Affective Computing standards."""
-    latex_snippets = [
-        "% ===========================================================================",
-        "% MultiEMiT: Auto-Generated Publication Tables (IEEE Transactions)",
-        "% Fully dynamic: derived directly from empirical evaluation CSVs",
-        "% ===========================================================================",
+def find_exact_mm_row(df: pd.DataFrame, case_id: str, model_pat: str, scaling: str = "raw"):
+    if df is None or df.empty:
+        return None
+    m = (
+        (df["Case"].astype(str) == case_id)
+        & df["Model"].astype(str).str.contains(model_pat, case=False, na=False, regex=False)
+        & (df["Scaling"].astype(str) == scaling)
+    )
+    sub = df[m]
+    return sub.iloc[0] if not sub.empty else None
+
+
+# ========================================================================================
+# 1. Exhaustive Report Builder: ALL_EXPERIMENTS_COMPLETE_REPORT.md
+# ========================================================================================
+def generate_all_experiments_complete_report(res_dir: Path):
+    lines = [
+        "# MultiEMiT: Complete Experimental Report (All Runs, Classification Reports & Confusion Matrices)",
+        "",
+        "> **Auto-Generated Exhaustive Report**: Covers every textual and multimodal experiment across **Task 1 (Emotion Detection)**, **Task 2 (Irony & Sarcasm Detection)**, and **Task 3 (Semiotic Relation Classification)**.",
+        "> **Dimensions Evaluated**: `Step 1 Base` vs. `Step 2 Raw` vs. `Step 2 Oracle (Train: no rel)` vs. `Step 2 Oracle (Train: +rel)`; Multimodal `Eval: no rel` vs. `Eval: +rel`; Feature Scaling `raw` (no std) vs. `std` (`StandardScaler`); `Blind Text` vs. `Dual-Encoder`.",
+        "",
+        "---",
         "",
     ]
 
-    # Helper for baseline lookups
-    def get_base_vals(task_pat: str, cfg_pat: str, macro_col="Macro F1", micro_col="Micro F1 / Acc"):
-        if df_baselines is None or df_baselines.empty:
-            return 0.0, 0.0
-        matches = df_baselines[
-            df_baselines["Task"].astype(str).str.contains(task_pat, case=False, na=False, regex=False) &
-            df_baselines["Configuration"].astype(str).str.contains(cfg_pat, case=False, na=False, regex=False)
-        ]
-        if not matches.empty:
-            row = matches.iloc[0]
-            return float(row[macro_col]), float(row[micro_col])
-        return 0.0, 0.0
+    # ------------------------------------------------------------------------------------
+    # TASK 1: EMOTION DETECTION
+    # ------------------------------------------------------------------------------------
+    lines.extend([
+        "## 1. Task 1: Emotion Detection (10-Class Multi-Label, `FEEL-IT` + `ViT-224`)",
+        "",
+        "- **Text Encoder**: `MilaNLProc/feel-it-italian-emotion` (`FEEL-IT`, 768-d `[CLS]`)",
+        "- **Vision Encoder**: `google/vit-base-patch16-224` (`ViT-Base-224`, frozen 768-d `[CLS]`)",
+        "- **Textual Head (`me_test`, $N=405$)**: Sequence classification head + `EMOTION_THRESHOLD = 0.40` with dynamic top-2 fallback (`prob[0] - prob[1] <= 0.10`)",
+        "- **Multimodal Head (`mm_test`, $N=129$)**: `ClassifierChain(SGDClassifier(loss='squared_hinge', penalty='l2', class_weight='balanced', random_state=42))`",
+        "",
+    ])
 
-    # 1. Table I: Emotion Baselines
-    e_t_no_mac, e_t_no_mic = get_base_vals("Emotion", "Textual test set (No")
-    e_t_co_mac, e_t_co_mic = get_base_vals("Emotion", "Textual test set (With")
-    e_m_no_mac, e_m_no_mic = get_base_vals("Emotion", "without images, No corr")
-    e_m_im_mac, e_m_im_mic = get_base_vals("Emotion", "with images (Dual-Encoder, No corr")
-    e_m_co_mac, e_m_co_mic = get_base_vals("Emotion", "without images, With corr")
-    e_m_du_mac, e_m_du_mic = get_base_vals("Emotion", "with images and correlations")
+    df_t1_txt = _read_csv_if_exists(res_dir / "train_textual_emotion_summary.csv")
+    df_t1_txt_rep = _read_csv_if_exists(res_dir / "textual_emotion_classification_reports.csv")
+    df_t1_txt_cm2 = _read_csv_if_exists(res_dir / "textual_emotion_confusion_matrices_2x2.csv")
+    df_t1_txt_cooc = _read_csv_if_exists(res_dir / "textual_emotion_cooccurrence_matrices_10x10.csv")
 
-    tab_emotion = f"""% Table I: Emotion Detection Baselines
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Discriminative Baseline Performance in Emotion Detection}}
-\\label{{tab:emotion_baselines}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c}}
-\\hline
-\\textbf{{Configuration}} & \\textbf{{Macro F1}} & \\textbf{{Micro F1}} \\\\
-\\hline
-\\multicolumn{{3}}{{l}}{{\\textit{{Textual Test Set ($N=405$)}}}} \\\\
-Textual test set (No correlations) & {e_t_no_mac:.3f} & {e_t_no_mic:.3f} \\\\
-Textual test set (With correlations) & \\textbf{{{e_t_co_mac:.3f}}} & \\textbf{{{e_t_co_mic:.3f}}} \\\\
-\\hline
-\\multicolumn{{3}}{{l}}{{\\textit{{Multimodal Test Set ($N=129$)}}}} \\\\
-Multimodal test set (without images, No corr.) & {e_m_no_mac:.3f} & {e_m_no_mic:.3f} \\\\
-Multimodal test set with images (Dual-Encoder, No corr.) & {e_m_im_mac:.3f} & {e_m_im_mic:.3f} \\\\
-Multimodal test set (without images, With corr.) & {e_m_co_mac:.3f} & {e_m_co_mic:.3f} \\\\
-Multimodal test set with images and correlations (Dual-Encoder) & \\textbf{{{e_m_du_mac:.3f}}} & \\textbf{{{e_m_du_mic:.3f}}} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-    latex_snippets.append(tab_emotion)
+    if df_t1_txt is not None:
+        lines.extend([
+            "### 1.1 Textual Emotion Benchmark (`me_test`, $N=405$)",
+            "",
+            "#### Overall Metrics Summary",
+            _df_to_md(df_t1_txt[["Regime", "Checkpoint", "Prompt", "N Test", "Macro F1", "Micro F1", "Weighted F1", "Subset Acc."]]),
+            "",
+            "#### Per-Emotion F1 Breakdown (`me_test`)",
+            _df_to_md(df_t1_txt[["Regime"] + [f"{c} F1" for c in EMOTION_LABELS if f"{c} F1" in df_t1_txt.columns]]),
+            "",
+        ])
+        for _, r in df_t1_txt.iterrows():
+            reg_name = r["Regime"]
+            lines.append(f"#### Textual Case: `{reg_name}` (`{r['Checkpoint']}`)")
+            if df_t1_txt_rep is not None:
+                sub_rep = df_t1_txt_rep[df_t1_txt_rep["Regime"] == reg_name][["Label", "Precision", "Recall", "F1-Score", "Support"]]
+                lines.extend(["**Classification Report**:", "", _df_to_md(sub_rep), ""])
+            if df_t1_txt_cm2 is not None:
+                sub_cm = df_t1_txt_cm2[df_t1_txt_cm2["Regime"] == reg_name][["Label", "TN", "FP", "FN", "TP", "Precision", "Recall", "F1-Score", "Support"]]
+                lines.extend(["**Per-Label 2x2 Confusion Matrices (`TN, FP, FN, TP`)**:", "", _df_to_md(sub_cm), ""])
+            if df_t1_txt_cooc is not None:
+                cooc_cols = ["Gold_Emotion", "Gold_Support"] + [f"Pred_{c}" for c in EMOTION_LABELS] + ["Pred_None"]
+                sub_cooc = df_t1_txt_cooc[df_t1_txt_cooc["Regime"] == reg_name][cooc_cols]
+                lines.extend(["**10x10 Gold vs. Predicted Emotion Co-occurrence Matrix**:", "", _df_to_md(sub_cooc, floatfmt=".0f"), ""])
 
-    # 2. Table III: Emotion Semiotic Subsets
-    if df_subsets is not None and not df_subsets.empty:
-        emo_sub = df_subsets[df_subsets["Task"].astype(str).str.contains("Emotion", case=False, na=False, regex=False)]
-        r_base = find_row(emo_sub, "Model Setting", "Base")
-        r_orac = find_row(emo_sub, "Model Setting", "Oracle")
-        if r_base is not None and r_orac is not None:
-            tab_emo_sub = f"""% Table III: Emotion Micro F1 across Semiotic Subsets
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Emotion Micro F1 across Semiotic Subsets}}
-\\label{{tab:subset_emotion}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c c}}
-\\hline
-\\textbf{{Model Setting}} & \\textbf{{ADD ($N=68$)}} & \\textbf{{PAR ($N=23$)}} & \\textbf{{DIV ($N=38$)}} \\\\
-\\hline
-Dual-Encoder (No correlations) & {float(r_base['ADD']):.2f} & {float(r_base['PAR']):.2f} & {float(r_base['DIV']):.2f} \\\\
-Dual-Encoder (With correlations) & \\textbf{{{float(r_orac['ADD']):.2f}}} & \\textbf{{{float(r_orac['PAR']):.2f}}} & \\textbf{{{float(r_orac['DIV']):.2f}}} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-            latex_snippets.append(tab_emo_sub)
+    df_t1_mm = _read_csv_if_exists(res_dir / "multimodal_emotion_baselines.csv")
+    df_t1_sub = _read_csv_if_exists(res_dir / "multimodal_emotion_subsets.csv")
+    df_t1_mm_rep = _read_csv_if_exists(res_dir / "multimodal_emotion_classification_reports.csv")
+    df_t1_mm_cm2 = _read_csv_if_exists(res_dir / "multimodal_emotion_confusion_matrices_2x2.csv")
+    df_t1_mm_cooc = _read_csv_if_exists(res_dir / "multimodal_emotion_cooccurrence_matrices_10x10.csv")
 
-    # 3. Table IV: Irony Baselines
-    i_t_no_mac, i_t_no_mic = get_base_vals("Irony", "Textual test set (No")
-    i_t_co_mac, i_t_co_mic = get_base_vals("Irony", "Textual test set (With")
-    i_m_no_mac, i_m_no_mic = get_base_vals("Irony", "without images, No corr")
-    i_m_im_mac, i_m_im_mic = get_base_vals("Irony", "with images (Dual-Encoder, No corr")
-    i_m_co_mac, i_m_co_mic = get_base_vals("Irony", "without images, With corr")
-    i_m_du_mac, i_m_du_mic = get_base_vals("Irony", "with images and correlations")
+    if df_t1_mm is not None and not df_t1_mm.empty:
+        lines.extend([
+            "---",
+            "",
+            "### 1.2 Multimodal Emotion Benchmark (`mm_test`, $N=129$ — All 6 Cases $\\times$ `raw` vs `std`)",
+            "",
+            "#### Master Comparison Table (All Multimodal Emotion Runs)",
+            _df_to_md(df_t1_mm[["Case", "Regime", "Train Relation", "Eval Relation", "Model", "Scaling", "Macro F1", "Micro F1", "Weighted F1", "Subset Acc."]]),
+            "",
+            "#### Per-Emotion F1 Breakdown (All Multimodal Emotion Runs)",
+            _df_to_md(df_t1_mm[["Case", "Regime", "Model", "Scaling"] + [f"{c} F1" for c in EMOTION_LABELS if f"{c} F1" in df_t1_mm.columns]]),
+            "",
+        ])
+        if df_t1_sub is not None and not df_t1_sub.empty:
+            lines.extend([
+                "#### Semiotic Subsets Breakdown (`ADD`, `PAR`, `DIV` on `mm_test`, $N=129$)",
+                _df_to_md(df_t1_sub[["Case", "Regime", "Model", "Scaling", "ADD (N=68)", "PAR (N=23)", "DIV (N=38)", "ADD Macro F1", "PAR Macro F1", "DIV Macro F1", "Macro F1", "Micro F1"]]),
+                "",
+            ])
 
-    tab_irony = f"""% Table IV: Irony Detection Baselines
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Discriminative Baseline Performance in Irony Detection}}
-\\label{{tab:irony_baselines}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c}}
-\\hline
-\\textbf{{Configuration}} & \\textbf{{Macro F1}} & \\textbf{{Micro F1 / Acc.}} \\\\
-\\hline
-\\multicolumn{{3}}{{l}}{{\\textit{{Textual Test Set ($N=405$)}}}} \\\\
-Textual test set (No correlations) & {i_t_no_mac:.3f} & {i_t_no_mic:.3f} \\\\
-Textual test set (With correlations) & \\textbf{{{i_t_co_mac:.3f}}} & \\textbf{{{i_t_co_mic:.3f}}} \\\\
-\\hline
-\\multicolumn{{3}}{{l}}{{\\textit{{Multimodal Test Set ($N=129$)}}}} \\\\
-Multimodal test set (without images, No corr., std) & {i_m_no_mac:.3f} & {i_m_no_mic:.3f} \\\\
-Multimodal test set with images (Dual-Encoder, No corr., std) & {i_m_im_mac:.3f} & \\textbf{{{i_m_im_mic:.3f}}} \\\\
-Multimodal test set (without images, With corr., std) & {i_m_co_mac:.3f} & {i_m_co_mic:.3f} \\\\
-Multimodal test set with images and correlations (Dual-Encoder, std) & \\textbf{{{i_m_du_mac:.3f}}} & \\textbf{{{i_m_du_mic:.3f}}} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-    latex_snippets.append(tab_irony)
+        lines.extend(["### 1.3 Multimodal Emotion Detailed Reports by Case (`Case 1` – `Case 6`)", ""])
+        for case_id, case_group in df_t1_mm.groupby("Case", sort=False):
+            reg_label = case_group.iloc[0]["Regime"]
+            ckpt_name = case_group.iloc[0]["Checkpoint"]
+            prompt_name = case_group.iloc[0]["Prompting"]
+            lines.extend([
+                f"#### {case_id}: {reg_label} (Checkpoint: `{ckpt_name}`, Eval Prompt: `{prompt_name}`)",
+                "",
+                _df_to_md(case_group[["Model", "Scaling", "Macro F1", "Micro F1", "Weighted F1", "Subset Acc."]]),
+                "",
+            ])
+            for _, run_row in case_group.iterrows():
+                m_name = run_row["Model"]
+                sc = run_row["Scaling"]
+                lines.append(f"##### Run: `{case_id}` | `{m_name}` | Scaling: `{sc}`")
+                if df_t1_mm_rep is not None:
+                    mask = (df_t1_mm_rep["Case"] == case_id) & (df_t1_mm_rep["Model"] == m_name) & (df_t1_mm_rep["Scaling"] == sc)
+                    lines.extend(["**Classification Report**:", "", _df_to_md(df_t1_mm_rep[mask][["Label", "Precision", "Recall", "F1-Score", "Support"]]), ""])
+                if df_t1_mm_cm2 is not None:
+                    mask = (df_t1_mm_cm2["Case"] == case_id) & (df_t1_mm_cm2["Model"] == m_name) & (df_t1_mm_cm2["Scaling"] == sc)
+                    lines.extend(["**Per-Label 2x2 Confusion Matrices (`TN, FP, FN, TP`)**:", "", _df_to_md(df_t1_mm_cm2[mask][["Label", "TN", "FP", "FN", "TP", "Precision", "Recall", "F1-Score", "Support"]]), ""])
+                if df_t1_mm_cooc is not None:
+                    mask = (df_t1_mm_cooc["Case"] == case_id) & (df_t1_mm_cooc["Model"] == m_name) & (df_t1_mm_cooc["Scaling"] == sc)
+                    cooc_cols = ["Gold_Emotion", "Gold_Support"] + [f"Pred_{c}" for c in EMOTION_LABELS] + ["Pred_None"]
+                    lines.extend(["**10x10 Gold vs. Predicted Emotion Co-occurrence Matrix**:", "", _df_to_md(df_t1_mm_cooc[mask][cooc_cols], floatfmt=".0f"), ""])
 
-    # 4. Table VI: Irony Semiotic Subsets
-    if df_subsets is not None and not df_subsets.empty:
-        iro_sub = df_subsets[df_subsets["Task"].astype(str).str.contains("Irony", case=False, na=False, regex=False)]
-        r_base_i = find_row(iro_sub, "Model Setting", "Base")
-        r_orac_i = find_row(iro_sub, "Model Setting", "Oracle")
-        if r_base_i is not None and r_orac_i is not None:
-            tab_iro_sub = f"""% Table VI: Irony Accuracy across Semiotic Subsets
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Irony Accuracy across Semiotic Subsets}}
-\\label{{tab:subset_irony}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c c}}
-\\hline
-\\textbf{{Model Setting}} & \\textbf{{ADD ($N=68$)}} & \\textbf{{PAR ($N=23$)}} & \\textbf{{DIV ($N=38$)}} \\\\
-\\hline
-Dual-Encoder (No correlations, std) & {float(r_base_i['ADD']):.2f} & \\textbf{{{float(r_base_i['PAR']):.2f}}} & \\textbf{{{float(r_base_i['DIV']):.2f}}} \\\\
-Dual-Encoder (With correlations, std) & \\textbf{{{float(r_orac_i['ADD']):.2f}}} & {float(r_orac_i['PAR']):.2f} & {float(r_orac_i['DIV']):.2f} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-            latex_snippets.append(tab_iro_sub)
+    # ------------------------------------------------------------------------------------
+    # TASK 2: IRONY & SARCASM DETECTION
+    # ------------------------------------------------------------------------------------
+    lines.extend([
+        "---",
+        "",
+        "## 2. Task 2: Irony & Sarcasm Detection (3-Class Single-Label, `UmBERTo` + `ViT-224`)",
+        "",
+        "- **Text Encoder**: `Musixmatch/umberto-commoncrawl-cased-v1` (`UmBERTo`, 768-d `[CLS]`)",
+        "- **Vision Encoder**: `google/vit-base-patch16-224` (`ViT-Base-224`, frozen 768-d `[CLS]`)",
+        "- **Multimodal Head (`mm_test`, $N=129$)**: `SGDClassifier(loss='squared_hinge', penalty='l2', class_weight='balanced', random_state=42)`",
+        "",
+    ])
 
-    # 5. Table VII: Semiotic Relation Baselines
-    r_m_no_mac, r_m_no_mic = get_base_vals("Semiotic Relation", "without images, No corr")
-    r_m_im_mac, r_m_im_mic = get_base_vals("Semiotic Relation", "with images (Dual-Encoder, No corr")
-    r_m_co_mac, r_m_co_mic = get_base_vals("Semiotic Relation", "without images, With corr")
-    r_m_du_mac, r_m_du_mic = get_base_vals("Semiotic Relation", "with images and correlations")
+    df_t2_txt = _read_csv_if_exists(res_dir / "train_textual_irony_summary.csv")
+    df_t2_txt_rep = _read_csv_if_exists(res_dir / "textual_irony_classification_reports.csv")
+    df_t2_txt_cm = _read_csv_if_exists(res_dir / "textual_irony_confusion_matrices.csv")
 
-    tab_relation = f"""% Table VII: Semiotic Relation Baselines
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Discriminative Baseline Performance in Semiotic Relation Detection}}
-\\label{{tab:relation_baselines}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c}}
-\\hline
-\\textbf{{Configuration}} & \\textbf{{Macro F1}} & \\textbf{{Micro F1 / Acc.}} \\\\
-\\hline
-\\multicolumn{{3}}{{l}}{{\\textit{{Multimodal Test Set ($N=129$)}}}} \\\\
-Multimodal test set (without images, Stage A Raw) & {r_m_no_mac:.3f} & {r_m_no_mic:.3f} \\\\
-Multimodal test set with images (Dual-Encoder, Stage A Raw) & {r_m_im_mac:.3f} & \\textbf{{{r_m_im_mic:.3f}}} \\\\
-Multimodal test set (without images, Stage B Oracle) & {r_m_co_mac:.3f} & {r_m_co_mic:.3f} \\\\
-Multimodal test set with images and correlations (Dual-Encoder) & \\textbf{{{r_m_du_mac:.3f}}} & {r_m_du_mic:.3f} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-    latex_snippets.append(tab_relation)
+    if df_t2_txt is not None:
+        lines.extend([
+            "### 2.1 Textual Irony Benchmark (`me_test`, $N=405$)",
+            "",
+            _df_to_md(df_t2_txt[["Regime", "Checkpoint", "Prompt", "N Test", "Macro F1", "Micro F1 (= Acc)", "Weighted F1", "None F1", "Ironia F1", "Sarcasmo F1"]]),
+            "",
+        ])
+        for _, r in df_t2_txt.iterrows():
+            reg_name = r["Regime"]
+            lines.append(f"#### Textual Case: `{reg_name}` (`{r['Checkpoint']}`)")
+            if df_t2_txt_rep is not None:
+                sub_rep = df_t2_txt_rep[df_t2_txt_rep["Regime"] == reg_name][["Label", "Precision", "Recall", "F1-Score", "Support"]]
+                lines.extend(["**Classification Report**:", "", _df_to_md(sub_rep), ""])
+            if df_t2_txt_cm is not None:
+                cm_cols = ["True_Label"] + [f"Pred_{c}" for c in IRONY_LABELS] + ["Total_True"]
+                sub_cm = df_t2_txt_cm[df_t2_txt_cm["Regime"] == reg_name][cm_cols]
+                lines.extend(["**3x3 Confusion Matrix**:", "", _df_to_md(sub_cm, floatfmt=".0f"), ""])
 
-    # 6. Table IX: Relation Target Classes Breakdown
-    if df_rel_cls is not None and not df_rel_cls.empty:
-        r_raw_cls = find_row(df_rel_cls, "Model Setting", "Stage A Raw")
-        r_ora_cls = find_row(df_rel_cls, "Model Setting", "Stage B Oracle")
-        if r_raw_cls is not None and r_ora_cls is not None:
-            tab_rel_cls = f"""% Table IX: Semiotic Relation Target Classes Breakdown
-\\begin{{table}}[!t]
-\\centering
-\\caption{{Semiotic Relation Target Classes F1 Breakdown}}
-\\label{{tab:relation_classes}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l c c c c}}
-\\hline
-\\textbf{{Model Setting}} & \\textbf{{Additiva ($n=68$)}} & \\textbf{{Parallela ($n=23$)}} & \\textbf{{Divergente ($n=38$)}} & \\textbf{{Macro F1}} \\\\
-\\hline
-Dual-Encoder (Stage A Raw) & \\textbf{{{float(r_raw_cls['ADD (n=68)']):.3f}}} & {float(r_raw_cls['PAR (n=23)']):.3f} & \\textbf{{{float(r_raw_cls['DIV (n=38)']):.3f}}} & {float(r_raw_cls['Macro F1']):.3f} \\\\
-Dual-Encoder (Stage B Oracle) & {float(r_ora_cls['ADD (n=68)']):.3f} & \\textbf{{{float(r_ora_cls['PAR (n=23)']):.3f}}} & {float(r_ora_cls['DIV (n=38)']):.3f} & \\textbf{{{float(r_ora_cls['Macro F1']):.3f}}} \\\\
-\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-            latex_snippets.append(tab_rel_cls)
+    df_t2_mm = _read_csv_if_exists(res_dir / "multimodal_irony_baselines.csv")
+    df_t2_sub = _read_csv_if_exists(res_dir / "multimodal_irony_subsets.csv")
+    df_t2_mm_rep = _read_csv_if_exists(res_dir / "multimodal_irony_classification_reports.csv")
+    df_t2_mm_cm = _read_csv_if_exists(res_dir / "multimodal_irony_confusion_matrices.csv")
 
-    # 7. Unconfounded Ablation Matrix Table
-    if df_ablation is not None and not df_ablation.empty:
-        tab_ablation = f"""% Table II: The Unconfounded Ablation Matrix
-\\begin{{table}}[!t]
-\\centering
-\\caption{{The Unconfounded Correlation Ablation Matrix}}
-\\label{{tab:unconfounded_ablation}}
-\\small
-\\renewcommand{{\\arraystretch}}{{1.05}}
-\\begin{{tabular}}{{l l c c c c}}
-\\hline
-\\textbf{{Task}} & \\textbf{{Metric}} & \\textbf{{Step 1 Base (Raw)}} & \\textbf{{Step 2 Raw Ablation}} & \\textbf{{Step 2 Oracle}} & \\textbf{{$\\Delta$ Correlation}} \\\\
-\\hline
-"""
-        r_emo_abl = find_row(df_ablation, "Task", "Emotion")
-        if r_emo_abl is not None:
-            tab_ablation += f"Emotion Detection & Micro / Macro & {r_emo_abl['Step 1 Base (Raw)']} & {r_emo_abl['Step 2 Raw Ablation']} & {r_emo_abl['Step 2 Oracle (With Corr)']} & {r_emo_abl['Delta (Oracle vs Step 2 Raw)']} \\\\\n"
-        r_iro_abl = find_row(df_ablation, "Task", "Irony")
-        if r_iro_abl is not None:
-            tab_ablation += f"Irony Detection & Acc / Macro & {r_iro_abl['Step 1 Base (Raw)']} & {r_iro_abl['Step 2 Raw Ablation']} & {r_iro_abl['Step 2 Oracle (With Corr)']} & {r_iro_abl['Delta (Oracle vs Step 2 Raw)']} \\\\\n"
-        tab_ablation += f"""\\hline
-\\end{{tabular}}
-\\end{{table}}
-"""
-        latex_snippets.append(tab_ablation)
+    if df_t2_mm is not None and not df_t2_mm.empty:
+        lines.extend([
+            "---",
+            "",
+            "### 2.2 Multimodal Irony Benchmark (`mm_test`, $N=129$ — All 6 Cases $\\times$ `raw` vs `std`)",
+            "",
+            "#### Master Comparison Table (All Multimodal Irony Runs)",
+            _df_to_md(df_t2_mm[["Case", "Regime", "Train Relation", "Eval Relation", "Model", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Weighted F1", "None F1", "Ironia F1", "Sarcasmo F1"]]),
+            "",
+        ])
+        if df_t2_sub is not None and not df_t2_sub.empty:
+            lines.extend([
+                "#### Semiotic Subsets Breakdown (`ADD`, `PAR`, `DIV` Accuracy / Micro F1 on `mm_test`, $N=129$)",
+                _df_to_md(df_t2_sub[["Case", "Regime", "Model", "Scaling", "ADD (N=68)", "PAR (N=23)", "DIV (N=38)", "Macro F1", "Micro F1 (= Acc.)"]]),
+                "",
+            ])
 
-    return "\n".join(latex_snippets)
+        lines.extend(["### 2.3 Multimodal Irony Detailed Reports by Case (`Case 1` – `Case 6`)", ""])
+        for case_id, case_group in df_t2_mm.groupby("Case", sort=False):
+            reg_label = case_group.iloc[0]["Regime"]
+            ckpt_name = case_group.iloc[0]["Checkpoint"]
+            prompt_name = case_group.iloc[0]["Prompting"]
+            lines.extend([
+                f"#### {case_id}: {reg_label} (Checkpoint: `{ckpt_name}`, Eval Prompt: `{prompt_name}`)",
+                "",
+                _df_to_md(case_group[["Model", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Weighted F1", "None F1", "Ironia F1", "Sarcasmo F1"]]),
+                "",
+            ])
+            for _, run_row in case_group.iterrows():
+                m_name = run_row["Model"]
+                sc = run_row["Scaling"]
+                lines.append(f"##### Run: `{case_id}` | `{m_name}` | Scaling: `{sc}`")
+                if df_t2_mm_rep is not None:
+                    mask = (df_t2_mm_rep["Case"] == case_id) & (df_t2_mm_rep["Model"] == m_name) & (df_t2_mm_rep["Scaling"] == sc)
+                    lines.extend(["**Classification Report**:", "", _df_to_md(df_t2_mm_rep[mask][["Label", "Precision", "Recall", "F1-Score", "Support"]]), ""])
+                if df_t2_mm_cm is not None:
+                    mask = (df_t2_mm_cm["Case"] == case_id) & (df_t2_mm_cm["Model"] == m_name) & (df_t2_mm_cm["Scaling"] == sc)
+                    cm_cols = ["True_Label"] + [f"Pred_{c}" for c in IRONY_LABELS] + ["Total_True"]
+                    lines.extend(["**3x3 Confusion Matrix**:", "", _df_to_md(df_t2_mm_cm[mask][cm_cols], floatfmt=".0f"), ""])
+
+    # ------------------------------------------------------------------------------------
+    # TASK 3: SEMIOTIC RELATION CLASSIFICATION
+    # ------------------------------------------------------------------------------------
+    lines.extend([
+        "---",
+        "",
+        "## 3. Task 3: Semiotic Relation Classification (3-Class Single-Label, `UmBERTo` + `ViT-224`)",
+        "",
+        "- **Text Encoder**: `Musixmatch/umberto-commoncrawl-cased-v1` (`UmBERTo`, 768-d `[CLS]`)",
+        "- **Vision Encoder**: `google/vit-base-patch16-224` (`ViT-Base-224`, frozen 768-d `[CLS]`)",
+        "- **Multimodal Head (`mm_test`, $N=129$)**: `SGDClassifier(loss='squared_hinge', penalty='l2', class_weight='balanced', random_state=42)`",
+        "",
+    ])
+
+    df_t3_txt = _read_csv_if_exists(res_dir / "train_textual_relation_summary.csv")
+    df_t3_txt_rep = _read_csv_if_exists(res_dir / "textual_relation_classification_reports.csv")
+    df_t3_txt_cm = _read_csv_if_exists(res_dir / "textual_relation_confusion_matrices.csv")
+
+    if df_t3_txt is not None:
+        lines.extend([
+            "### 3.1 Textual Encoder Training Benchmark (`mm_test`, $N=129$)",
+            "",
+            _df_to_md(df_t3_txt[["Regime", "Checkpoint", "Prompt", "N Test", "Macro F1", "Micro F1 (= Acc)", "Weighted F1", "Additiva F1", "Divergente F1", "Parallela F1"]]),
+            "",
+        ])
+        for _, r in df_t3_txt.iterrows():
+            reg_name = r["Regime"]
+            lines.append(f"#### Textual Encoder Stage: `{reg_name}` (`{r['Checkpoint']}`)")
+            if df_t3_txt_rep is not None:
+                sub_rep = df_t3_txt_rep[df_t3_txt_rep["Regime"] == reg_name][["Label", "Precision", "Recall", "F1-Score", "Support"]]
+                lines.extend(["**Classification Report**:", "", _df_to_md(sub_rep), ""])
+            if df_t3_txt_cm is not None:
+                cm_cols = ["True_Label"] + [f"Pred_{c}" for c in RELATION_LABELS] + ["Total_True"]
+                sub_cm = df_t3_txt_cm[df_t3_txt_cm["Regime"] == reg_name][cm_cols]
+                lines.extend(["**3x3 Confusion Matrix**:", "", _df_to_md(sub_cm, floatfmt=".0f"), ""])
+
+    df_t3_mm = _read_csv_if_exists(res_dir / "multimodal_relation_baselines.csv")
+    df_t3_cls = _read_csv_if_exists(res_dir / "multimodal_relation_target_classes.csv")
+    df_t3_mm_rep = _read_csv_if_exists(res_dir / "multimodal_relation_classification_reports.csv")
+    df_t3_mm_cm = _read_csv_if_exists(res_dir / "multimodal_relation_confusion_matrices.csv")
+
+    if df_t3_mm is not None and not df_t3_mm.empty:
+        lines.extend([
+            "---",
+            "",
+            "### 3.2 Multimodal Semiotic Relation Benchmark (`mm_test`, $N=129$ — `Stage A Raw` vs `Stage B Oracle` $\\times$ `raw` vs `std`)",
+            "",
+            "#### Master Comparison Table (All Multimodal Relation Runs)",
+            _df_to_md(df_t3_mm[["Case", "Regime", "Prompting", "Model", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Weighted F1", "Additiva F1", "Divergente F1", "Parallela F1"]]),
+            "",
+        ])
+        if df_t3_cls is not None and not df_t3_cls.empty:
+            lines.extend([
+                "#### Target Classes Per-Class F1 Breakdown (`ADD`, `PAR`, `DIV` on `mm_test`, $N=129$)",
+                _df_to_md(df_t3_cls[["Case", "Regime", "Model", "Scaling", "ADD (n=68)", "PAR (n=23)", "DIV (n=38)", "Macro F1", "Micro F1 (= Acc.)"]]),
+                "",
+            ])
+
+        lines.extend(["### 3.3 Multimodal Semiotic Relation Detailed Reports by Case (`Case 1` & `Case 2`)", ""])
+        for case_id, case_group in df_t3_mm.groupby("Case", sort=False):
+            reg_label = case_group.iloc[0]["Regime"]
+            ckpt_name = case_group.iloc[0]["Checkpoint"]
+            prompt_name = case_group.iloc[0]["Prompting"]
+            lines.extend([
+                f"#### {case_id}: {reg_label} (Checkpoint: `{ckpt_name}`, Eval Prompt: `{prompt_name}`)",
+                "",
+                _df_to_md(case_group[["Model", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Weighted F1", "Additiva F1", "Divergente F1", "Parallela F1"]]),
+                "",
+            ])
+            for _, run_row in case_group.iterrows():
+                m_name = run_row["Model"]
+                sc = run_row["Scaling"]
+                lines.append(f"##### Run: `{case_id}` | `{m_name}` | Scaling: `{sc}`")
+                if df_t3_mm_rep is not None:
+                    mask = (df_t3_mm_rep["Case"] == case_id) & (df_t3_mm_rep["Model"] == m_name) & (df_t3_mm_rep["Scaling"] == sc)
+                    lines.extend(["**Classification Report**:", "", _df_to_md(df_t3_mm_rep[mask][["Label", "Precision", "Recall", "F1-Score", "Support"]]), ""])
+                if df_t3_mm_cm is not None:
+                    mask = (df_t3_mm_cm["Case"] == case_id) & (df_t3_mm_cm["Model"] == m_name) & (df_t3_mm_cm["Scaling"] == sc)
+                    cm_cols = ["True_Label"] + [f"Pred_{c}" for c in RELATION_LABELS] + ["Total_True"]
+                    lines.extend(["**3x3 Confusion Matrix**:", "", _df_to_md(df_t3_mm_cm[mask][cm_cols], floatfmt=".0f"), ""])
+
+    out_file = res_dir / "ALL_EXPERIMENTS_COMPLETE_REPORT.md"
+    out_file.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Saved exhaustive complete report: {out_file}")
 
 
+# ========================================================================================
+# 2. Streamlined Paper Tables & LaTeX Builder (Unified 'raw' Protocol + Step 1 & Step 2 Raw)
+# ========================================================================================
 def generate_paper_artifacts(res_dir: Path):
     print("\n" + "=" * 80)
-    print("GENERATING STREAMLINED PAPER TABLES & ARTIFACTS...")
+    print("GENERATING PAPER TABLES & COMPLETE EXPERIMENTAL REPORTS...")
     print("=" * 80)
 
-    # 1. Load Textual Summaries
-    df_txt_emo = pd.read_csv(res_dir / "train_textual_emotion_summary.csv") if (res_dir / "train_textual_emotion_summary.csv").exists() else None
-    df_txt_iro = pd.read_csv(res_dir / "train_textual_irony_summary.csv") if (res_dir / "train_textual_irony_summary.csv").exists() else None
-    df_txt_rel = pd.read_csv(res_dir / "train_textual_relation_summary.csv") if (res_dir / "train_textual_relation_summary.csv").exists() else None
+    # First build the exhaustive ALL_EXPERIMENTS_COMPLETE_REPORT.md
+    generate_all_experiments_complete_report(res_dir)
 
-    # 2. Load Multimodal Summaries
-    df_mm_emo_base = pd.read_csv(res_dir / "multimodal_emotion_baselines.csv") if (res_dir / "multimodal_emotion_baselines.csv").exists() else None
-    df_mm_emo_sub = pd.read_csv(res_dir / "multimodal_emotion_subsets.csv") if (res_dir / "multimodal_emotion_subsets.csv").exists() else None
+    # Load summaries for streamlined paper tables (unified 'raw' protocol)
+    df_txt_emo = _read_csv_if_exists(res_dir / "train_textual_emotion_summary.csv")
+    df_txt_iro = _read_csv_if_exists(res_dir / "train_textual_irony_summary.csv")
+    df_mm_emo_base = _read_csv_if_exists(res_dir / "multimodal_emotion_baselines.csv")
+    df_mm_emo_sub = _read_csv_if_exists(res_dir / "multimodal_emotion_subsets.csv")
+    df_mm_iro_base = _read_csv_if_exists(res_dir / "multimodal_irony_baselines.csv")
+    df_mm_iro_sub = _read_csv_if_exists(res_dir / "multimodal_irony_subsets.csv")
+    df_mm_rel_base = _read_csv_if_exists(res_dir / "multimodal_relation_baselines.csv")
+    df_mm_rel_cls = _read_csv_if_exists(res_dir / "multimodal_relation_target_classes.csv")
 
-    df_mm_iro_base = pd.read_csv(res_dir / "multimodal_irony_baselines.csv") if (res_dir / "multimodal_irony_baselines.csv").exists() else None
-    df_mm_iro_sub = pd.read_csv(res_dir / "multimodal_irony_subsets.csv") if (res_dir / "multimodal_irony_subsets.csv").exists() else None
-
-    df_mm_rel_base = pd.read_csv(res_dir / "multimodal_relation_baselines.csv") if (res_dir / "multimodal_relation_baselines.csv").exists() else None
-    df_mm_rel_cls = pd.read_csv(res_dir / "multimodal_relation_target_classes.csv") if (res_dir / "multimodal_relation_target_classes.csv").exists() else None
-
-    # Build Unified Baselines Table
     baselines_rows = []
 
-    # Table I: Emotion
-    if df_txt_emo is not None and df_mm_emo_base is not None:
-        r_t_no = find_row(df_txt_emo, "Regime", "Step 1 Base")
-        r_t_co = find_row(df_txt_emo, "Regime", "Step 2 Oracle")
-        r_m_no = find_row(df_mm_emo_base, "Configuration", "without images, Step 1 Base")
-        r_m_im = find_row(df_mm_emo_base, "Configuration", "with images (Dual-Encoder, Step 1 Base")
-        r_m_co = find_row(df_mm_emo_base, "Configuration", "without images, Step 2 Oracle")
-        r_m_du = find_row(df_mm_emo_base, "Configuration", "with images (Dual-Encoder, Step 2 Oracle")
+    # Table I: Emotion (Textual + Multimodal 'raw' across Step 1 Base, Step 2 Raw, Step 2 Oracle)
+    if df_txt_emo is not None:
+        for _, r in df_txt_emo.iterrows():
+            baselines_rows.append({
+                "Task": "Emotion Detection",
+                "Section": "Textual Test Set (me_test, N=405)",
+                "Configuration": f"Textual test set ({r['Regime']})",
+                "Prompting": r["Prompt"],
+                "Scaling": "—",
+                "Macro F1": r["Macro F1"],
+                "Micro F1 / Acc": r["Micro F1"],
+            })
+    if df_mm_emo_base is not None and not df_mm_emo_base.empty:
+        sub_raw = df_mm_emo_base[df_mm_emo_base["Scaling"] == "raw"]
+        for _, r in sub_raw.iterrows():
+            baselines_rows.append({
+                "Task": "Emotion Detection",
+                "Section": "Multimodal Test Set (mm_test, N=129)",
+                "Configuration": r["Configuration"],
+                "Prompting": r["Prompting"],
+                "Scaling": r["Scaling"],
+                "Macro F1": r["Macro F1"],
+                "Micro F1 / Acc": r["Micro F1"],
+            })
 
-        if r_t_no is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Textual Test Set (me_test, N=405)", "Configuration": "Textual test set (No correlations)", "Macro F1": r_t_no["Macro F1"], "Micro F1 / Acc": r_t_no["Micro F1"]})
-        if r_t_co is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Textual Test Set (me_test, N=405)", "Configuration": "Textual test set (With correlations)", "Macro F1": r_t_co["Macro F1"], "Micro F1 / Acc": r_t_co["Micro F1"]})
-        if r_m_no is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, No corr.)", "Macro F1": r_m_no["Macro F1"], "Micro F1 / Acc": r_m_no["Micro F1"]})
-        if r_m_im is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images (Dual-Encoder, No corr.)", "Macro F1": r_m_im["Macro F1"], "Micro F1 / Acc": r_m_im["Micro F1"]})
-        if r_m_co is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, With corr.)", "Macro F1": r_m_co["Macro F1"], "Micro F1 / Acc": r_m_co["Micro F1"]})
-        if r_m_du is not None:
-            baselines_rows.append({"Task": "Emotion Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images and correlations (Dual-Encoder)", "Macro F1": r_m_du["Macro F1"], "Micro F1 / Acc": r_m_du["Micro F1"]})
+    # Table IV: Irony (Textual + Multimodal 'raw' across Step 1 Base, Step 2 Raw, Step 2 Oracle)
+    if df_txt_iro is not None:
+        for _, r in df_txt_iro.iterrows():
+            baselines_rows.append({
+                "Task": "Irony Detection",
+                "Section": "Textual Test Set (me_test, N=405)",
+                "Configuration": f"Textual test set ({r['Regime']})",
+                "Prompting": r["Prompt"],
+                "Scaling": "—",
+                "Macro F1": r["Macro F1"],
+                "Micro F1 / Acc": r["Micro F1 (= Acc)"],
+            })
+    if df_mm_iro_base is not None and not df_mm_iro_base.empty:
+        sub_raw = df_mm_iro_base[df_mm_iro_base["Scaling"] == "raw"]
+        for _, r in sub_raw.iterrows():
+            baselines_rows.append({
+                "Task": "Irony Detection",
+                "Section": "Multimodal Test Set (mm_test, N=129)",
+                "Configuration": r["Configuration"],
+                "Prompting": r["Prompting"],
+                "Scaling": r["Scaling"],
+                "Macro F1": r["Macro F1"],
+                "Micro F1 / Acc": r["Micro F1 (= Acc.)"],
+            })
 
-    # Table IV: Irony
-    if df_txt_iro is not None and df_mm_iro_base is not None:
-        r_t_no_i = find_row(df_txt_iro, "Regime", "Step 1 Base")
-        r_t_co_i = find_row(df_txt_iro, "Regime", "Step 2 Oracle")
-        r_m_no_i = find_row(df_mm_iro_base, "Configuration", "without images, Step 1 Base")
-        r_m_im_i = find_row(df_mm_iro_base, "Configuration", "with images (Dual-Encoder, Step 1 Base")
-        r_m_co_i = find_row(df_mm_iro_base, "Configuration", "without images, Step 2 Oracle")
-        r_m_du_i = find_row(df_mm_iro_base, "Configuration", "with images (Dual-Encoder, Step 2 Oracle")
-
-        if r_t_no_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Textual Test Set (me_test, N=405)", "Configuration": "Textual test set (No correlations)", "Macro F1": r_t_no_i["Macro F1"], "Micro F1 / Acc": r_t_no_i["Micro F1 (= Acc)"]})
-        if r_t_co_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Textual Test Set (me_test, N=405)", "Configuration": "Textual test set (With correlations)", "Macro F1": r_t_co_i["Macro F1"], "Micro F1 / Acc": r_t_co_i["Micro F1 (= Acc)"]})
-        if r_m_no_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, No corr., std)", "Macro F1": r_m_no_i["Macro F1"], "Micro F1 / Acc": r_m_no_i["Micro F1 (= Acc.)"]})
-        if r_m_im_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images (Dual-Encoder, No corr., std)", "Macro F1": r_m_im_i["Macro F1"], "Micro F1 / Acc": r_m_im_i["Micro F1 (= Acc.)"]})
-        if r_m_co_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, With corr., std)", "Macro F1": r_m_co_i["Macro F1"], "Micro F1 / Acc": r_m_co_i["Micro F1 (= Acc.)"]})
-        if r_m_du_i is not None:
-            baselines_rows.append({"Task": "Irony Detection", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images and correlations (Dual-Encoder, std)", "Macro F1": r_m_du_i["Macro F1"], "Micro F1 / Acc": r_m_du_i["Micro F1 (= Acc.)"]})
-
-    # Table VII: Semiotic Relation
-    if df_mm_rel_base is not None:
-        r_m_no_r = find_row(df_mm_rel_base, "Configuration", "without images, Stage A Raw")
-        r_m_im_r = find_row(df_mm_rel_base, "Configuration", "with images (Dual-Encoder, Stage A Raw")
-        r_m_co_r = find_row(df_mm_rel_base, "Configuration", "without images, Stage B Oracle")
-        r_m_du_r = find_row(df_mm_rel_base, "Configuration", "with images (Dual-Encoder, Stage B Oracle")
-
-        if r_m_no_r is not None:
-            baselines_rows.append({"Task": "Semiotic Relation", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, No corr.)", "Macro F1": r_m_no_r["Macro F1"], "Micro F1 / Acc": r_m_no_r["Micro F1 (= Acc.)"]})
-        if r_m_im_r is not None:
-            baselines_rows.append({"Task": "Semiotic Relation", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images (Dual-Encoder, No corr.)", "Macro F1": r_m_im_r["Macro F1"], "Micro F1 / Acc": r_m_im_r["Micro F1 (= Acc.)"]})
-        if r_m_co_r is not None:
-            baselines_rows.append({"Task": "Semiotic Relation", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set (without images, With corr.)", "Macro F1": r_m_co_r["Macro F1"], "Micro F1 / Acc": r_m_co_r["Micro F1 (= Acc.)"]})
-        if r_m_du_r is not None:
-            baselines_rows.append({"Task": "Semiotic Relation", "Section": "Multimodal Test Set (mm_test, N=129)", "Configuration": "Multimodal test set with images and correlations (Dual-Encoder)", "Macro F1": r_m_du_r["Macro F1"], "Micro F1 / Acc": r_m_du_r["Micro F1 (= Acc.)"]})
+    # Table VII: Semiotic Relation ('raw')
+    if df_mm_rel_base is not None and not df_mm_rel_base.empty:
+        sub_raw = df_mm_rel_base[df_mm_rel_base["Scaling"] == "raw"]
+        for _, r in sub_raw.iterrows():
+            baselines_rows.append({
+                "Task": "Semiotic Relation",
+                "Section": "Multimodal Test Set (mm_test, N=129)",
+                "Configuration": r["Configuration"],
+                "Prompting": r["Prompting"],
+                "Scaling": r["Scaling"],
+                "Macro F1": r["Macro F1"],
+                "Micro F1 / Acc": r["Micro F1 (= Acc.)"],
+            })
 
     df_baselines_all = pd.DataFrame(baselines_rows)
     df_baselines_all.to_csv(res_dir / "paper_baselines_summary.csv", index=False)
 
-    # Build Unconfounded Ablation Matrix Table
+    # Unconfounded Ablation Matrix Table
     ablation_rows = []
     if df_txt_emo is not None:
         r0 = find_row(df_txt_emo, "Regime", "Step 1 Base")
         r1 = find_row(df_txt_emo, "Regime", "Step 2 Raw")
-        r2 = find_row(df_txt_emo, "Regime", "Step 2 Oracle")
+        r2 = find_row(df_txt_emo, "Regime", "Step 2 Oracle (Train: no rel)")
+        r3 = find_row(df_txt_emo, "Regime", "Step 2 Oracle (Train: +rel)")
         if r0 is not None and r1 is not None and r2 is not None:
-            ablation_rows.append({
-                "Task": "Emotion Detection",
+            row_ab = {
+                "Task": "Emotion Detection (me_test, N=405)",
                 "Step 1 Base (Raw)": f"{r0['Micro F1']:.4f} Micro / {r0['Macro F1']:.4f} Macro",
                 "Step 2 Raw Ablation": f"{r1['Micro F1']:.4f} Micro / {r1['Macro F1']:.4f} Macro",
-                "Step 2 Oracle (With Corr)": f"{r2['Micro F1']:.4f} Micro / {r2['Macro F1']:.4f} Macro",
-                "Delta (Oracle vs Step 2 Raw)": f"+{r2['Micro F1'] - r1['Micro F1']:.4f} Micro / +{r2['Macro F1'] - r1['Macro F1']:.4f} Macro",
-            })
+                "Step 2 Oracle (Train: no rel)": f"{r2['Micro F1']:.4f} Micro / {r2['Macro F1']:.4f} Macro",
+                "Step 2 Oracle (Train: +rel)": f"{r3['Micro F1']:.4f} Micro / {r3['Macro F1']:.4f} Macro" if r3 is not None else "N/A",
+                "Delta (Oracle no-rel vs Step 2 Raw)": f"{r2['Micro F1'] - r1['Micro F1']:+.4f} Micro / {r2['Macro F1'] - r1['Macro F1']:+.4f} Macro",
+            }
+            ablation_rows.append(row_ab)
     if df_txt_iro is not None:
         r0_i = find_row(df_txt_iro, "Regime", "Step 1 Base")
         r1_i = find_row(df_txt_iro, "Regime", "Step 2 Raw")
-        r2_i = find_row(df_txt_iro, "Regime", "Step 2 Oracle")
+        r2_i = find_row(df_txt_iro, "Regime", "Step 2 Oracle (Train: no rel)")
+        r3_i = find_row(df_txt_iro, "Regime", "Step 2 Oracle (Train: +rel)")
         if r0_i is not None and r1_i is not None and r2_i is not None:
-            ablation_rows.append({
-                "Task": "Irony Detection",
+            row_ab_i = {
+                "Task": "Irony Detection (me_test, N=405)",
                 "Step 1 Base (Raw)": f"{r0_i['Micro F1 (= Acc)']:.4f} Acc / {r0_i['Macro F1']:.4f} Macro",
                 "Step 2 Raw Ablation": f"{r1_i['Micro F1 (= Acc)']:.4f} Acc / {r1_i['Macro F1']:.4f} Macro",
-                "Step 2 Oracle (With Corr)": f"{r2_i['Micro F1 (= Acc)']:.4f} Acc / {r2_i['Macro F1']:.4f} Macro",
-                "Delta (Oracle vs Step 2 Raw)": f"+{r2_i['Micro F1 (= Acc)'] - r1_i['Micro F1 (= Acc)']:.4f} Acc / +{r2_i['Macro F1'] - r1_i['Macro F1']:.4f} Macro",
-            })
+                "Step 2 Oracle (Train: no rel)": f"{r2_i['Micro F1 (= Acc)']:.4f} Acc / {r2_i['Macro F1']:.4f} Macro",
+                "Step 2 Oracle (Train: +rel)": f"{r3_i['Micro F1 (= Acc)']:.4f} Acc / {r3_i['Macro F1']:.4f} Macro" if r3_i is not None else "N/A",
+                "Delta (Oracle no-rel vs Step 2 Raw)": f"{r2_i['Micro F1 (= Acc)'] - r1_i['Micro F1 (= Acc)']:+.4f} Acc / {r2_i['Macro F1'] - r1_i['Macro F1']:+.4f} Macro",
+            }
+            ablation_rows.append(row_ab_i)
     df_ablation = pd.DataFrame(ablation_rows)
     df_ablation.to_csv(res_dir / "paper_ablation_matrix.csv", index=False)
 
-    # Build Semiotic Subsets Combined Table
+    # Semiotic Subsets Combined Table (Dual-Encoder 'raw')
     sub_combined = []
-    if df_mm_emo_sub is not None:
-        for _, r in df_mm_emo_sub.iterrows():
-            sub_combined.append({"Task": "Emotion Detection", "Model Setting": r["Model Setting"], "ADD": r["ADD (N=68)"], "PAR": r["PAR (N=23)"], "DIV": r["DIV (N=38)"]})
-    if df_mm_iro_sub is not None:
-        for _, r in df_mm_iro_sub.iterrows():
-            sub_combined.append({"Task": "Irony Detection", "Model Setting": r["Model Setting"], "ADD": r["ADD (N=68)"], "PAR": r["PAR (N=23)"], "DIV": r["DIV (N=38)"]})
+    if df_mm_emo_sub is not None and not df_mm_emo_sub.empty:
+        sub_e = df_mm_emo_sub[(df_mm_emo_sub["Scaling"] == "raw") & df_mm_emo_sub["Model"].astype(str).str.contains("Dual-Encoder", case=False, na=False)]
+        for _, r in sub_e.iterrows():
+            sub_combined.append({
+                "Task": "Emotion Detection (Micro F1)",
+                "Case": r["Case"],
+                "Model Setting": r["Model Setting"],
+                "Prompting": r["Prompting"],
+                "Scaling": r["Scaling"],
+                "ADD (N=68)": r["ADD (N=68)"],
+                "PAR (N=23)": r["PAR (N=23)"],
+                "DIV (N=38)": r["DIV (N=38)"],
+                "Overall Macro F1": r["Macro F1"],
+            })
+    if df_mm_iro_sub is not None and not df_mm_iro_sub.empty:
+        sub_i = df_mm_iro_sub[(df_mm_iro_sub["Scaling"] == "raw") & df_mm_iro_sub["Model"].astype(str).str.contains("Dual-Encoder", case=False, na=False)]
+        for _, r in sub_i.iterrows():
+            sub_combined.append({
+                "Task": "Irony Detection (Accuracy / Micro F1)",
+                "Case": r["Case"],
+                "Model Setting": r["Model Setting"],
+                "Prompting": r["Prompting"],
+                "Scaling": r["Scaling"],
+                "ADD (N=68)": r["ADD (N=68)"],
+                "PAR (N=23)": r["PAR (N=23)"],
+                "DIV (N=38)": r["DIV (N=38)"],
+                "Overall Macro F1": r["Macro F1"],
+            })
     df_subsets_all = pd.DataFrame(sub_combined)
     df_subsets_all.to_csv(res_dir / "paper_subsets_summary.csv", index=False)
 
-    # Save Excel if openpyxl available
+    # Save Excel workbook
     try:
         with pd.ExcelWriter(res_dir / "paper_tables.xlsx") as writer:
-            df_baselines_all.to_excel(writer, sheet_name="Baselines", index=False)
-            df_subsets_all.to_excel(writer, sheet_name="Semiotic_Subsets", index=False)
+            df_baselines_all.to_excel(writer, sheet_name="Baselines_Raw", index=False)
+            df_subsets_all.to_excel(writer, sheet_name="Semiotic_Subsets_Raw", index=False)
             df_ablation.to_excel(writer, sheet_name="Ablation_Matrix", index=False)
-            if df_mm_rel_cls is not None:
-                df_mm_rel_cls.to_excel(writer, sheet_name="Relation_Target_Classes", index=False)
+            if df_mm_emo_base is not None:
+                df_mm_emo_base.to_excel(writer, sheet_name="MM_Emotion_All", index=False)
+            if df_mm_iro_base is not None:
+                df_mm_iro_base.to_excel(writer, sheet_name="MM_Irony_All", index=False)
+            if df_mm_rel_base is not None:
+                df_mm_rel_base.to_excel(writer, sheet_name="MM_Relation_All", index=False)
         print(f"Saved Excel workbook: {res_dir / 'paper_tables.xlsx'}")
     except Exception as e:
         print(f"Excel export skipped: {e}")
 
-    # Generate Quick Markdown Tables Dump
-    md_content = f"""# MultiEMiT: Streamlined Publication Tables Summary
+    # Save Streamlined Markdown Tables (paper_summary_tables.md & PAPER_TABLES.md)
+    df_rel_raw_cls = None
+    if df_mm_rel_cls is not None and not df_mm_rel_cls.empty:
+        df_rel_raw_cls = df_mm_rel_cls[df_mm_rel_cls["Scaling"] == "raw"]
 
-> For the comprehensive technical specification, pipelines, and prompt mechanics, see `PAPER_TABLES.md`.
+    md_summary = f"""# MultiEMiT: Streamlined Publication Tables Summary (`raw` Unified Protocol)
 
----
-
-## 1. Baseline Discriminative Tables (Tables I, IV, VII)
-
-{df_baselines_all.round(3).to_markdown(index=False)}
+> For the exhaustive case-by-case breakdown including `std` vs `raw`, `+rel` vs `no rel`, per-label `classification_report`, and confusion matrices, see `ALL_EXPERIMENTS_COMPLETE_REPORT.md`.
 
 ---
 
-## 2. Semiotic Subsets Micro F1 / Accuracy (Tables III & VI)
+## 1. Baseline Discriminative Tables (`raw` Feature Protocol — Tables I, IV, VII)
 
-{df_subsets_all.round(2).to_markdown(index=False)}
-
----
-
-## 3. The Unconfounded Ablation Matrix (Reviewer Defense)
-
-{df_ablation.to_markdown(index=False)}
+{_df_to_md(df_baselines_all, floatfmt=".3f")}
 
 ---
 
-## 4. Semiotic Relation Target Classes Breakdown (Table IX)
+## 2. Semiotic Subsets Micro F1 / Accuracy (`raw` Dual-Encoder — Tables III & VI)
 
-{df_mm_rel_cls.round(3).to_markdown(index=False) if df_mm_rel_cls is not None else "N/A"}
+{_df_to_md(df_subsets_all, floatfmt=".3f")}
+
+---
+
+## 3. The Unconfounded Textual Ablation Matrix (`me_test`, $N=405$)
+
+{_df_to_md(df_ablation)}
+
+---
+
+## 4. Semiotic Relation Target Classes Breakdown (`raw` — Table IX)
+
+{_df_to_md(df_rel_raw_cls, floatfmt=".3f")}
 """
-    (res_dir / "paper_summary_tables.md").write_text(md_content, encoding="utf-8")
-    print(f"Saved Quick Markdown dump: {res_dir / 'paper_summary_tables.md'}")
-
-    # Generate Dynamic Publication LaTeX Code
-    latex_content = generate_dynamic_latex_tables(df_baselines_all, df_subsets_all, df_ablation, df_mm_rel_cls)
-    (res_dir / "paper_tables.tex").write_text(latex_content, encoding="utf-8")
-    print(f"Saved Dynamic LaTeX snippet: {res_dir / 'paper_tables.tex'}")
+    (res_dir / "paper_summary_tables.md").write_text(md_summary, encoding="utf-8")
+    (res_dir / "PAPER_TABLES.md").write_text(md_summary, encoding="utf-8")
+    print(f"Saved Streamlined Markdown tables: {res_dir / 'PAPER_TABLES.md'} & {res_dir / 'paper_summary_tables.md'}")
 
     print("\n" + "=" * 80)
-    print("ALL PAPER ARTIFACTS GENERATED SUCCESSFULLY.")
+    print("ALL PAPER & COMPLETE REPORT ARTIFACTS GENERATED SUCCESSFULLY.")
     print("=" * 80)
 
 
@@ -459,27 +577,39 @@ def main():
     res_dir.mkdir(parents=True, exist_ok=True)
     ckpt_dir.mkdir(parents=True, exist_ok=True)
 
-    extra_textual = ["--checkpoints-dir", str(ckpt_dir), "--results-dir", str(res_dir)]
-    if args.force_retrain:
-        extra_textual.append("--force-retrain")
+    if not args.report_only:
+        extra_textual = [
+            "--epochs", str(args.epochs),
+            "--batch-size", str(args.batch_size),
+            "--seed", str(args.seed),
+            "--checkpoints-dir", str(ckpt_dir),
+            "--results-dir", str(res_dir),
+        ]
+        if args.force_retrain:
+            extra_textual.append("--force-retrain")
 
-    extra_mm = ["--checkpoints-dir", str(ckpt_dir), "--results-dir", str(res_dir)]
+        extra_mm = [
+            "--batch-size", str(args.eval_batch_size),
+            "--seed", str(args.seed),
+            "--checkpoints-dir", str(ckpt_dir),
+            "--results-dir", str(res_dir),
+        ]
 
-    tasks_to_run = ["emotion", "irony", "relation"] if args.task == "all" else [args.task]
+        tasks_to_run = ["emotion", "irony", "relation"] if args.task == "all" else [args.task]
 
-    for t in tasks_to_run:
-        print(f"\n=======================================================")
-        print(f"EXECUTING PIPELINE FOR: {t.upper()}")
-        print(f"=======================================================")
-        if t == "emotion":
-            run_script("train_textual_emotion.py", extra_textual)
-            run_script("evaluate_multimodal_emotion.py", extra_mm)
-        elif t == "irony":
-            run_script("train_textual_irony.py", extra_textual)
-            run_script("evaluate_multimodal_irony.py", extra_mm)
-        elif t == "relation":
-            run_script("train_textual_relation.py", extra_textual)
-            run_script("evaluate_multimodal_relation.py", extra_mm)
+        for t in tasks_to_run:
+            print(f"\n=======================================================")
+            print(f"EXECUTING PIPELINE FOR: {t.upper()}")
+            print(f"=======================================================")
+            if t == "emotion":
+                run_script("train_textual_emotion.py", extra_textual)
+                run_script("evaluate_multimodal_emotion.py", extra_mm)
+            elif t == "irony":
+                run_script("train_textual_irony.py", extra_textual)
+                run_script("evaluate_multimodal_irony.py", extra_mm)
+            elif t == "relation":
+                run_script("train_textual_relation.py", extra_textual)
+                run_script("evaluate_multimodal_relation.py", extra_mm)
 
     generate_paper_artifacts(res_dir)
 

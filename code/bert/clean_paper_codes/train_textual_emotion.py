@@ -1,10 +1,12 @@
 """
 Task 1: Textual Emotion Detection (FEEL-IT / CamemBERT)
 Implements:
-  1. Step 1 Base: EMit A (80%) + MultiEMiT me_train (Raw text)
-  2. Step 2 Raw Ablation: Initialized from Step 1 -> me_train + mm_train (Raw text)
-  3. Step 2 Oracle: Initialized from Step 1 -> me_train + mm_train (Oracle prompt)
-Evaluates on the exact held-out MultiEMiT textual test split (me_test, N=405, SEED=42).
+  1. Step 1 Base (Raw): EMit A (80%) + MultiEMiT me_train (Raw text) -> emotion_textual_no_corr
+  2. Step 2 Raw (Ablation): Initialized from Step 1 -> me_train + mm_train (Raw text) -> emotion_textual_step2_raw
+  3. Step 2 Oracle (Train: no rel): Initialized from Step 1 -> me_train + mm_train (Oracle w/o rel) -> emotion_textual_corr
+  4. Step 2 Oracle (Train: +rel): Initialized from Step 1 -> me_train + mm_train (Oracle w/ +rel on mm_train) -> emotion_textual_corr_with_rel
+Evaluates on the exact held-out MultiEMiT textual test split (me_test, N=405, SPLIT_SEED=42)
+and exports summary metrics, per-label classification_reports, 2x2 confusion matrices, and 10x10 co-occurrence matrices.
 """
 
 import os
@@ -14,16 +16,18 @@ import numpy as np
 import pandas as pd
 import torch
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
     Trainer,
     TrainingArguments,
 )
-from datasets import Dataset, DatasetDict
+from datasets import Dataset
 
 from common_utils import (
     EMOTION_LABELS,
+    RELATION_LABELS,
     SPLIT_SEED,
     EMOTION_THRESHOLD,
     MAX_LENGTH,
@@ -33,11 +37,14 @@ from common_utils import (
     oracle_prompt,
     predict_with_threshold,
     metric_dict,
+    build_classification_report_df,
+    build_multilabel_cm_dfs,
     sigmoid,
     resolve_checkpoint,
 )
 
 BASE_MODEL = "MilaNLProc/feel-it-italian-emotion"
+AUX_COLS = ["Contenuto", "Contenitore", "Ironia", "Sarcasmo", "Offensivita"] + RELATION_LABELS
 
 
 def parse_args():
@@ -90,11 +97,17 @@ def main():
     emit_tr, _ = train_test_split(df_emit, test_size=0.2, random_state=SPLIT_SEED)
 
     df_me_raw = pd.read_csv(paths["me_textual"])
-    df_me = df_me_raw[["text"] + EMOTION_LABELS + ["Contenuto", "Contenitore", "Ironia", "Sarcasmo", "Offensivita"]].dropna(subset=["text"]).reset_index(drop=True)
+    for c in AUX_COLS:
+        if c not in df_me_raw.columns:
+            df_me_raw[c] = 0
+    df_me = df_me_raw[["text"] + EMOTION_LABELS + AUX_COLS].dropna(subset=["text"]).fillna(0).reset_index(drop=True)
     me_tr, me_te = train_test_split(df_me, test_size=0.2, random_state=SPLIT_SEED)
 
     df_mm_tr_raw = pd.read_csv(paths["mm_train"])
-    df_mm_tr = df_mm_tr_raw[["text"] + EMOTION_LABELS + ["Contenuto", "Contenitore", "Ironia", "Sarcasmo", "Offensivita"]].dropna(subset=["text"]).reset_index(drop=True)
+    for c in AUX_COLS:
+        if c not in df_mm_tr_raw.columns:
+            df_mm_tr_raw[c] = 0
+    df_mm_tr = df_mm_tr_raw[["text"] + EMOTION_LABELS + AUX_COLS].dropna(subset=["text"]).fillna(0).reset_index(drop=True)
 
     print(f"Data Partitions: EMit Train={len(emit_tr)}, me_train={len(me_tr)}, mm_train={len(df_mm_tr)}, me_test={len(me_te)}")
 
@@ -105,10 +118,12 @@ def main():
 
     ds_me_te_raw = to_hf_dataset(me_te, "text")
 
-    # Oracle Prompted me_test
+    # Oracle Prompted me_test (textual dataset has no image/relation)
     me_te_corr = me_te.copy()
     me_te_corr["text_corr"] = oracle_prompt(me_te_corr, "emotion", with_relation=False)
     ds_me_te_corr = to_hf_dataset(me_te_corr, "text_corr")
+
+    df_comb_base = pd.concat([me_tr, df_mm_tr], ignore_index=True)
 
     stages = [
         {
@@ -130,22 +145,29 @@ def main():
             "prompt": "Raw",
         },
         {
-            "name": "Step 2 Oracle (With Corr)",
+            "name": "Step 2 Oracle (Train: no rel)",
             "dir_name": "emotion_textual_corr",
             "init_from": "emotion_textual_no_corr",
-            "train_df": (
-                lambda: (
-                    df_comb := pd.concat([me_tr, df_mm_tr], ignore_index=True),
-                    df_comb.assign(text_corr=oracle_prompt(df_comb, "emotion", with_relation=False)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
-                )[1]
-            )(),
+            "train_df": df_comb_base.assign(text_corr=oracle_prompt(df_comb_base, "emotion", with_relation=False)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text_corr",
             "eval_ds": ds_me_te_corr,
-            "prompt": "Oracle (no rel)",
+            "prompt": "Oracle (Train: no rel, Eval: no rel)",
+        },
+        {
+            "name": "Step 2 Oracle (Train: +rel)",
+            "dir_name": "emotion_textual_corr_with_rel",
+            "init_from": "emotion_textual_no_corr",
+            "train_df": df_comb_base.assign(text_corr=oracle_prompt(df_comb_base, "emotion", with_relation=True)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
+            "text_col": "text_corr",
+            "eval_ds": ds_me_te_corr,
+            "prompt": "Oracle (Train: +rel, Eval: no rel)",
         },
     ]
 
     results = []
+    report_dfs = []
+    cm_2x2_dfs = []
+    cooc_10x10_dfs = []
 
     for st in stages:
         out_p = ckpt_dir / st["dir_name"]
@@ -210,11 +232,13 @@ def main():
         preds_out = trainer.predict(st["eval_ds"])
         probs = sigmoid(preds_out.predictions)
         preds = predict_with_threshold(probs, threshold=EMOTION_THRESHOLD)
-        y_true = np.array(st["eval_ds"]["labels"])
+        y_true = np.array(st["eval_ds"]["labels"], dtype=int)
 
         metrics = metric_dict(y_true, preds)
+        per_label_f1 = f1_score(y_true, preds, average=None, zero_division=0)
         rec = {
             "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
             "Prompt": st["prompt"],
             "N Test": len(y_true),
             "Micro F1": metrics["Micro F1"],
@@ -222,18 +246,33 @@ def main():
             "Weighted F1": metrics["Weighted F1"],
             "Subset Acc.": metrics["Accuracy"],
         }
+        for i, emo_lbl in enumerate(EMOTION_LABELS):
+            rec[f"{emo_lbl} F1"] = float(per_label_f1[i])
         results.append(rec)
+
+        meta = {
+            "Task": "Task 1: Emotion (Textual me_test)",
+            "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
+            "Prompt": st["prompt"],
+        }
+        report_dfs.append(build_classification_report_df(y_true, preds, EMOTION_LABELS, meta, multilabel=True))
+        df_2x2, df_cooc = build_multilabel_cm_dfs(y_true, preds, EMOTION_LABELS, meta)
+        cm_2x2_dfs.append(df_2x2)
+        cooc_10x10_dfs.append(df_cooc)
 
     df_res = pd.DataFrame(results)
     df_res.to_csv(res_dir / "train_textual_emotion_summary.csv", index=False)
+    pd.concat(report_dfs, ignore_index=True).to_csv(res_dir / "textual_emotion_classification_reports.csv", index=False)
+    pd.concat(cm_2x2_dfs, ignore_index=True).to_csv(res_dir / "textual_emotion_confusion_matrices_2x2.csv", index=False)
+    pd.concat(cooc_10x10_dfs, ignore_index=True).to_csv(res_dir / "textual_emotion_cooccurrence_matrices_10x10.csv", index=False)
 
     print("\n" + "=" * 80)
     print("TASK 1: TEXTUAL EMOTION BENCHMARK (me_test, N=405)")
     print("=" * 80)
-    print(df_res.round(4).to_string(index=False))
+    print(df_res[["Regime", "Prompt", "Micro F1", "Macro F1", "Weighted F1", "Subset Acc."]].round(4).to_string(index=False))
     return df_res
 
 
 if __name__ == "__main__":
     main()
-

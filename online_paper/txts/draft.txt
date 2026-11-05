@@ -1,0 +1,96 @@
+\documentclass[letterpaper,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\def\UrlBreaks{\do\/\do\-\do\_}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{multirow}
+\usepackage{balance}
+\hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
+
+\begin{document}
+
+\title{MultiEMiT: Multimodal Emotion, Irony, and Semiotic Relation Detection in Italian Social TV}
+
+\author{Author~Author,~\IEEEmembership{Graduate Student Member,~IEEE,}
+        Co-Author~One,~\IEEEmembership{Member,~IEEE,}
+        and~Co-Author~Two,~\IEEEmembership{Senior Member,~IEEE}%
+\thanks{TODO}%
+\thanks{TODO}}
+
+% The paper headers
+\markboth{IEEE Transactions on Affective Computing,~Vol.~XX, No.~X, October~2026}%
+{Author \MakeLowercase{\textit{et al.}}: MultiEMiT: Multimodal Affective Computing in Italian Social TV}
+
+\maketitle
+
+\begin{abstract}
+During live television broadcasts, viewers actively share second-screen commentary on social media, providing real-time signals of public emotional engagement. Decoding affective intent in this domain is challenging: posts are brief, informal, heavily skewed, and inherently multimodal. Rather than merely duplicating the text, accompanying images such as reaction memes and broadcast screenshots frequently alter, amplify, or invert the literal message. In this work, we present MultiEMiT, a multimodal dataset of Italian Social TV commentary annotated across multiple schemas, including Plutchik's fine-grained emotions, irony and sarcasm, offensiveness, target orientation, and semiotic text-image relations. We evaluate task-specialized encoders against a generative vision-language decoder across four experimental setups: text alone, text with visual context, and both settings augmented with correlation prompting. Here, prompting injects labels from auxiliary annotation layers directly into the input text to guide prediction on the primary task. Our experiments reveal distinct cross-modal behaviors. Visual context substantially improves multi-label emotion recognition by resolving textual ambiguity. In contrast, for figurative discourse such as irony, unguided visual features introduce noise and degrade performance; injecting correlation priors resolves this conflict and leads to the highest classification performance. Overall, our findings show that visual context alone is insufficient for non-literal commentary: coupling images with cross-task label prompts provides the necessary guidance to interpret complex and satirical social media interactions.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Affective computing, multimodal emotion recognition, irony detection, vision-language models, Social TV.
+\end{IEEEkeywords}
+
+\input{1_introduction.tex}
+\input{2_related_works.tex}
+\input{3_dataset_analysis.tex}
+\input{4_experimental_design.tex}
+\input{5_results_discussion.tex}
+\input{6_conclusion.tex}
+
+\section*{Acknowledgments}
+This work was conducted with the collaboration between the University of Turin and Polytechnic University of Madrid. We thank the annotators for their valuable contributions.
+
+\bibliographystyle{IEEEtran}
+
+\begin{thebibliography}{19}
+\bibitem{SOMSA} B. Liu and L. Zhang, "A Survey On Opinion Mining And Sentiment Analysis," in \textit{Mining Text Data}, 2013, pp. 415--463. Available: \url{https://doi.org/10.1007/978-1-4614-3223-4_13}.
+
+\bibitem{SocialTV} J. A. Garc\'ia-Avil\'es, "Roles of audience participation in multiplatform television: From fans and consumers, to collaborators and activists," \textit{Participations. Journal of Audience and Reception Studies}, vol. 9, 2012, pp. 429--447.
+
+\bibitem{emit} O. Araque, S. Frenda, R. Sprugnoli, D. Nozza, and V. Patti, "EMit at EVALITA 2023: Overview of the Categorical Emotion Detection in Italian Social Media Task" in \textit{Proceedings of the Eighth Evaluation Campaign of Natural Language Processing and Speech Tools for Italian (EVALITA 2023)}, 2023. [Online]. Available: \url{https://ceur-ws.org/Vol-3473/paper1.pdf}.
+
+\bibitem{Plutchik} R. Plutchik, "The Nature of Emotions: Human emotions have deep evolutionary roots, a fact that may explain their complexity and provide tools for clinical practice," \textit{American Scientist}, vol. 89, no. 4, pp. 344--350, 2001. Available: \url{http://www.jstor.org/stable/27857503}.
+
+\bibitem{MultiM} J. Kruk, J. Lubin, K. Sikka, X. Lin, D. Jurafsky, and A. Divakaran, "Integrating Text and Image: Determining Multimodal Document Intent in Instagram Posts", \textit{Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing}, 2019, pp. 4622--4632.
+
+\bibitem{propagandalive} LA7, ``Propaganda Live,'' 2024. [Online]. Available: \url{https://www.la7.it/propagandalive}.
+
+\bibitem{pechinoexpress} Rai2, ``Pechino Express -- Season 8 (Le stagioni dell'Oriente),'' 2020. [Online]. Available: \url{https://www.raiplay.it/programmi/pechinoexpress}.
+
+\bibitem{MultiEmotion} R. Sprugnoli, "MultiEmotions-It: a New Dataset for Opinion Polarity and Emotion Analysis for Italian," in \textit{Proceedings of the Seventh Italian Conference on Computational Linguistics}, 2020, Accademia University Press. Available: \url{https://doi.org/10.4000/books.aaccademia.8910}.
+
+\bibitem{bianchi2021feel} F. Bianchi, D. Nozza, and D. Hovy, "FEEL-IT: Emotion and Sentiment Classification for the Italian Language," in \textit{Proceedings of the 11th Workshop on Computational Approaches to Subjectivity, Sentiment and Social Media Analysis}, 2021, Association for Computational Linguistics.
+
+\bibitem{memorai} Universit\`a di Torino, ``M.EMO.RAI Project,'' 2024. [Online]. Available: \url{https://www.unito.it/comunicati_stampa/memorai-ai}.
+
+\bibitem{ironita2018} A. Cignarella, S. Frenda, V. Basile, C. Bosco, V. Patti, and P. Rosso, "Overview of the EVALITA 2018 Task on Irony Detection in Italian Tweets (IronITA)," in T. Caselli, N. Novielli, V. Patti, and P. Rosso (Eds.), \textit{EVALITA Evaluation of NLP and Speech Tools for Italian}, Accademia University Press, 2018. Available: \url{https://doi.org/10.4000/books.aaccademia.4470}.
+
+\bibitem{musixmatch-2020-umberto} L. Parisi, S. Francia, and P. Magnani, "UmBERTo: an Italian Language Model trained with Whole Word Masking," \textit{GitHub repository}, 2020. Available: \url{https://github.com/musixmatchresearch/umberto}.
+
+\bibitem{devlin2019bert} J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding," \textit{Proceedings of NAACL-HLT}, 2019.
+
+\bibitem{dosovitskiy2021vit} A. Dosovitskiy, et al., "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale," \textit{ICLR}, 2021.
+
+\bibitem{touvron2023llama} H. Touvron, et al., "LLaMA: Open and Efficient Foundation Language Models," \textit{arXiv:2302.13971}, 2023. Available: \url{https://arxiv.org/abs/2302.13971}.
+
+\bibitem{pedregosa2011scikit} F.~Pedregosa \textit{et al.}, ``Scikit-learn: Machine learning in Python,'' \textit{Journal of Machine Learning Research}, vol. 12, pp. 2825--2830, 2011.
+
+\bibitem{pixtral} P. Agrawal, S. Antoniak, E. Bou Hanna, B. Bout, D. Chaplot, J. Chudnovsky, \textit{et al.}, ``Pixtral 12B,'' \textit{arXiv preprint arXiv:2410.07073}, 2024. [Online]. Available: \url{https://arxiv.org/abs/2410.07073}.
+
+
+\bibitem{brighter_project} S.~H. Muhammad, N.~Ousidhoum, I.~Abdulmumin, \textit{et al.}, ``BRIGHTER: BRIdging the Gap in Human-Annotated Textual Emotion Recognition Datasets for 28 Languages,'' in \textit{Proc. ACL}, 2025, pp. 8895--8916.
+
+\bibitem{liang2022mindgap} W.~Liang, Y.~Zhang, Y.~Kwon, S.~Yeung, and J.~Zou, ``Mind the gap: Understanding the modality gap in multi-modal contrastive representation learning,'' in \textit{NeurIPS}, vol. 35, 2022, pp. 17\,612--17\,625.
+
+\end{thebibliography}
+
+\end{document}

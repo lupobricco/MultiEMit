@@ -1,8 +1,15 @@
 """
-Task 2: Multimodal Irony & Sarcasm Evaluation (Table IV & Table VI in Synthesis)
-Evaluates Blind Text vs. Dual-Encoder (UmBERTo + ViT-224) on mm_test (N=129)
-across unprompted and correlation-prompted configurations under both std and raw scaling,
-including Direct Prediction, ADD/PAR/DIV subsets, and per-class F1 metrics.
+Task 2: Multimodal Irony & Sarcasm Evaluation (UmBERTo + ViT-224 on mm_test, N=129)
+Evaluates all 6 Regime Cases:
+  - Case 1: Step 1 Base (No corr) -> Eval: Raw
+  - Case 2: Step 2 Raw (No corr) -> Eval: Raw
+  - Case 3: Step 2 Oracle (Train: no rel) -> Eval: Oracle (no rel)
+  - Case 4: Step 2 Oracle (Train: no rel) -> Eval: Oracle (+ rel)
+  - Case 5: Step 2 Oracle (Train: +rel) -> Eval: Oracle (no rel)
+  - Case 6: Step 2 Oracle (Train: +rel) -> Eval: Oracle (+ rel)
+Across 4 Linear Probe Variants per Case (Blind Text vs Dual-Encoder x raw vs std = 24 Runs).
+Exports baselines CSV, ADD/PAR/DIV subsets CSV, per-label classification_reports CSV,
+and 3x3 confusion matrices CSV.
 """
 
 import os
@@ -24,6 +31,8 @@ from common_utils import (
     create_type_column,
     metric_dict,
     compute_subset_metrics,
+    build_classification_report_df,
+    build_singlelabel_cm_df,
     resolve_checkpoint,
     extract_text_features,
     extract_vit_features,
@@ -51,8 +60,8 @@ def main():
     res_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    df_tr = pd.read_csv(paths["mm_train"])
-    df_te = pd.read_csv(paths["mm_test"])
+    df_tr = pd.read_csv(paths["mm_train"]).fillna(0)
+    df_te = pd.read_csv(paths["mm_test"]).fillna(0)
     y_tr = df_tr.apply(row_to_irony_class, axis=1).values.astype(int)
     y_te = df_te.apply(row_to_irony_class, axis=1).values.astype(int)
     types_te = df_te.apply(create_type_column, axis=1).values
@@ -62,167 +71,181 @@ def main():
     vit_tr_raw = extract_vit_features(df_tr["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
     vit_te_raw = extract_vit_features(df_te["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
 
-    # Standardize ViT features with scaler fitted on mm_train
     scaler_img = StandardScaler().fit(vit_tr_raw)
     vit_tr_std = scaler_img.transform(vit_tr_raw)
     vit_te_std = scaler_img.transform(vit_te_raw)
 
     regimes = [
         {
+            "case_id": "Case 1",
             "ckpt": "irony_textual_no_corr",
-            "label": "Step 1 Base",
+            "label": "Step 1 Base (No corr)",
+            "train_rel": "None (Raw)",
+            "eval_rel": "None (Raw)",
             "prompt": "None (Raw)",
             "tr_texts": df_tr["text"].values,
             "te_texts": df_te["text"].values,
-            "is_ablation": False,
         },
         {
+            "case_id": "Case 2",
+            "ckpt": "irony_textual_step2_raw",
+            "label": "Step 2 Raw (No corr)",
+            "train_rel": "None (Raw)",
+            "eval_rel": "None (Raw)",
+            "prompt": "None (Raw)",
+            "tr_texts": df_tr["text"].values,
+            "te_texts": df_te["text"].values,
+        },
+        {
+            "case_id": "Case 3",
             "ckpt": "irony_textual_corr",
-            "label": "Step 2 Oracle",
+            "label": "Step 2 Oracle (Train: no rel, Eval: no rel)",
+            "train_rel": "no rel",
+            "eval_rel": "no rel",
             "prompt": "Oracle (no rel)",
             "tr_texts": oracle_prompt(df_tr, "irony", with_relation=False),
             "te_texts": oracle_prompt(df_te, "irony", with_relation=False),
-            "is_ablation": False,
         },
         {
+            "case_id": "Case 4",
             "ckpt": "irony_textual_corr",
-            "label": "Step 2 Oracle (+ rel)",
+            "label": "Step 2 Oracle (Train: no rel, Eval: +rel)",
+            "train_rel": "no rel",
+            "eval_rel": "+rel",
             "prompt": "Oracle (+ rel)",
             "tr_texts": oracle_prompt(df_tr, "irony", with_relation=True),
             "te_texts": oracle_prompt(df_te, "irony", with_relation=True),
-            "is_ablation": True,
         },
         {
-            "ckpt": "irony_textual_step2_raw",
-            "label": "Step 2 Raw",
-            "prompt": "None (Raw)",
-            "tr_texts": df_tr["text"].values,
-            "te_texts": df_te["text"].values,
-            "is_ablation": True,
+            "case_id": "Case 5",
+            "ckpt": "irony_textual_corr_with_rel",
+            "label": "Step 2 Oracle (Train: +rel, Eval: no rel)",
+            "train_rel": "+rel",
+            "eval_rel": "no rel",
+            "prompt": "Oracle (no rel)",
+            "tr_texts": oracle_prompt(df_tr, "irony", with_relation=False),
+            "te_texts": oracle_prompt(df_te, "irony", with_relation=False),
+        },
+        {
+            "case_id": "Case 6",
+            "ckpt": "irony_textual_corr_with_rel",
+            "label": "Step 2 Oracle (Train: +rel, Eval: +rel)",
+            "train_rel": "+rel",
+            "eval_rel": "+rel",
+            "prompt": "Oracle (+ rel)",
+            "tr_texts": oracle_prompt(df_tr, "irony", with_relation=True),
+            "te_texts": oracle_prompt(df_te, "irony", with_relation=True),
         },
     ]
 
     baseline_rows = []
     subset_rows = []
+    report_dfs = []
+    cm_dfs = []
 
     for reg in regimes:
-        try:
-            ckpt_path = resolve_checkpoint(reg["ckpt"], args.checkpoints_dir)
-        except Exception as e:
-            print(f"\n[SKIP] Regime '{reg['label']}' checkpoint '{reg['ckpt']}' not found: {e}")
+        ckpt_path = resolve_checkpoint(reg["ckpt"], args.checkpoints_dir)
+        if not (ckpt_path / "config.json").exists():
+            print(f"\n[SKIP] {reg['case_id']} ({reg['label']}): checkpoint '{reg['ckpt']}' not found at {ckpt_path}")
             continue
 
-        print(f"\nExtracting text features for {reg['label']} ({reg['prompt']}) from: {ckpt_path} ...")
-        txt_tr_raw, logits_tr = extract_text_features(reg["tr_texts"], ckpt_path, device, batch_size=args.batch_size)
-        txt_te_raw, logits_te = extract_text_features(reg["te_texts"], ckpt_path, device, batch_size=args.batch_size)
+        print(f"\nExtracting text features for {reg['case_id']}: {reg['label']} from {ckpt_path} ...")
+        txt_tr_raw, _ = extract_text_features(reg["tr_texts"], ckpt_path, device, batch_size=args.batch_size)
+        txt_te_raw, _ = extract_text_features(reg["te_texts"], ckpt_path, device, batch_size=args.batch_size)
 
-        # 1. Direct Transformer Prediction (logits argmax on mm_test text directly)
-        pred_direct = np.argmax(logits_te, axis=-1)
-        m_direct = metric_dict(y_te, pred_direct)
-        f1_cls_dir = f1_score(y_te, pred_direct, labels=[0, 1, 2], average=None, zero_division=0)
-        baseline_rows.append({
-            "Configuration": f"Multimodal test set (Direct Prediction, {reg['label']})",
-            "Prompting": reg["prompt"],
-            "Model": "Fine-tuned model (direct prediction)",
-            "Scaling": "—",
-            "Macro F1": m_direct["Macro F1"],
-            "Micro F1 (= Acc.)": m_direct["Accuracy"],
-            "Weighted F1": m_direct["Weighted F1"],
-            "None F1": float(f1_cls_dir[0]),
-            "Ironia F1": float(f1_cls_dir[1]),
-            "Sarcasmo F1": float(f1_cls_dir[2]),
-            "Is Ablation": reg["is_ablation"],
-        })
-
-        # Fit StandardScaler on text features from mm_train
         scaler_txt = StandardScaler().fit(txt_tr_raw)
         txt_tr_std = scaler_txt.transform(txt_tr_raw)
         txt_te_std = scaler_txt.transform(txt_te_raw)
 
-        # 2. Linear Head Evaluations under both 'std' (primary) and 'raw' (ablation)
-        for scaling in ["std", "raw"]:
-            if scaling == "std":
-                t_tr, t_te = txt_tr_std, txt_te_std
-                v_tr, v_te = vit_tr_std, vit_te_std
-                config_suffix = f"{reg['label']} (No corr, std)" if reg["label"] == "Step 1 Base" else (
-                    f"{reg['label']} (With corr, std)" if reg["label"] == "Step 2 Oracle" else f"{reg['label']} (std)"
-                )
-            else:
+        for scaling in ["raw", "std"]:
+            if scaling == "raw":
                 t_tr, t_te = txt_tr_raw, txt_te_raw
                 v_tr, v_te = vit_tr_raw, vit_te_raw
-                config_suffix = f"{reg['label']} (No corr, raw)" if reg["label"] == "Step 1 Base" else (
-                    f"{reg['label']} (no rel, raw)" if reg["label"] == "Step 2 Oracle" else f"{reg['label']} (raw)"
-                )
+            else:
+                t_tr, t_te = txt_tr_std, txt_te_std
+                v_tr, v_te = vit_tr_std, vit_te_std
 
             de_tr = np.hstack([t_tr, v_tr])
             de_te = np.hstack([t_te, v_te])
 
-            # A. Blind Text Head
-            clf_blind = fit_linear_head(t_tr, y_tr, multilabel=False, seed=args.seed)
-            pred_blind = clf_blind.predict(t_te)
-            m_blind = metric_dict(y_te, pred_blind)
-            f1_cls_blind = f1_score(y_te, pred_blind, labels=[0, 1, 2], average=None, zero_division=0)
-            baseline_rows.append({
-                "Configuration": f"Multimodal test set (without images, {config_suffix})",
-                "Prompting": reg["prompt"],
-                "Model": f"Blind Text (SGD, {scaling})",
-                "Scaling": scaling,
-                "Macro F1": m_blind["Macro F1"],
-                "Micro F1 (= Acc.)": m_blind["Accuracy"],
-                "Weighted F1": m_blind["Weighted F1"],
-                "None F1": float(f1_cls_blind[0]),
-                "Ironia F1": float(f1_cls_blind[1]),
-                "Sarcasmo F1": float(f1_cls_blind[2]),
-                "Is Ablation": reg["is_ablation"] or (scaling == "raw"),
-            })
+            variants = [
+                (f"Blind Text (SGD, {scaling})", f"Multimodal test set (without images, {reg['label']}, {scaling})", t_tr, t_te),
+                (f"Dual-Encoder (UmBERTo + ViT-224, {scaling})", f"Multimodal test set with images (Dual-Encoder, {reg['label']}, {scaling})", de_tr, de_te),
+            ]
 
-            # B. Dual-Encoder Head
-            clf_de = fit_linear_head(de_tr, y_tr, multilabel=False, seed=args.seed)
-            pred_de = clf_de.predict(de_te)
-            m_de = metric_dict(y_te, pred_de)
-            f1_cls_de = f1_score(y_te, pred_de, labels=[0, 1, 2], average=None, zero_division=0)
-            baseline_rows.append({
-                "Configuration": f"Multimodal test set with images (Dual-Encoder, {config_suffix})",
-                "Prompting": reg["prompt"],
-                "Model": f"Dual-Encoder (BERT + ViT-224, {scaling})",
-                "Scaling": scaling,
-                "Macro F1": m_de["Macro F1"],
-                "Micro F1 (= Acc.)": m_de["Accuracy"],
-                "Weighted F1": m_de["Weighted F1"],
-                "None F1": float(f1_cls_de[0]),
-                "Ironia F1": float(f1_cls_de[1]),
-                "Sarcasmo F1": float(f1_cls_de[2]),
-                "Is Ablation": reg["is_ablation"] or (scaling == "raw" and reg["label"] != "Step 2 Oracle (+ rel)"),
-            })
+            for model_name, cfg_name, X_tr_use, X_te_use in variants:
+                clf = fit_linear_head(X_tr_use, y_tr, multilabel=False, seed=args.seed)
+                pred = clf.predict(X_te_use).astype(int)
+                m = metric_dict(y_te, pred)
+                f1_cls = f1_score(y_te, pred, labels=[0, 1, 2], average=None, zero_division=0)
 
-            # Semiotic Subsets for Dual-Encoder
-            sub_m = compute_subset_metrics(y_te, pred_de, types_te, multilabel=False)
-            subset_rows.append({
-                "Model Setting": f"Dual-Encoder ({config_suffix})",
-                "Prompting": reg["prompt"],
-                "Scaling": scaling,
-                "ADD (N=68)": sub_m["ADD"]["Accuracy"],
-                "PAR (N=23)": sub_m["PAR"]["Accuracy"],
-                "DIV (N=38)": sub_m["DIV"]["Accuracy"],
-                "Macro F1": m_de["Macro F1"],
-                "Is Ablation": reg["is_ablation"] or (scaling == "raw"),
-            })
+                baseline_rows.append({
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Train Relation": reg["train_rel"],
+                    "Eval Relation": reg["eval_rel"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                    "Configuration": cfg_name,
+                    "Macro F1": m["Macro F1"],
+                    "Micro F1 (= Acc.)": m["Accuracy"],
+                    "Weighted F1": m["Weighted F1"],
+                    "None F1": float(f1_cls[0]),
+                    "Ironia F1": float(f1_cls[1]),
+                    "Sarcasmo F1": float(f1_cls[2]),
+                })
+
+                sub_m = compute_subset_metrics(y_te, pred, types_te, multilabel=False)
+                subset_rows.append({
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                    "Model Setting": f"{model_name} ({reg['label']})",
+                    "ADD (N=68)": sub_m["ADD"]["Accuracy"],
+                    "PAR (N=23)": sub_m["PAR"]["Accuracy"],
+                    "DIV (N=38)": sub_m["DIV"]["Accuracy"],
+                    "Macro F1": m["Macro F1"],
+                    "Micro F1 (= Acc.)": m["Accuracy"],
+                })
+
+                meta = {
+                    "Task": "Task 2: Irony (Multimodal mm_test)",
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                }
+                report_dfs.append(build_classification_report_df(y_te, pred, IRONY_LABELS, meta, multilabel=False))
+                cm_dfs.append(build_singlelabel_cm_df(y_te, pred, IRONY_LABELS, meta))
 
     df_base = pd.DataFrame(baseline_rows)
     df_sub = pd.DataFrame(subset_rows)
 
     df_base.to_csv(res_dir / "multimodal_irony_baselines.csv", index=False)
     df_sub.to_csv(res_dir / "multimodal_irony_subsets.csv", index=False)
+    if report_dfs:
+        pd.concat(report_dfs, ignore_index=True).to_csv(res_dir / "multimodal_irony_classification_reports.csv", index=False)
+    if cm_dfs:
+        pd.concat(cm_dfs, ignore_index=True).to_csv(res_dir / "multimodal_irony_confusion_matrices.csv", index=False)
 
     print("\n" + "=" * 80)
-    print("TASK 2: MULTIMODAL IRONY BASELINES (mm_test, N=129) [Table IV]")
+    print("TASK 2: MULTIMODAL IRONY BASELINES (mm_test, N=129)")
     print("=" * 80)
-    print(df_base[["Configuration", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Ironia F1", "Sarcasmo F1"]].round(3).to_string(index=False))
+    if not df_base.empty:
+        print(df_base[["Case", "Regime", "Model", "Scaling", "Macro F1", "Micro F1 (= Acc.)", "Ironia F1", "Sarcasmo F1"]].round(4).to_string(index=False))
 
     print("\n" + "=" * 80)
-    print("TASK 2: SEMIOTIC SUBSETS ACCURACY / MICRO F1 [Table VI]")
+    print("TASK 2: SEMIOTIC SUBSETS ACCURACY / MICRO F1")
     print("=" * 80)
-    print(df_sub[["Model Setting", "Scaling", "ADD (N=68)", "PAR (N=23)", "DIV (N=38)", "Macro F1"]].round(3).to_string(index=False))
+    if not df_sub.empty:
+        print(df_sub[["Case", "Regime", "Model", "Scaling", "ADD (N=68)", "PAR (N=23)", "DIV (N=38)", "Macro F1"]].round(4).to_string(index=False))
     return df_base, df_sub
 
 

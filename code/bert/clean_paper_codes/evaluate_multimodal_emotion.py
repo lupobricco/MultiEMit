@@ -1,7 +1,15 @@
 """
-Task 1: Multimodal Emotion Evaluation (Table I & Table III in Synthesis)
-Evaluates Blind Text vs. Dual-Encoder (FEEL-IT + ViT-224) on mm_test (N=129)
-across unprompted and correlation-prompted configurations, including ADD/PAR/DIV subsets.
+Task 1: Multimodal Emotion Evaluation (FEEL-IT + ViT-224 on mm_test, N=129)
+Evaluates all 6 Regime Cases:
+  - Case 1: Step 1 Base (No corr) -> Eval: Raw
+  - Case 2: Step 2 Raw (No corr) -> Eval: Raw
+  - Case 3: Step 2 Oracle (Train: no rel) -> Eval: Oracle (no rel)
+  - Case 4: Step 2 Oracle (Train: no rel) -> Eval: Oracle (+ rel)
+  - Case 5: Step 2 Oracle (Train: +rel) -> Eval: Oracle (no rel)
+  - Case 6: Step 2 Oracle (Train: +rel) -> Eval: Oracle (+ rel)
+Across 4 Linear Probe Variants per Case (Blind Text vs Dual-Encoder x raw vs std = 24 Runs).
+Exports baselines CSV, ADD/PAR/DIV subsets CSV, per-label classification_reports CSV,
+2x2 confusion matrices CSV, and 10x10 co-occurrence matrices CSV.
 """
 
 import os
@@ -10,6 +18,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import f1_score
 
 from common_utils import (
     EMOTION_LABELS,
@@ -20,6 +30,8 @@ from common_utils import (
     create_type_column,
     metric_dict,
     compute_subset_metrics,
+    build_classification_report_df,
+    build_multilabel_cm_dfs,
     resolve_checkpoint,
     extract_text_features,
     extract_vit_features,
@@ -47,107 +59,203 @@ def main():
     res_dir.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    df_tr = pd.read_csv(paths["mm_train"])
-    df_te = pd.read_csv(paths["mm_test"])
+    df_tr = pd.read_csv(paths["mm_train"]).fillna(0)
+    df_te = pd.read_csv(paths["mm_test"]).fillna(0)
     y_tr = df_tr[EMOTION_LABELS].values.astype(int)
     y_te = df_te[EMOTION_LABELS].values.astype(int)
     types_te = df_te.apply(create_type_column, axis=1).values
 
     # Extract ViT Features (Frozen, 768-d)
     print("\nExtracting ViT-224 visual features ...")
-    vit_tr = extract_vit_features(df_tr["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
-    vit_te = extract_vit_features(df_te["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
+    vit_tr_raw = extract_vit_features(df_tr["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
+    vit_te_raw = extract_vit_features(df_te["img_path"].values, paths["images"], args.vit_model, device, args.batch_size)
 
-    # 1. Step 1 Base (Raw text)
-    ckpt_s1 = resolve_checkpoint("emotion_textual_no_corr", args.checkpoints_dir)
-    print(f"\nExtracting Step 1 text features from: {ckpt_s1} ...")
-    s1_txt_tr, _ = extract_text_features(df_tr["text"].values, ckpt_s1, device, batch_size=args.batch_size)
-    s1_txt_te, _ = extract_text_features(df_te["text"].values, ckpt_s1, device, batch_size=args.batch_size)
+    scaler_img = StandardScaler().fit(vit_tr_raw)
+    vit_tr_std = scaler_img.transform(vit_tr_raw)
+    vit_te_std = scaler_img.transform(vit_te_raw)
 
-    # 2. Step 2 Oracle (Correlated text)
-    ckpt_s2 = resolve_checkpoint("emotion_textual_corr", args.checkpoints_dir)
-    print(f"\nExtracting Step 2 Oracle text features from: {ckpt_s2} ...")
-    s2_prompt_tr = oracle_prompt(df_tr, "emotion", with_relation=True)
-    s2_prompt_te = oracle_prompt(df_te, "emotion", with_relation=True)  # Inject relation token for multimodal posts
-    s2_txt_tr, _ = extract_text_features(s2_prompt_tr, ckpt_s2, device, batch_size=args.batch_size)
-    s2_txt_te, _ = extract_text_features(s2_prompt_te, ckpt_s2, device, batch_size=args.batch_size)
-
-    experiments = [
+    regimes = [
         {
-            "regime": "Step 1 Base (No corr)",
+            "case_id": "Case 1",
+            "ckpt": "emotion_textual_no_corr",
+            "label": "Step 1 Base (No corr)",
+            "train_rel": "None (Raw)",
+            "eval_rel": "None (Raw)",
             "prompt": "None (Raw)",
-            "txt_tr": s1_txt_tr,
-            "txt_te": s1_txt_te,
+            "tr_texts": df_tr["text"].values,
+            "te_texts": df_te["text"].values,
         },
         {
-            "regime": "Step 2 Oracle (With corr)",
-            "prompt": "Oracle",
-            "txt_tr": s2_txt_tr,
-            "txt_te": s2_txt_te,
+            "case_id": "Case 2",
+            "ckpt": "emotion_textual_step2_raw",
+            "label": "Step 2 Raw (No corr)",
+            "train_rel": "None (Raw)",
+            "eval_rel": "None (Raw)",
+            "prompt": "None (Raw)",
+            "tr_texts": df_tr["text"].values,
+            "te_texts": df_te["text"].values,
+        },
+        {
+            "case_id": "Case 3",
+            "ckpt": "emotion_textual_corr",
+            "label": "Step 2 Oracle (Train: no rel, Eval: no rel)",
+            "train_rel": "no rel",
+            "eval_rel": "no rel",
+            "prompt": "Oracle (no rel)",
+            "tr_texts": oracle_prompt(df_tr, "emotion", with_relation=False),
+            "te_texts": oracle_prompt(df_te, "emotion", with_relation=False),
+        },
+        {
+            "case_id": "Case 4",
+            "ckpt": "emotion_textual_corr",
+            "label": "Step 2 Oracle (Train: no rel, Eval: +rel)",
+            "train_rel": "no rel",
+            "eval_rel": "+rel",
+            "prompt": "Oracle (+ rel)",
+            "tr_texts": oracle_prompt(df_tr, "emotion", with_relation=True),
+            "te_texts": oracle_prompt(df_te, "emotion", with_relation=True),
+        },
+        {
+            "case_id": "Case 5",
+            "ckpt": "emotion_textual_corr_with_rel",
+            "label": "Step 2 Oracle (Train: +rel, Eval: no rel)",
+            "train_rel": "+rel",
+            "eval_rel": "no rel",
+            "prompt": "Oracle (no rel)",
+            "tr_texts": oracle_prompt(df_tr, "emotion", with_relation=False),
+            "te_texts": oracle_prompt(df_te, "emotion", with_relation=False),
+        },
+        {
+            "case_id": "Case 6",
+            "ckpt": "emotion_textual_corr_with_rel",
+            "label": "Step 2 Oracle (Train: +rel, Eval: +rel)",
+            "train_rel": "+rel",
+            "eval_rel": "+rel",
+            "prompt": "Oracle (+ rel)",
+            "tr_texts": oracle_prompt(df_tr, "emotion", with_relation=True),
+            "te_texts": oracle_prompt(df_te, "emotion", with_relation=True),
         },
     ]
 
     baseline_rows = []
     subset_rows = []
+    report_dfs = []
+    cm_2x2_dfs = []
+    cooc_10x10_dfs = []
 
-    for exp in experiments:
-        txt_tr, txt_te = exp["txt_tr"], exp["txt_te"]
-        de_tr = np.hstack([txt_tr, vit_tr])
-        de_te = np.hstack([txt_te, vit_te])
+    for reg in regimes:
+        ckpt_path = resolve_checkpoint(reg["ckpt"], args.checkpoints_dir)
+        if not (ckpt_path / "config.json").exists():
+            print(f"\n[SKIP] {reg['case_id']} ({reg['label']}): checkpoint '{reg['ckpt']}' not found at {ckpt_path}")
+            continue
 
-        # A. Blind Text Head
-        clf_blind = fit_linear_head(txt_tr, y_tr, multilabel=True, seed=args.seed)
-        pred_blind = clf_blind.predict(txt_te)
-        m_blind = metric_dict(y_te, pred_blind)
-        baseline_rows.append({
-            "Configuration": f"Multimodal test set (without images, {exp['regime']})",
-            "Prompting": exp["prompt"],
-            "Model": "Blind Text (ClassifierChain)",
-            "Macro F1": m_blind["Macro F1"],
-            "Micro F1": m_blind["Micro F1"],
-            "Subset Acc.": m_blind["Accuracy"],
-        })
+        print(f"\nExtracting text features for {reg['case_id']}: {reg['label']} from {ckpt_path} ...")
+        txt_tr_raw, _ = extract_text_features(reg["tr_texts"], ckpt_path, device, batch_size=args.batch_size)
+        txt_te_raw, _ = extract_text_features(reg["te_texts"], ckpt_path, device, batch_size=args.batch_size)
 
-        # B. Dual-Encoder Head
-        clf_de = fit_linear_head(de_tr, y_tr, multilabel=True, seed=args.seed)
-        pred_de = clf_de.predict(de_te)
-        m_de = metric_dict(y_te, pred_de)
-        baseline_rows.append({
-            "Configuration": f"Multimodal test set with images (Dual-Encoder, {exp['regime']})",
-            "Prompting": exp["prompt"],
-            "Model": "Dual-Encoder (BERT + ViT-224)",
-            "Macro F1": m_de["Macro F1"],
-            "Micro F1": m_de["Micro F1"],
-            "Subset Acc.": m_de["Accuracy"],
-        })
+        scaler_txt = StandardScaler().fit(txt_tr_raw)
+        txt_tr_std = scaler_txt.transform(txt_tr_raw)
+        txt_te_std = scaler_txt.transform(txt_te_raw)
 
-        # Semiotic Subsets for Dual-Encoder
-        sub_m = compute_subset_metrics(y_te, pred_de, types_te, multilabel=True)
-        subset_rows.append({
-            "Model Setting": f"Dual-Encoder ({exp['regime']})",
-            "ADD (N=68)": sub_m["ADD"]["Micro F1"],
-            "PAR (N=23)": sub_m["PAR"]["Micro F1"],
-            "DIV (N=38)": sub_m["DIV"]["Micro F1"],
-        })
+        for scaling in ["raw", "std"]:
+            if scaling == "raw":
+                t_tr, t_te = txt_tr_raw, txt_te_raw
+                v_tr, v_te = vit_tr_raw, vit_te_raw
+            else:
+                t_tr, t_te = txt_tr_std, txt_te_std
+                v_tr, v_te = vit_tr_std, vit_te_std
+
+            de_tr = np.hstack([t_tr, v_tr])
+            de_te = np.hstack([t_te, v_te])
+
+            variants = [
+                ("Blind Text (ClassifierChain)", f"Multimodal test set (without images, {reg['label']}, {scaling})", t_tr, t_te),
+                ("Dual-Encoder (FEEL-IT + ViT-224)", f"Multimodal test set with images (Dual-Encoder, {reg['label']}, {scaling})", de_tr, de_te),
+            ]
+
+            for model_name, cfg_name, X_tr_use, X_te_use in variants:
+                clf = fit_linear_head(X_tr_use, y_tr, multilabel=True, seed=args.seed)
+                pred = clf.predict(X_te_use).astype(int)
+                m = metric_dict(y_te, pred)
+                per_lbl_f1 = f1_score(y_te, pred, average=None, zero_division=0)
+
+                row = {
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Train Relation": reg["train_rel"],
+                    "Eval Relation": reg["eval_rel"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                    "Configuration": cfg_name,
+                    "Macro F1": m["Macro F1"],
+                    "Micro F1": m["Micro F1"],
+                    "Weighted F1": m["Weighted F1"],
+                    "Subset Acc.": m["Accuracy"],
+                }
+                for i, emo_lbl in enumerate(EMOTION_LABELS):
+                    row[f"{emo_lbl} F1"] = float(per_lbl_f1[i])
+                baseline_rows.append(row)
+
+                sub_m = compute_subset_metrics(y_te, pred, types_te, multilabel=True)
+                subset_rows.append({
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                    "Model Setting": f"{model_name} ({reg['label']}, {scaling})",
+                    "ADD (N=68)": sub_m["ADD"]["Micro F1"],
+                    "PAR (N=23)": sub_m["PAR"]["Micro F1"],
+                    "DIV (N=38)": sub_m["DIV"]["Micro F1"],
+                    "ADD Macro F1": sub_m["ADD"]["Macro F1"],
+                    "PAR Macro F1": sub_m["PAR"]["Macro F1"],
+                    "DIV Macro F1": sub_m["DIV"]["Macro F1"],
+                    "Macro F1": m["Macro F1"],
+                    "Micro F1": m["Micro F1"],
+                })
+
+                meta = {
+                    "Task": "Task 1: Emotion (Multimodal mm_test)",
+                    "Case": reg["case_id"],
+                    "Regime": reg["label"],
+                    "Checkpoint": reg["ckpt"],
+                    "Prompting": reg["prompt"],
+                    "Model": model_name,
+                    "Scaling": scaling,
+                }
+                report_dfs.append(build_classification_report_df(y_te, pred, EMOTION_LABELS, meta, multilabel=True))
+                df_2x2, df_cooc = build_multilabel_cm_dfs(y_te, pred, EMOTION_LABELS, meta)
+                cm_2x2_dfs.append(df_2x2)
+                cooc_10x10_dfs.append(df_cooc)
 
     df_base = pd.DataFrame(baseline_rows)
     df_sub = pd.DataFrame(subset_rows)
 
     df_base.to_csv(res_dir / "multimodal_emotion_baselines.csv", index=False)
     df_sub.to_csv(res_dir / "multimodal_emotion_subsets.csv", index=False)
+    if report_dfs:
+        pd.concat(report_dfs, ignore_index=True).to_csv(res_dir / "multimodal_emotion_classification_reports.csv", index=False)
+    if cm_2x2_dfs:
+        pd.concat(cm_2x2_dfs, ignore_index=True).to_csv(res_dir / "multimodal_emotion_confusion_matrices_2x2.csv", index=False)
+    if cooc_10x10_dfs:
+        pd.concat(cooc_10x10_dfs, ignore_index=True).to_csv(res_dir / "multimodal_emotion_cooccurrence_matrices_10x10.csv", index=False)
 
     print("\n" + "=" * 80)
-    print("TASK 1: MULTIMODAL EMOTION BASELINES (mm_test, N=129) [Table I]")
+    print("TASK 1: MULTIMODAL EMOTION BASELINES (mm_test, N=129)")
     print("=" * 80)
-    print(df_base[["Configuration", "Macro F1", "Micro F1", "Subset Acc."]].round(3).to_string(index=False))
+    if not df_base.empty:
+        print(df_base[["Case", "Regime", "Model", "Scaling", "Macro F1", "Micro F1", "Subset Acc."]].round(4).to_string(index=False))
 
     print("\n" + "=" * 80)
-    print("TASK 1: SEMIOTIC SUBSETS MICRO F1 [Table III]")
+    print("TASK 1: SEMIOTIC SUBSETS MICRO F1")
     print("=" * 80)
-    print(df_sub.round(2).to_string(index=False))
+    if not df_sub.empty:
+        print(df_sub[["Case", "Regime", "Model", "Scaling", "ADD (N=68)", "PAR (N=23)", "DIV (N=38)", "Macro F1"]].round(4).to_string(index=False))
     return df_base, df_sub
 
 
 if __name__ == "__main__":
     main()
-

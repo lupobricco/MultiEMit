@@ -1,10 +1,12 @@
 """
 Task 2: Textual Irony & Sarcasm Detection (UmBERTo / RoBERTa)
 Implements:
-  1. Step 1 Base: IronITA (80% stratified) + MultiEMiT me_train (Raw text)
-  2. Step 2 Raw Ablation: Initialized from Step 1 -> me_train + mm_train (Raw text)
-  3. Step 2 Oracle: Initialized from Step 1 -> me_train + mm_train (Oracle prompt)
-Evaluates on the exact held-out MultiEMiT textual test split (me_test, N=405, SEED=42).
+  1. Step 1 Base (Raw): IronITA (80% stratified) + MultiEMiT me_train (Raw text) -> irony_textual_no_corr
+  2. Step 2 Raw (Ablation): Initialized from Step 1 -> me_train + mm_train (Raw text) -> irony_textual_step2_raw
+  3. Step 2 Oracle (Train: no rel): Initialized from Step 1 -> me_train + mm_train (Oracle w/o rel) -> irony_textual_corr
+  4. Step 2 Oracle (Train: +rel): Initialized from Step 1 -> me_train + mm_train (Oracle w/ +rel on mm_train) -> irony_textual_corr_with_rel
+Evaluates on the exact held-out MultiEMiT textual test split (me_test, N=405, SPLIT_SEED=42)
+and exports summary metrics, per-label classification_reports, and 3x3 confusion matrices.
 """
 
 import os
@@ -14,6 +16,7 @@ import numpy as np
 import pandas as pd
 import torch
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
@@ -24,6 +27,7 @@ from datasets import Dataset
 
 from common_utils import (
     IRONY_LABELS,
+    RELATION_LABELS,
     SPLIT_SEED,
     MAX_LENGTH,
     setup_console,
@@ -32,6 +36,8 @@ from common_utils import (
     row_to_irony_class,
     oracle_prompt,
     metric_dict,
+    build_classification_report_df,
+    build_singlelabel_cm_df,
     resolve_checkpoint,
 )
 
@@ -91,12 +97,18 @@ def main():
     iron_tr, _ = train_test_split(df_ironita, test_size=0.2, random_state=SPLIT_SEED, stratify=df_ironita["label"])
 
     # 2. Load MultiEMiT Textual
-    df_me_raw = pd.read_csv(paths["me_textual"])
+    df_me_raw = pd.read_csv(paths["me_textual"]).fillna(0)
+    for c in RELATION_LABELS:
+        if c not in df_me_raw.columns:
+            df_me_raw[c] = 0
     df_me_raw["label"] = df_me_raw.apply(row_to_irony_class, axis=1)
     me_tr, me_te = train_test_split(df_me_raw, test_size=0.2, random_state=SPLIT_SEED)
 
     # 3. Load MultiEMiT Multimodal Train
-    df_mm_tr = pd.read_csv(paths["mm_train"])
+    df_mm_tr = pd.read_csv(paths["mm_train"]).fillna(0)
+    for c in RELATION_LABELS:
+        if c not in df_mm_tr.columns:
+            df_mm_tr[c] = 0
     df_mm_tr["label"] = df_mm_tr.apply(row_to_irony_class, axis=1)
 
     print(f"Data Partitions: IronITA Train={len(iron_tr)}, me_train={len(me_tr)}, mm_train={len(df_mm_tr)}, me_test={len(me_te)}")
@@ -108,10 +120,12 @@ def main():
 
     ds_me_te_raw = to_hf_dataset(me_te, "text")
 
-    # Oracle Prompted me_test
+    # Oracle Prompted me_test (textual dataset has no image/relation)
     me_te_corr = me_te.copy()
     me_te_corr["text_corr"] = oracle_prompt(me_te_corr, "irony", with_relation=False)
     ds_me_te_corr = to_hf_dataset(me_te_corr, "text_corr")
+
+    df_comb_base = pd.concat([me_tr, df_mm_tr], ignore_index=True).fillna(0)
 
     stages = [
         {
@@ -133,24 +147,28 @@ def main():
             "prompt": "Raw",
         },
         {
-            "name": "Step 2 Oracle (With Corr)",
+            "name": "Step 2 Oracle (Train: no rel)",
             "dir_name": "irony_textual_corr",
             "init_from": "irony_textual_no_corr",
-            "train_df": (
-                lambda: (
-                    df_comb := pd.concat([me_tr, df_mm_tr], ignore_index=True),
-                    df_comb.assign(text_corr=oracle_prompt(df_comb, "irony", with_relation=False)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True)
-                )[1]
-            )(),
+            "train_df": df_comb_base.assign(text_corr=oracle_prompt(df_comb_base, "irony", with_relation=False)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
             "text_col": "text_corr",
             "eval_ds": ds_me_te_corr,
-            "prompt": "Oracle (no rel)",
+            "prompt": "Oracle (Train: no rel, Eval: no rel)",
+        },
+        {
+            "name": "Step 2 Oracle (Train: +rel)",
+            "dir_name": "irony_textual_corr_with_rel",
+            "init_from": "irony_textual_no_corr",
+            "train_df": df_comb_base.assign(text_corr=oracle_prompt(df_comb_base, "irony", with_relation=True)).sample(frac=1.0, random_state=args.seed).reset_index(drop=True),
+            "text_col": "text_corr",
+            "eval_ds": ds_me_te_corr,
+            "prompt": "Oracle (Train: +rel, Eval: no rel)",
         },
     ]
 
-    from sklearn.metrics import f1_score
-
     results = []
+    report_dfs = []
+    cm_dfs = []
 
     for st in stages:
         out_p = ckpt_dir / st["dir_name"]
@@ -214,13 +232,14 @@ def main():
 
         preds_out = trainer.predict(st["eval_ds"])
         preds = np.argmax(preds_out.predictions, axis=-1)
-        y_true = np.array(st["eval_ds"]["labels"])
+        y_true = np.array(st["eval_ds"]["labels"], dtype=int)
 
         m = metric_dict(y_true, preds)
-        per_class_f1 = f1_score(y_true, preds, average=None, zero_division=0)
+        per_class_f1 = f1_score(y_true, preds, labels=[0, 1, 2], average=None, zero_division=0)
 
         rec = {
             "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
             "Prompt": st["prompt"],
             "N Test": len(y_true),
             "Micro F1 (= Acc)": m["Accuracy"],
@@ -232,8 +251,19 @@ def main():
         }
         results.append(rec)
 
+        meta = {
+            "Task": "Task 2: Irony (Textual me_test)",
+            "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
+            "Prompt": st["prompt"],
+        }
+        report_dfs.append(build_classification_report_df(y_true, preds, IRONY_LABELS, meta, multilabel=False))
+        cm_dfs.append(build_singlelabel_cm_df(y_true, preds, IRONY_LABELS, meta))
+
     df_res = pd.DataFrame(results)
     df_res.to_csv(res_dir / "train_textual_irony_summary.csv", index=False)
+    pd.concat(report_dfs, ignore_index=True).to_csv(res_dir / "textual_irony_classification_reports.csv", index=False)
+    pd.concat(cm_dfs, ignore_index=True).to_csv(res_dir / "textual_irony_confusion_matrices.csv", index=False)
 
     print("\n" + "=" * 80)
     print("TASK 2: TEXTUAL IRONY BENCHMARK (me_test, N=405)")
@@ -244,4 +274,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

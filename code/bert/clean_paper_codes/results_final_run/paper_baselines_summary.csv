@@ -1,0 +1,17 @@
+Task,Section,Configuration,Macro F1,Micro F1 / Acc
+Emotion Detection,"Textual Test Set (me_test, N=405)",Textual test set (No correlations),0.5091674567839571,0.5403445149592022
+Emotion Detection,"Textual Test Set (me_test, N=405)",Textual test set (With correlations),0.5348744352112516,0.5529622980251346
+Emotion Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, No corr.)",0.3564811577311577,0.4313725490196078
+Emotion Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set with images (Dual-Encoder, No corr.)",0.4067854303883716,0.4289855072463768
+Emotion Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, With corr.)",0.4343221775543939,0.5183098591549296
+Emotion Detection,"Multimodal Test Set (mm_test, N=129)",Multimodal test set with images and correlations (Dual-Encoder),0.4967442831808514,0.5534591194968553
+Irony Detection,"Textual Test Set (me_test, N=405)",Textual test set (No correlations),0.425339840524519,0.7481481481481481
+Irony Detection,"Textual Test Set (me_test, N=405)",Textual test set (With correlations),0.4722905302471865,0.7654320987654321
+Irony Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, No corr., std)",0.5397051981559023,0.8062015503875969
+Irony Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set with images (Dual-Encoder, No corr., std)",0.420335828786533,0.7829457364341085
+Irony Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, With corr., std)",0.3721607454863133,0.7209302325581395
+Irony Detection,"Multimodal Test Set (mm_test, N=129)","Multimodal test set with images and correlations (Dual-Encoder, std)",0.6018808777429467,0.813953488372093
+Semiotic Relation,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, No corr.)",0.4964756524078558,0.5891472868217055
+Semiotic Relation,"Multimodal Test Set (mm_test, N=129)","Multimodal test set with images (Dual-Encoder, No corr.)",0.6146695681579403,0.6356589147286822
+Semiotic Relation,"Multimodal Test Set (mm_test, N=129)","Multimodal test set (without images, With corr.)",0.6050844580256345,0.6124031007751938
+Semiotic Relation,"Multimodal Test Set (mm_test, N=129)",Multimodal test set with images and correlations (Dual-Encoder),0.6129724067046173,0.6201550387596899

@@ -1,6 +1,7 @@
 """
 Common utilities for the MultiEMiT paper-ready experimental pipeline.
-Implements data loading, prompt generation, metric computation, and feature extraction
+Implements data loading, prompt generation, metric computation, diagnostic reports
+(classification_report and confusion matrices), and feature extraction
 strictly aligned with the paper synthesis (IEEE Transactions on Affective Computing).
 """
 
@@ -105,31 +106,41 @@ def resolve_checkpoint(ckpt_name: str, local_dir: str = None) -> Path:
 # ----------------------------------------------------------------------------------------
 # Label mappings
 # ----------------------------------------------------------------------------------------
+def _flag(row, col: str) -> int:
+    val = row.get(col, 0)
+    if pd.isna(val):
+        return 0
+    try:
+        return int(float(val))
+    except Exception:
+        return 0
+
+
 def row_to_irony_class(row) -> int:
     """0=None, 1=Ironia, 2=Sarcasmo (priority Sarcasmo > Ironia > None)."""
-    if int(row.get("Sarcasmo", 0)) == 1:
+    if _flag(row, "Sarcasmo") == 1:
         return 2
-    if int(row.get("Ironia", 0)) == 1:
+    if _flag(row, "Ironia") == 1:
         return 1
     return 0
 
 
 def row_to_relation_class(row) -> int:
     """0=Additiva, 1=Divergente, 2=Parallela (priority Parallela > Divergente > Additiva)."""
-    if int(row.get("Parallela", 0)) == 1:
+    if _flag(row, "Parallela") == 1:
         return 2
-    if int(row.get("Divergente", 0)) == 1:
+    if _flag(row, "Divergente") == 1:
         return 1
     return 0
 
 
 def create_type_column(row) -> int:
     """Semiotic subset mask: 1=Additiva (ADD), 2=Parallela (PAR), 3=Divergente (DIV), 0=none."""
-    if int(row.get("Additiva", 0)) == 1:
+    if _flag(row, "Additiva") == 1:
         return 1
-    if int(row.get("Parallela", 0)) == 1:
+    if _flag(row, "Parallela") == 1:
         return 2
-    if int(row.get("Divergente", 0)) == 1:
+    if _flag(row, "Divergente") == 1:
         return 3
     return 0
 
@@ -147,27 +158,27 @@ def build_corr_text(df_in, emotions=False, target=False, irony=False, hate=False
         em, tg, ih, rel = [], [], [], []
         if emotions:
             for c in EMOTION_LABELS:
-                if int(row.get(c, 0)) == 1:
+                if _flag(row, c) == 1:
                     em.append(c.lower())
         if target:
-            if int(row.get("Contenuto", 0)) == 1:
+            if _flag(row, "Contenuto") == 1:
                 tg.append("contenuto")
-            if int(row.get("Contenitore", 0)) == 1:
+            if _flag(row, "Contenitore") == 1:
                 tg.append("contenitore")
         if irony:
-            if int(row.get("Ironia", 0)) == 1:
+            if _flag(row, "Ironia") == 1:
                 ih.append("ironia")
-            if int(row.get("Sarcasmo", 0)) == 1:
+            if _flag(row, "Sarcasmo") == 1:
                 ih.append("sarcasmo")
         if hate:
-            if int(row.get("Offensivita", 0)) == 1:
+            if _flag(row, "Offensivita") == 1:
                 ih.append("offensivita")
         if relations:
-            if int(row.get("Additiva", 0)) == 1:
+            if _flag(row, "Additiva") == 1:
                 rel.append("additiva")
-            if int(row.get("Divergente", 0)) == 1:
+            if _flag(row, "Divergente") == 1:
                 rel.append("divergente")
-            if int(row.get("Parallela", 0)) == 1:
+            if _flag(row, "Parallela") == 1:
                 rel.append("parallela")
 
         text = str(row["text"])
@@ -196,7 +207,7 @@ def oracle_prompt(df, task: str, with_relation: bool = False):
 
 
 # ----------------------------------------------------------------------------------------
-# Metrics & Decoders
+# Metrics, Classification Reports, & Confusion Matrices
 # ----------------------------------------------------------------------------------------
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))
@@ -255,6 +266,116 @@ def compute_subset_metrics(y_true, y_pred, types, multilabel: bool) -> dict:
             "Accuracy": float(accuracy_score(yt, yp)),
         }
     return res
+
+
+def build_classification_report_df(y_true, y_pred, label_names: list, meta: dict, multilabel: bool = False) -> pd.DataFrame:
+    """Builds a tidy DataFrame from sklearn.metrics.classification_report for every label + averages."""
+    from sklearn.metrics import classification_report
+    y_true_arr = np.asarray(y_true, dtype=int)
+    y_pred_arr = np.asarray(y_pred, dtype=int)
+    if multilabel:
+        rep = classification_report(
+            y_true_arr,
+            y_pred_arr,
+            target_names=label_names,
+            output_dict=True,
+            zero_division=0,
+        )
+    else:
+        rep = classification_report(
+            y_true_arr,
+            y_pred_arr,
+            labels=list(range(len(label_names))),
+            target_names=label_names,
+            output_dict=True,
+            zero_division=0,
+        )
+
+    rows = []
+    ordered_keys = list(label_names) + [k for k in ["micro avg", "macro avg", "weighted avg", "samples avg", "accuracy"] if k in rep]
+    for k in ordered_keys:
+        val = rep[k]
+        row = dict(meta)
+        row["Label"] = k
+        if isinstance(val, dict):
+            row["Precision"] = float(val.get("precision", 0.0))
+            row["Recall"] = float(val.get("recall", 0.0))
+            row["F1-Score"] = float(val.get("f1-score", 0.0))
+            row["Support"] = int(val.get("support", 0))
+        else:
+            row["Precision"] = float(val)
+            row["Recall"] = float(val)
+            row["F1-Score"] = float(val)
+            row["Support"] = int(len(y_true_arr))
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def build_singlelabel_cm_df(y_true, y_pred, label_names: list, meta: dict) -> pd.DataFrame:
+    """Builds a KxK confusion matrix DataFrame for single-label tasks (rows=True, cols=Pred_<label>)."""
+    from sklearn.metrics import confusion_matrix
+    cm = confusion_matrix(y_true, y_pred, labels=list(range(len(label_names))))
+    rows = []
+    for i, true_name in enumerate(label_names):
+        row = dict(meta)
+        row["True_Label"] = true_name
+        for j, pred_name in enumerate(label_names):
+            row[f"Pred_{pred_name}"] = int(cm[i, j])
+        row["Total_True"] = int(cm[i, :].sum())
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def build_multilabel_cm_dfs(y_true, y_pred, label_names: list, meta: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    For multi-label classification (e.g., 10-class Emotion):
+      1. Returns per-label 2x2 confusion matrix DataFrame (TN, FP, FN, TP, Precision, Recall, F1, Support).
+      2. Returns 10x10 Gold-vs-Predicted Emotion Co-occurrence Matrix DataFrame (plus Pred_None).
+    """
+    from sklearn.metrics import multilabel_confusion_matrix
+    y_true_arr = np.asarray(y_true, dtype=int)
+    y_pred_arr = np.asarray(y_pred, dtype=int)
+    mcm = multilabel_confusion_matrix(y_true_arr, y_pred_arr)
+
+    rows_2x2 = []
+    for i, lbl in enumerate(label_names):
+        tn, fp, fn, tp = mcm[i].ravel()
+        prec = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
+        rec = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
+        f1 = float(2 * tp / (2 * tp + fp + fn)) if (2 * tp + fp + fn) > 0 else 0.0
+        row = dict(meta)
+        row.update({
+            "Label": lbl,
+            "TN": int(tn),
+            "FP": int(fp),
+            "FN": int(fn),
+            "TP": int(tp),
+            "Precision": prec,
+            "Recall": rec,
+            "F1-Score": f1,
+            "Support": int(tp + fn),
+        })
+        rows_2x2.append(row)
+
+    # 10x10 Gold vs Predicted Co-occurrence Matrix
+    cooc_rows = []
+    for i, true_lbl in enumerate(label_names):
+        active_mask = y_true_arr[:, i] == 1
+        row = dict(meta)
+        row["Gold_Emotion"] = true_lbl
+        row["Gold_Support"] = int(active_mask.sum())
+        if active_mask.sum() > 0:
+            sub_pred = y_pred_arr[active_mask]
+            for j, pred_lbl in enumerate(label_names):
+                row[f"Pred_{pred_lbl}"] = int(sub_pred[:, j].sum())
+            row["Pred_None"] = int((sub_pred.sum(axis=1) == 0).sum())
+        else:
+            for pred_lbl in label_names:
+                row[f"Pred_{pred_lbl}"] = 0
+            row["Pred_None"] = 0
+        cooc_rows.append(row)
+
+    return pd.DataFrame(rows_2x2), pd.DataFrame(cooc_rows)
 
 
 # ----------------------------------------------------------------------------------------
@@ -319,4 +440,3 @@ def fit_linear_head(X_train, y_train, multilabel: bool, seed: int = 42):
         warnings.simplefilter("ignore")
         clf.fit(X_train, y_train)
     return clf
-

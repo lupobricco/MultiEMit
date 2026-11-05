@@ -1,9 +1,10 @@
 """
 Task 3: Textual Semiotic Relation Classification (UmBERTo / RoBERTa)
 Implements:
-  1. Stage A Raw: UmBERTo fine-tuned on mm_train (516 rows, raw text)
-  2. Stage B Oracle: UmBERTo fine-tuned on mm_train (516 rows, Oracle prompt)
-Evaluates on the held-out MultiEMiT multimodal test split (mm_test, N=129, SEED=42).
+  1. Stage A Raw: UmBERTo fine-tuned on mm_train (516 rows, raw text) -> relation_textual_no_corr
+  2. Stage B Oracle: UmBERTo fine-tuned on mm_train (516 rows, Oracle prompt) -> relation_textual_corr
+Evaluates on the held-out MultiEMiT multimodal test split (mm_test, N=129, SPLIT_SEED=42)
+and exports summary metrics, per-label classification_reports, and 3x3 confusion matrices.
 """
 
 import os
@@ -30,6 +31,8 @@ from common_utils import (
     row_to_relation_class,
     oracle_prompt,
     metric_dict,
+    build_classification_report_df,
+    build_singlelabel_cm_df,
     resolve_checkpoint,
 )
 
@@ -80,8 +83,8 @@ def main():
         return enc
 
     # Load Data
-    df_tr = pd.read_csv(paths["mm_train"])
-    df_te = pd.read_csv(paths["mm_test"])
+    df_tr = pd.read_csv(paths["mm_train"]).fillna(0)
+    df_te = pd.read_csv(paths["mm_test"]).fillna(0)
     df_tr["label"] = df_tr.apply(row_to_relation_class, axis=1)
     df_te["label"] = df_te.apply(row_to_relation_class, axis=1)
 
@@ -120,6 +123,8 @@ def main():
     ]
 
     results = []
+    report_dfs = []
+    cm_dfs = []
 
     for st in stages:
         out_p = ckpt_dir / st["dir_name"]
@@ -180,13 +185,14 @@ def main():
 
         preds_out = trainer.predict(st["eval_ds"])
         preds = np.argmax(preds_out.predictions, axis=-1)
-        y_true = np.array(st["eval_ds"]["labels"])
+        y_true = np.array(st["eval_ds"]["labels"], dtype=int)
 
         m = metric_dict(y_true, preds)
-        per_class_f1 = f1_score(y_true, preds, average=None, zero_division=0)
+        per_class_f1 = f1_score(y_true, preds, labels=[0, 1, 2], average=None, zero_division=0)
 
         rec = {
             "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
             "Prompt": st["prompt"],
             "N Test": len(y_true),
             "Micro F1 (= Acc)": m["Accuracy"],
@@ -198,8 +204,19 @@ def main():
         }
         results.append(rec)
 
+        meta = {
+            "Task": "Task 3: Relation (Textual mm_test)",
+            "Regime": st["name"],
+            "Checkpoint": st["dir_name"],
+            "Prompt": st["prompt"],
+        }
+        report_dfs.append(build_classification_report_df(y_true, preds, RELATION_LABELS, meta, multilabel=False))
+        cm_dfs.append(build_singlelabel_cm_df(y_true, preds, RELATION_LABELS, meta))
+
     df_res = pd.DataFrame(results)
     df_res.to_csv(res_dir / "train_textual_relation_summary.csv", index=False)
+    pd.concat(report_dfs, ignore_index=True).to_csv(res_dir / "textual_relation_classification_reports.csv", index=False)
+    pd.concat(cm_dfs, ignore_index=True).to_csv(res_dir / "textual_relation_confusion_matrices.csv", index=False)
 
     print("\n" + "=" * 80)
     print("TASK 3: TEXTUAL SEMIOTIC RELATION BENCHMARK (mm_test, N=129)")
@@ -210,4 +227,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
