@@ -1,0 +1,13 @@
+Task,Case,Model Setting,Prompting,Scaling,ADD (N=68),PAR (N=23),DIV (N=38),Overall Macro F1
+Emotion Detection (Micro F1),Case 1,"Dual-Encoder (FEEL-IT + ViT-224) (Step 1 Base (No corr), raw)",None (Raw),raw,0.48314606741573035,0.39285714285714285,0.37735849056603776,0.4423157365881824
+Emotion Detection (Micro F1),Case 2,"Dual-Encoder (FEEL-IT + ViT-224) (Step 2 Raw (No corr), raw)",None (Raw),raw,0.5862068965517241,0.5882352941176471,0.2736842105263158,0.476111983498478
+Emotion Detection (Micro F1),Case 3,"Dual-Encoder (FEEL-IT + ViT-224) (Step 2 Oracle (Train: no rel, Eval: no rel), raw)",Oracle (no rel),raw,0.5649717514124294,0.6,0.4,0.522183143653732
+Emotion Detection (Micro F1),Case 4,"Dual-Encoder (FEEL-IT + ViT-224) (Step 2 Oracle (Train: no rel, Eval: +rel), raw)",Oracle (+ rel),raw,0.5476190476190477,0.5882352941176471,0.3404255319148936,0.3931425549747446
+Emotion Detection (Micro F1),Case 5,"Dual-Encoder (FEEL-IT + ViT-224) (Step 2 Oracle (Train: +rel, Eval: no rel), raw)",Oracle (no rel),raw,0.5824175824175825,0.6181818181818182,0.45161290322580644,0.5431391591862978
+Emotion Detection (Micro F1),Case 6,"Dual-Encoder (FEEL-IT + ViT-224) (Step 2 Oracle (Train: +rel, Eval: +rel), raw)",Oracle (+ rel),raw,0.5061728395061729,0.4897959183673469,0.449438202247191,0.4743842042958238
+Irony Detection (Accuracy / Micro F1),Case 1,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 1 Base (No corr))",None (Raw),raw,0.8382352941176471,0.9565217391304348,0.6052631578947368,0.5046496733700525
+Irony Detection (Accuracy / Micro F1),Case 2,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 2 Raw (No corr))",None (Raw),raw,0.8970588235294118,0.8260869565217391,0.5526315789473685,0.5083333333333333
+Irony Detection (Accuracy / Micro F1),Case 3,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 2 Oracle (Train: no rel, Eval: no rel))",Oracle (no rel),raw,0.8382352941176471,0.9130434782608695,0.5,0.4320562491031712
+Irony Detection (Accuracy / Micro F1),Case 4,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 2 Oracle (Train: no rel, Eval: +rel))",Oracle (+ rel),raw,0.7941176470588235,0.8695652173913043,0.5526315789473685,0.41938775510204085
+Irony Detection (Accuracy / Micro F1),Case 5,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 2 Oracle (Train: +rel, Eval: no rel))",Oracle (no rel),raw,0.8529411764705882,0.9130434782608695,0.6052631578947368,0.4438388625592417
+Irony Detection (Accuracy / Micro F1),Case 6,"Dual-Encoder (UmBERTo + ViT-224, raw) (Step 2 Oracle (Train: +rel, Eval: +rel))",Oracle (+ rel),raw,0.8823529411764706,0.9130434782608695,0.5526315789473685,0.4462989840348331

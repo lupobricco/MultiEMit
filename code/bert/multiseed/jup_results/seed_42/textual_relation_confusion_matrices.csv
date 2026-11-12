@@ -1,0 +1,7 @@
+Seed,Task,Regime,Checkpoint,Prompt,True_Label,Pred_Additiva,Pred_Divergente,Pred_Parallela,Total_True
+42,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Additiva,60,6,2,68
+42,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Divergente,15,21,2,38
+42,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Parallela,18,0,5,23
+42,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Additiva,60,5,3,68
+42,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Divergente,19,19,0,38
+42,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Parallela,12,0,11,23

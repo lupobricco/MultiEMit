@@ -1,0 +1,19 @@
+Category,Italian_Tag,Layer,Textual_N2023,Multimodal_N645,Paired_TextOnly_N628,Paired_WithImage_N628,Delta_Gain,Pct_Gain
+Love,Amore,Emotion,0.337,0.159,0.27,0.159,-0.111,-41.22
+Anticipation,Anticipazione,Emotion,0.35,0.573,0.469,0.573,0.104,22.29
+Disgust,Disgusto,Emotion,0.434,0.522,0.518,0.522,0.005,0.88
+Trust,Fiducia,Emotion,0.431,0.515,0.444,0.515,0.072,16.13
+Joy,Gioia,Emotion,0.397,0.39,0.451,0.39,-0.062,-13.68
+Fear,Paura,Emotion,0.393,0.215,0.172,0.215,0.043,24.73
+Anger,Rabbia,Emotion,0.337,0.454,0.353,0.454,0.101,28.51
+Surprise,Sorpresa,Emotion,0.176,0.255,0.246,0.255,0.009,3.68
+Sadness,Tristezza,Emotion,0.431,0.312,0.272,0.312,0.039,14.48
+Neutral,Neutro,Emotion,0.301,0.359,0.274,0.359,0.085,31.01
+Irony,Ironia,Irony,0.499,0.596,0.426,0.596,0.171,40.04
+Sarcasm,Sarcasmo,Irony,0.16,0.319,0.302,0.319,0.018,5.86
+Container,Contenitore,Target,0.523,0.546,0.512,0.546,0.034,6.64
+Content,Contenuto,Target,0.565,0.657,0.474,0.657,0.183,38.59
+Offensive,Offensivita,Offensiveness,0.468,0.549,0.37,0.549,0.179,48.56
+Additive,Additiva,Semiotic Relation,,0.461,,0.461,,
+Divergent,Divergente,Semiotic Relation,,0.675,,0.675,,
+Parallel,Parallela,Semiotic Relation,,0.364,,0.364,,

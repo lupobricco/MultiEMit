@@ -1,3 +1,0 @@
-Task,Stage,Regime,Prefix,Model,Features,N Test,Micro F1,Macro F1,Weighted F1,Accuracy,Notes
-Semiotic Relation Detection (3-Class Single-Label),Textual (mm_test),Stage A: MM Train Raw,No,UmBERTo (fine-tuned),-,129,0.6511627906976745,0.4690031701303276,0.584360690383938,0.6511627906976745,
-Semiotic Relation Detection (3-Class Single-Label),Textual (mm_test),Stage B: MM Train Oracle,Oracle,UmBERTo (fine-tuned),-,129,0.627906976744186,0.5428576666758335,0.6075754659039866,0.627906976744186,

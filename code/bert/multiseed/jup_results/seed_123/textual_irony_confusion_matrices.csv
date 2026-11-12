@@ -1,0 +1,13 @@
+Seed,Task,Regime,Checkpoint,Prompt,True_Label,Pred_None,Pred_Ironia,Pred_Sarcasmo,Total_True
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,None,275,37,6,318
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,Ironia,53,24,2,79
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,Sarcasmo,5,1,2,8
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,None,291,25,2,318
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,Ironia,54,25,0,79
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,Sarcasmo,4,2,2,8
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",None,266,49,3,318
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Ironia,41,36,2,79
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Sarcasmo,2,4,2,8
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",None,280,35,3,318
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Ironia,50,27,2,79
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Sarcasmo,4,2,2,8

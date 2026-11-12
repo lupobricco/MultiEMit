@@ -1,0 +1,25 @@
+Seed,Task,Regime,Checkpoint,Prompt,Label,Precision,Recall,F1-Score,Support
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,None,0.8258258258258259,0.8647798742138365,0.8448540706605223,318
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,Ironia,0.3870967741935484,0.3037974683544304,0.3404255319148936,79
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,Sarcasmo,0.2,0.25,0.2222222222222222,8
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,macro avg,0.47097420000645807,0.4728591141894223,0.469167274932546,405
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,weighted avg,0.7278845870960566,0.7432098765432099,0.7341604673311124,405
+123,Task 2: Irony (Textual me_test),Step 1 Base (Raw),irony_textual_no_corr,Raw,accuracy,0.7432098765432099,0.7432098765432099,0.7432098765432099,405
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,None,0.833810888252149,0.9150943396226415,0.8725637181409296,318
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,Ironia,0.4807692307692308,0.31645569620253167,0.3816793893129771,79
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,Sarcasmo,0.5,0.25,0.3333333333333333,8
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,macro avg,0.6048600396737932,0.4938500119417244,0.52919214692908,405
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,weighted avg,0.7583521770245742,0.7851851851851852,0.7661595081264382,405
+123,Task 2: Irony (Textual me_test),Step 2 Raw (Ablation),irony_textual_step2_raw,Raw,accuracy,0.7851851851851852,0.7851851851851852,0.7851851851851852,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",None,0.86084142394822,0.8364779874213837,0.8484848484848485,318
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Ironia,0.4044943820224719,0.45569620253164556,0.42857142857142855,79
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Sarcasmo,0.2857142857142857,0.25,0.26666666666666666,8
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",macro avg,0.5170166972283258,0.5140580633176765,0.5145743145743146,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",weighted avg,0.7604650451383298,0.7506172839506173,0.7550831061942173,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: no rel),irony_textual_corr,"Oracle (Train: no rel, Eval: no rel)",accuracy,0.7506172839506173,0.7506172839506173,0.7506172839506173,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",None,0.8383233532934131,0.8805031446540881,0.8588957055214724,318
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Ironia,0.421875,0.34177215189873417,0.3776223776223776,79
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Sarcasmo,0.2857142857142857,0.25,0.26666666666666666,8
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",macro avg,0.5153042130025662,0.4907584321842741,0.5010615832701723,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",weighted avg,0.746174483044493,0.762962962962963,0.7533193469662455,405
+123,Task 2: Irony (Textual me_test),Step 2 Oracle (Train: +rel),irony_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",accuracy,0.762962962962963,0.762962962962963,0.762962962962963,405

@@ -1,0 +1,13 @@
+Seed,Task,Regime,Checkpoint,Prompt,Label,Precision,Recall,F1-Score,Support
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Additiva,0.6483516483516484,0.8676470588235294,0.7421383647798742,68
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Divergente,0.8,0.5263157894736842,0.6349206349206349,38
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,Parallela,0.5384615384615384,0.30434782608695654,0.3888888888888889,23
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,macro avg,0.6622710622710622,0.5661035581280567,0.5886492961964659,129
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,weighted avg,0.6734304455234689,0.6666666666666666,0.6475723827632559,129
+456,Task 3: Relation (Textual mm_test),Stage A Raw,relation_textual_no_corr,Raw,accuracy,0.6666666666666666,0.6666666666666666,0.6666666666666666,129
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Additiva,0.6122448979591837,0.8823529411764706,0.7228915662650602,68
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Divergente,0.75,0.5526315789473685,0.6363636363636364,38
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,Parallela,0.6666666666666666,0.08695652173913043,0.15384615384615385,23
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,macro avg,0.6763038548752834,0.5073136806209898,0.5043671188249501,129
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,weighted avg,0.6625270263144016,0.6434108527131783,0.595945009506231,129
+456,Task 3: Relation (Textual mm_test),Stage B Oracle,relation_textual_corr,Oracle,accuracy,0.6434108527131783,0.6434108527131783,0.6434108527131783,129

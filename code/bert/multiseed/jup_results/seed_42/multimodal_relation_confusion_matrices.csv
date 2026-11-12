@@ -1,0 +1,25 @@
+Seed,Task,Case,Regime,Checkpoint,Prompting,Model,Scaling,True_Label,Pred_Additiva,Pred_Divergente,Pred_Parallela,Total_True
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,Additiva,51,6,11,68
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,Divergente,15,16,7,38
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,Parallela,8,0,15,23
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Additiva,38,11,19,68
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Divergente,12,20,6,38
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Parallela,4,3,16,23
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,Additiva,52,6,10,68
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,Divergente,24,12,2,38
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,Parallela,7,1,15,23
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Additiva,53,6,9,68
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Divergente,16,21,1,38
+42,Task 3: Relation (Multimodal mm_test),Case 1,Stage A Raw (No corr),relation_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Parallela,15,1,7,23
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, raw)",raw,Additiva,40,23,5,68
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, raw)",raw,Divergente,23,15,0,38
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, raw)",raw,Parallela,6,3,14,23
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Additiva,55,6,7,68
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Divergente,19,18,1,38
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Parallela,11,1,11,23
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, std)",std,Additiva,55,9,4,68
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, std)",std,Divergente,19,19,0,38
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Blind Text (SGD, std)",std,Parallela,13,0,10,23
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, std)",std,Additiva,54,9,5,68
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, std)",std,Divergente,18,19,1,38
+42,Task 3: Relation (Multimodal mm_test),Case 2,Stage B Oracle (With corr),relation_textual_corr,Oracle,"Dual-Encoder (UmBERTo + ViT-224, std)",std,Parallela,16,1,6,23

@@ -1,0 +1,3 @@
+Task,Step 1 Base (Raw),Step 2 Raw Ablation,Step 2 Oracle (Train: no rel),Step 2 Oracle (Train: +rel),Delta (Oracle no-rel vs Step 2 Raw)
+"Emotion Detection (me_test, N=405)",0.5221 Micro / 0.4987 Macro,0.5229 Micro / 0.5047 Macro,0.5464 Micro / 0.5205 Macro,0.5435 Micro / 0.5284 Macro,+0.0235 Micro / +0.0158 Macro
+"Irony Detection (me_test, N=405)",0.7383 Acc / 0.4805 Macro,0.7432 Acc / 0.5404 Macro,0.7901 Acc / 0.5418 Macro,0.7901 Acc / 0.5329 Macro,+0.0469 Acc / +0.0014 Macro

@@ -1,0 +1,181 @@
+<mxfile host="app.diagrams.net" modified="2026-11-11T10:58:00.000Z" agent="MultiEMiT" version="24.0.0" type="device">
+  <diagram id="multiemit-pipeline" name="MultiEMiT Minimalist Schematic">
+    <mxGraphModel dx="1350" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1320" pageHeight="650" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==================== 1. LEFT: DATASETS & CORRELATION PROMPT ==================== -->
+        <mxCell id="ext_data" value="&lt;b&gt;EXTERNAL CORPORA&lt;br&gt;(EMiT &amp;amp; IronITA)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=12;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="25" y="45" width="210" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="me_text" value="&lt;b&gt;MULTIEMIT&lt;br&gt;TEXTUAL&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=12;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="25" y="135" width="210" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="me_mm" value="&lt;b&gt;MULTIEMIT&lt;br&gt;MULTIMODAL&lt;br&gt;(Text + Image)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=12;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="25" y="310" width="210" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="corr_box" value="&lt;b&gt;CORRELATION&lt;br&gt;PROMPTING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E7;strokeColor=#C98A2C;strokeWidth=1.8;dashed=1;fontSize=12;fontColor=#7A4F08;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="25" y="465" width="210" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 2A. TOP: TEXT ENCODER FINE-TUNING ==================== -->
+        <mxCell id="stage1_box" value="1. TEXT ENCODER FINE-TUNING" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#154360;fillColor=#E3F2FD;strokeColor=#7AAAD8;strokeWidth=2;spacingTop=8;arcSize=14;" vertex="1" parent="1">
+          <mxGeometry x="295" y="25" width="695" height="165" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step1" value="&lt;b&gt;STEP 1: WARM-UP&lt;br&gt;(UmBERTo / FEEL-IT)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=12;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="335" y="75" width="220" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="step2" value="&lt;b&gt;STEP 2: IN-DOMAIN FT&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#BCE0FD;&quot;&gt;Textual + MM Train (Text Only)&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#E0E0E0;&quot;&gt;(± Correlation Prompt)&lt;/span&gt;&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=12;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="635" y="75" width="255" height="85" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 2B. MIDDLE: DUAL-ENCODER PIPELINE ==================== -->
+        <mxCell id="stage2_box" value="2. DUAL-ENCODER PIPELINE" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#3B235A;fillColor=#E2D9F3;strokeColor=#A995C9;strokeWidth=2;spacingTop=8;spacingLeft=90;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="295" y="220" width="695" height="245" as="geometry" />
+        </mxCell>
+
+        <mxCell id="de_in_text" value="&lt;b&gt;INPUT TEXT&lt;br&gt;(± Corr.)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=12;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="325" y="275" width="145" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="de_in_img" value="&lt;b&gt;INPUT IMAGE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=12;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="325" y="375" width="145" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="de_text_enc" value="&lt;b&gt;TEXT ENCODER&lt;br&gt;(Frozen BERT)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=12;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="510" y="270" width="165" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="de_img_enc" value="&lt;b&gt;IMAGE ENCODER&lt;br&gt;(Frozen ViT)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=12;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="510" y="370" width="165" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="emb_t" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D9EDF7;strokeColor=#5C9BD5;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="712" y="268" width="20" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="emb_t_lbl" value="Text embeddings" style="text;html=1;align=center;verticalAlign=middle;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="672" y="246" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="emb_i" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8AB6E6;strokeColor=#3B628B;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="712" y="368" width="20" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="emb_i_lbl" value="Image embeddings" style="text;html=1;align=center;verticalAlign=middle;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="667" y="442" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="concat_top" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D9EDF7;strokeColor=#5C9BD5;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="795" y="290" width="22" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="concat_bot" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8AB6E6;strokeColor=#3B628B;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="795" y="358" width="22" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="concat_lbl" value="CONCATENATE" style="text;html=1;align=center;verticalAlign=middle;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="348" width="90" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sgd_box" value="&lt;b&gt;SGDCLASSIFIER&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=13;horizontal=0;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="865" y="275" width="85" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 2C. BOTTOM: PIXTRAL 12B PIPELINE ==================== -->
+        <mxCell id="stage3_box" value="3. GENERATIVE VLM PIPELINE" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;fontColor=#6E2C00;fillColor=#FCE4D6;strokeColor=#D99568;strokeWidth=2;spacingTop=8;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="295" y="495" width="695" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pix_in" value="&lt;b&gt;MULTIMODAL&lt;br&gt;PROMPT (± Corr.)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#9CC3E5;strokeColor=#3B628B;strokeWidth=1.8;fontSize=11.5;fontColor=#0F2537;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="325" y="540" width="175" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pix_model" value="&lt;b&gt;PIXTRAL 12B&lt;br&gt;(ZS / 3-Shot / LoRA FT)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=12;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="545" y="540" width="220" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pix_post" value="&lt;b&gt;REGEX PARSER&lt;br&gt;(&amp;amp; Truncation)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1F4E79;strokeColor=#102A43;fontColor=#FFFFFF;fontSize=11.5;arcSize=18;" vertex="1" parent="1">
+          <mxGeometry x="810" y="540" width="150" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== 3. RIGHT: PREDICTION BOX ==================== -->
+        <mxCell id="pred_box" value="PREDICTION&lt;hr size=1&gt;&lt;div align=&amp;quot;left&amp;quot;&gt;&lt;font color=&amp;quot;#1F4E79&amp;quot;&gt;&lt;b&gt;Emotion&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Love: 0.15&lt;br&gt;&lt;span style=&amp;quot;background-color:#9CC3E5;&amp;quot;&gt;&lt;b&gt;Anticipation: 0.60&lt;/b&gt;&lt;/span&gt;&lt;br&gt;Trust: 0.20&lt;br&gt;&lt;span style=&amp;quot;background-color:#9CC3E5;&amp;quot;&gt;&lt;b&gt;Joy: 0.85&lt;/b&gt;&lt;/span&gt;&lt;br&gt;&lt;i&gt;... (10 Plutchik classes)&lt;/i&gt;&lt;hr size=1&gt;&lt;font color=&amp;quot;#1F4E79&amp;quot;&gt;&lt;b&gt;Irony&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Unironic | &lt;span style=&amp;quot;background-color:#9CC3E5;&amp;quot;&gt;&lt;b&gt;Irony&lt;/b&gt;&lt;/span&gt; | Sarcasm&lt;hr size=1&gt;&lt;font color=&amp;quot;#1F4E79&amp;quot;&gt;&lt;b&gt;Semiotic Relation&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Additive | Parallel | &lt;span style=&amp;quot;background-color:#9CC3E5;&amp;quot;&gt;&lt;b&gt;Divergent&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontSize=12.5;fillColor=#DDDDDD;strokeColor=#222222;strokeWidth=1.8;spacingTop=8;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1045" y="155" width="250" height="375" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== ARROWS ==================== -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="ext_data" target="step1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="me_text" target="step1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="step1" target="step2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="Freeze" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.2;strokeColor=#1F4E79;fontStyle=1;fontSize=11;exitX=0.25;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="step2" target="de_text_enc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="704" y="204" />
+              <mxPoint x="551" y="204" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" value="Textual Test" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#1F4E79;fontStyle=1;fontSize=11;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="step2" target="pred_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="me_mm" target="de_in_text">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="me_mm" target="de_in_img">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="me_mm" target="pix_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.8;strokeColor=#C98A2C;dashed=1;" edge="1" parent="1" source="corr_box" target="de_in_text">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.8;strokeColor=#C98A2C;dashed=1;" edge="1" parent="1" source="corr_box" target="pix_in">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="de_in_text" target="de_text_enc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="de_in_img" target="de_img_enc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="de_text_enc" target="emb_t">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="de_img_enc" target="emb_i">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="emb_t" target="concat_top">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="emb_i" target="concat_bot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="concat_bot" target="sgd_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" style="edgeStyle=none;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="sgd_box" target="pred_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="pix_in" target="pix_model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2;strokeColor=#222222;" edge="1" parent="1" source="pix_model" target="pix_post">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=2.2;strokeColor=#B85D19;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" edge="1" parent="1" source="pix_post" target="pred_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

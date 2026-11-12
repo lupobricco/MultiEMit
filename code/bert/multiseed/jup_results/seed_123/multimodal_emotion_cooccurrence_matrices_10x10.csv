@@ -1,0 +1,241 @@
+Seed,Task,Case,Regime,Checkpoint,Prompting,Model,Scaling,Gold_Emotion,Gold_Support,Pred_Amore,Pred_Anticipazione,Pred_Disgusto,Pred_Fiducia,Pred_Gioia,Pred_Neutro,Pred_Paura,Pred_Rabbia,Pred_Sorpresa,Pred_Tristezza,Pred_None
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Amore,11,7,0,0,8,1,0,0,0,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Anticipazione,10,0,6,0,1,2,1,0,1,0,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Disgusto,19,1,1,9,1,2,2,0,14,8,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Fiducia,42,10,2,4,21,10,0,0,5,6,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Gioia,29,6,1,7,14,7,0,0,2,1,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Neutro,17,3,3,2,4,1,4,0,3,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Paura,1,0,0,0,0,1,0,0,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Rabbia,6,0,0,2,1,4,0,1,3,3,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Sorpresa,16,0,0,6,5,3,2,2,6,3,2,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,1,0,0,1,1,2,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,5,0,0,8,2,0,0,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,3,4,0,2,3,1,0,0,0,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,3,0,8,1,6,5,0,2,4,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,15,2,1,24,13,6,0,1,7,0,5
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,2,1,2,9,11,6,0,1,7,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,5,0,2,6,4,6,0,2,4,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,1,1,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,2,0,2,1,1,1,0,2,0,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,3,1,4,0,7,4,1,2,4,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,1,1,0,0,0,0,1,1,0,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Amore,11,8,1,1,6,7,1,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Anticipazione,10,0,7,0,5,2,2,4,0,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Disgusto,19,2,1,10,3,3,1,11,10,6,6,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Fiducia,42,9,5,5,24,15,6,9,4,9,6,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Gioia,29,9,2,4,9,17,3,11,1,3,4,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Neutro,17,4,3,2,1,6,8,9,0,2,4,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Paura,1,0,0,0,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Rabbia,6,0,1,3,1,1,0,4,4,3,4,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Sorpresa,16,4,1,7,1,7,2,9,3,6,5,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Blind Text (ClassifierChain),std,Tristezza,2,0,0,2,0,0,0,2,2,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,4,0,0,9,3,0,1,1,0,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,1,1,0,0,1,1,2,0,0,0,5
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,1,0,7,0,5,5,11,2,5,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,11,1,1,28,14,5,8,3,3,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,7,0,6,8,11,7,11,7,6,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,3,1,3,2,3,7,5,2,4,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,1,0,0,0,1,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,0,0,2,0,2,1,4,2,3,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,0,0,4,1,4,4,9,3,8,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 1,Step 1 Base (No corr),emotion_textual_no_corr,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,0,0,0,0,2,1,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Amore,11,6,2,0,7,6,0,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Anticipazione,10,0,6,0,3,4,0,0,0,0,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Disgusto,19,0,1,8,4,2,2,0,9,6,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Fiducia,42,5,5,0,31,14,0,0,0,1,0,5
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Gioia,29,3,5,1,4,17,6,0,0,5,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Neutro,17,0,1,1,4,4,6,0,1,2,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Paura,1,0,0,1,0,0,0,0,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Rabbia,6,0,0,1,2,1,1,2,3,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Sorpresa,16,0,1,4,2,2,4,2,2,7,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,1,0,0,0,1,2,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,8,1,0,4,4,2,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,1,8,0,1,3,2,0,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,2,1,7,3,2,1,0,5,5,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,8,6,0,25,10,5,0,0,2,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,5,3,0,4,15,6,0,0,5,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,4,2,1,2,4,8,0,1,1,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,0,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,1,0,1,1,1,0,0,2,2,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,2,0,2,1,2,3,0,0,6,3,2
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,0,0,1,0,0,0,0,0,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Amore,11,9,2,0,6,5,3,1,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Anticipazione,10,1,8,0,3,2,0,2,0,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Disgusto,19,1,2,8,4,2,2,2,4,5,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Fiducia,42,10,11,1,29,13,8,3,0,4,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Gioia,29,6,7,1,4,15,6,3,0,7,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Neutro,17,4,5,1,2,4,11,1,0,3,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Paura,1,0,0,1,0,0,0,1,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Rabbia,6,1,0,2,2,1,1,2,2,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Sorpresa,16,1,0,0,1,3,6,4,1,7,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Blind Text (ClassifierChain),std,Tristezza,2,0,0,0,0,0,0,2,1,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,9,0,0,5,3,7,1,0,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,1,7,0,2,3,2,3,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,2,2,7,4,2,3,0,3,6,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,14,2,1,30,13,11,3,0,6,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,7,3,3,4,18,11,1,1,5,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,3,1,2,3,5,10,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,2,0,2,1,1,1,1,4,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,2,0,3,1,4,6,2,1,6,4,1
+123,Task 1: Emotion (Multimodal mm_test),Case 2,Step 2 Raw (No corr),emotion_textual_step2_raw,None (Raw),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,0,0,0,0,1,0,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Amore,11,8,7,0,7,5,0,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Anticipazione,10,1,9,0,4,3,0,2,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Disgusto,19,0,2,14,1,1,1,12,6,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Fiducia,42,8,25,2,27,14,1,2,0,3,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Gioia,29,5,24,3,6,21,4,2,0,6,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Neutro,17,1,12,1,2,4,3,1,2,1,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Paura,1,0,0,0,0,0,0,1,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Rabbia,6,0,1,3,1,0,1,4,4,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Sorpresa,16,0,6,2,2,7,5,6,3,8,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,0,0,0,1,2,2,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,3,0,0,9,5,3,0,0,2,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,0,6,0,1,5,0,0,0,0,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,1,1,9,1,2,2,0,4,4,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,3,2,0,32,12,5,0,0,3,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,3,0,1,7,19,4,0,1,5,0,3
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,1,0,1,4,5,8,0,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,1,0,2,1,1,1,0,2,1,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,0,0,0,2,6,1,1,1,5,2,5
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,0,0,0,0,0,0,1,1,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Amore,11,8,0,0,8,4,4,0,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Anticipazione,10,1,7,1,2,3,1,3,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Disgusto,19,0,1,15,2,1,2,9,8,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Fiducia,42,7,4,4,30,13,3,4,1,4,3,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Gioia,29,6,3,3,9,18,6,3,2,9,4,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Neutro,17,3,4,1,2,3,7,3,2,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Paura,1,0,0,1,0,0,0,1,1,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Rabbia,6,0,0,4,1,0,1,3,4,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Sorpresa,16,0,2,7,3,5,3,8,3,9,5,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Blind Text (ClassifierChain),std,Tristezza,2,0,0,2,0,0,0,2,2,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,7,0,0,1,5,5,0,0,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,0,7,0,1,4,1,4,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,1,1,13,1,2,1,17,14,3,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,3,3,1,26,12,4,6,1,5,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,6,1,4,5,20,3,5,4,5,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,3,2,0,4,4,8,2,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,0,0,0,0,1,1,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,0,0,3,1,1,1,4,4,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,0,0,2,3,7,1,8,5,7,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",emotion_textual_corr,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,0,0,0,0,2,2,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Amore,11,9,0,0,5,4,0,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Anticipazione,10,2,6,1,2,1,0,1,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Disgusto,19,1,1,16,1,0,1,3,5,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Fiducia,42,21,4,5,19,9,1,1,0,0,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Gioia,29,18,2,8,2,12,0,0,0,4,4,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Neutro,17,7,3,3,2,1,1,0,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Paura,1,0,0,1,0,0,0,1,1,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Rabbia,6,0,0,3,0,0,1,1,4,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Sorpresa,16,6,1,10,1,1,0,4,3,3,4,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,2,0,0,0,2,2,0,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,5,0,0,10,5,0,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,1,5,0,4,7,0,0,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,1,1,10,4,0,3,0,3,6,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,5,1,0,34,14,3,0,0,4,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,2,0,2,12,21,3,0,1,7,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,3,0,1,10,6,7,0,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,1,0,3,1,0,1,1,2,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,1,0,3,4,6,1,2,1,7,2,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,0,0,1,0,0,0,1,1,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Amore,11,7,0,0,8,4,2,2,0,0,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Anticipazione,10,1,5,0,3,2,1,2,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Disgusto,19,3,1,14,1,1,2,15,6,3,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Fiducia,42,12,2,0,27,11,6,7,0,2,3,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Gioia,29,15,3,2,6,17,3,10,1,11,6,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Neutro,17,9,3,1,4,1,6,5,0,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Paura,1,0,0,0,0,0,0,1,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Rabbia,6,1,0,4,0,0,2,4,3,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Sorpresa,16,4,2,4,1,5,2,10,2,11,5,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Blind Text (ClassifierChain),std,Tristezza,2,0,0,1,0,0,0,2,1,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,5,0,0,6,3,1,2,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,2,7,0,1,3,0,0,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,2,1,11,1,0,1,1,5,3,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,5,4,1,28,11,7,0,0,5,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,8,2,5,5,17,4,1,3,8,3,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,5,2,1,6,0,6,0,4,1,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,0,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,0,0,3,0,0,0,1,3,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,3,0,4,4,4,1,2,2,8,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",emotion_textual_corr,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,0,0,0,0,1,1,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Amore,11,8,0,0,7,1,0,1,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Anticipazione,10,2,7,1,1,3,0,2,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Disgusto,19,0,1,12,2,1,1,10,6,3,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Fiducia,42,7,2,1,30,7,0,2,0,5,0,4
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Gioia,29,5,5,5,6,8,2,1,0,9,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Neutro,17,2,1,4,3,2,5,0,1,1,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Paura,1,0,0,0,0,0,0,1,1,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Rabbia,6,0,0,3,2,1,1,4,3,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Sorpresa,16,0,1,3,4,3,2,3,1,8,2,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,0,0,0,0,2,1,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,4,0,0,6,2,3,0,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,1,4,0,1,5,1,0,0,2,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,0,1,8,3,0,2,0,3,6,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,3,0,0,27,9,2,0,0,8,0,6
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,7,0,0,4,18,6,0,3,11,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,1,0,1,3,4,7,0,0,3,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,0,0,3,0,0,0,1,3,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,1,0,0,1,5,5,2,2,8,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,0,0,0,0,0,0,1,1,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Amore,11,9,0,0,1,3,0,1,1,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Anticipazione,10,1,5,0,2,2,1,1,2,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Disgusto,19,0,1,12,2,1,2,2,6,4,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Fiducia,42,12,2,0,24,10,3,3,2,3,1,3
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Gioia,29,6,1,3,6,11,6,2,2,5,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Neutro,17,5,1,0,3,2,9,3,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Paura,1,0,0,0,0,0,0,1,1,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Rabbia,6,0,0,3,0,1,1,2,4,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Sorpresa,16,1,0,2,3,3,5,3,4,10,2,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Blind Text (ClassifierChain),std,Tristezza,2,0,0,0,0,0,0,2,2,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,8,0,0,8,3,0,3,0,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,1,5,0,1,3,0,2,0,2,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,1,1,11,3,0,3,1,3,3,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,7,2,0,29,10,3,8,0,6,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,6,2,2,5,18,8,6,0,6,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,3,1,0,2,3,7,5,0,1,0,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,0,0,3,0,1,1,2,3,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,1,1,2,1,4,7,4,0,7,2,1
+123,Task 1: Emotion (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",emotion_textual_corr_with_rel,Oracle (no rel),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,0,0,0,0,1,0,1,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Amore,11,8,0,0,5,7,0,1,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Anticipazione,10,2,7,0,2,5,0,2,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Disgusto,19,1,2,15,1,0,2,3,14,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Fiducia,42,10,5,0,29,13,0,2,0,4,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Gioia,29,7,8,1,7,19,2,0,0,8,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Neutro,17,4,4,0,4,4,5,0,1,1,0,2
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Paura,1,0,0,1,0,0,0,1,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Rabbia,6,0,0,3,1,0,1,1,3,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Sorpresa,16,1,3,1,3,4,3,3,2,10,3,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),raw,Tristezza,2,0,0,0,0,0,0,2,2,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Amore,11,5,0,0,4,5,2,0,1,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Anticipazione,10,1,4,0,1,5,0,0,0,2,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Disgusto,19,1,1,12,1,0,2,0,5,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Fiducia,42,7,1,0,30,13,3,0,1,2,1,2
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Gioia,29,6,0,1,8,21,3,0,0,7,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Neutro,17,6,0,1,3,4,7,0,0,3,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Paura,1,0,0,1,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Rabbia,6,2,0,3,1,0,1,1,2,0,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Sorpresa,16,1,0,0,2,5,3,2,1,8,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),raw,Tristezza,2,0,0,0,0,0,0,1,1,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Amore,11,6,0,0,10,3,4,1,0,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Anticipazione,10,2,6,0,2,3,1,2,0,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Disgusto,19,0,1,15,1,0,2,16,15,2,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Fiducia,42,5,3,1,31,10,5,3,0,3,1,3
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Gioia,29,3,1,1,12,17,3,5,0,6,2,3
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Neutro,17,4,1,0,5,2,9,3,0,1,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Paura,1,0,0,1,0,0,0,1,1,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Rabbia,6,0,0,4,1,0,1,4,3,1,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Sorpresa,16,1,0,4,3,4,3,8,2,9,3,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Blind Text (ClassifierChain),std,Tristezza,2,0,0,2,0,0,0,2,2,2,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Amore,11,8,0,0,7,4,4,2,0,0,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Anticipazione,10,2,5,0,2,6,2,3,0,1,0,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Disgusto,19,0,1,15,1,0,2,3,3,3,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Fiducia,42,8,2,1,30,14,3,5,0,5,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Gioia,29,8,1,9,7,22,3,5,0,7,1,1
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Neutro,17,5,1,3,5,3,9,1,0,2,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Paura,1,0,0,1,0,0,0,1,0,1,1,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Rabbia,6,1,0,4,1,0,1,4,3,0,2,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Sorpresa,16,2,0,9,3,5,2,6,0,7,5,0
+123,Task 1: Emotion (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",emotion_textual_corr_with_rel,Oracle (+ rel),Dual-Encoder (FEEL-IT + ViT-224),std,Tristezza,2,0,0,1,0,0,0,2,0,1,2,0

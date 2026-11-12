@@ -1,0 +1,57 @@
+Seed,Task,Regime,Checkpoint,Prompt,Label,Precision,Recall,F1-Score,Support
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Amore,0.6140350877192983,0.7142857142857143,0.660377358490566,49
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Anticipazione,0.5416666666666666,0.52,0.5306122448979592,25
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Disgusto,0.5641025641025641,0.5945945945945946,0.5789473684210527,74
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Fiducia,0.6,0.5421686746987951,0.569620253164557,83
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Gioia,0.5,0.6222222222222222,0.5544554455445545,90
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Neutro,0.4489795918367347,0.4230769230769231,0.43564356435643564,52
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Paura,0.4,0.16666666666666666,0.23529411764705882,12
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Rabbia,0.48,0.4444444444444444,0.46153846153846156,27
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Sorpresa,0.41304347826086957,0.42696629213483145,0.4198895027624309,89
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Tristezza,0.5576923076923077,0.6904761904761905,0.6170212765957447,42
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,micro avg,0.5202108963093146,0.5451197053406999,0.5323741007194245,543
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,macro avg,0.5119519696278441,0.5144901722600382,0.5063399593418821,543
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,weighted avg,0.5183496518827008,0.5451197053406999,0.5283038041363318,543
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,samples avg,0.5259259259259259,0.5294238683127572,0.5039212228101116,543
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Amore,0.6153846153846154,0.6530612244897959,0.6336633663366337,49
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Anticipazione,0.5161290322580645,0.64,0.5714285714285714,25
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Disgusto,0.5333333333333333,0.6486486486486487,0.5853658536585366,74
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Fiducia,0.5625,0.5421686746987951,0.5521472392638037,83
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Gioia,0.5444444444444444,0.5444444444444444,0.5444444444444444,90
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Neutro,0.3728813559322034,0.4230769230769231,0.3963963963963964,52
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Paura,1.0,0.4166666666666667,0.5882352941176471,12
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Rabbia,0.4782608695652174,0.4074074074074074,0.44,27
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Sorpresa,0.43956043956043955,0.449438202247191,0.4444444444444444,89
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Tristezza,0.46551724137931033,0.6428571428571429,0.54,42
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,micro avg,0.5094991364421416,0.5432780847145487,0.5258467023172906,543
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,macro avg,0.5528011331857628,0.5367769334537016,0.5296125610090477,543
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,weighted avg,0.5178392557504788,0.5432780847145487,0.5253545211112646,543
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,samples avg,0.5106995884773662,0.5213991769547325,0.49566137566137564,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Amore,0.5483870967741935,0.6938775510204082,0.6126126126126126,49
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Anticipazione,0.5,0.48,0.4897959183673469,25
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Disgusto,0.6075949367088608,0.6486486486486487,0.6274509803921569,74
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Fiducia,0.6710526315789473,0.6144578313253012,0.6415094339622641,83
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Gioia,0.5504587155963303,0.6666666666666666,0.6030150753768844,90
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Neutro,0.5102040816326531,0.4807692307692308,0.49504950495049505,52
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Paura,0.8,0.3333333333333333,0.47058823529411764,12
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Rabbia,0.44,0.4074074074074074,0.4230769230769231,27
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Sorpresa,0.45348837209302323,0.43820224719101125,0.44571428571428573,89
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Tristezza,0.49206349206349204,0.7380952380952381,0.5904761904761905,42
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",micro avg,0.5449826989619377,0.580110497237569,0.5619982158786797,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",macro avg,0.55732493264475,0.5501458154457246,0.5399289160223277,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",weighted avg,0.549925211622389,0.580110497237569,0.5589175133731351,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",samples avg,0.5479423868312757,0.554320987654321,0.5302410346854791,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Amore,0.5789473684210527,0.673469387755102,0.6226415094339622,49
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Anticipazione,0.6470588235294118,0.44,0.5238095238095238,25
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Disgusto,0.6075949367088608,0.6486486486486487,0.6274509803921569,74
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Fiducia,0.5955056179775281,0.6385542168674698,0.6162790697674418,83
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Gioia,0.6097560975609756,0.5555555555555556,0.5813953488372093,90
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Neutro,0.42424242424242425,0.5384615384615384,0.4745762711864407,52
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Paura,0.8333333333333334,0.4166666666666667,0.5555555555555556,12
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Rabbia,0.42857142857142855,0.4444444444444444,0.43636363636363634,27
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Sorpresa,0.475,0.42696629213483145,0.44970414201183434,89
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Tristezza,0.4444444444444444,0.7619047619047619,0.5614035087719298,42
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",micro avg,0.5381944444444444,0.570902394106814,0.5540661304736372,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",macro avg,0.5644454474789459,0.5544671512439019,0.544917954612969,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",weighted avg,0.5495131368851686,0.570902394106814,0.5529315943834667,543
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",samples avg,0.5480246913580247,0.5510288065843622,0.5288418577307465,543

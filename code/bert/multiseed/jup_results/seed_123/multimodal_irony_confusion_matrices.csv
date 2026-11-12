@@ -1,0 +1,73 @@
+Seed,Task,Case,Regime,Checkpoint,Prompting,Model,Scaling,True_Label,Pred_None,Pred_Ironia,Pred_Sarcasmo,Total_True
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,None,95,6,3,104
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,Ironia,13,4,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, raw)",raw,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,96,8,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,10,8,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,5,1,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,None,83,17,4,104
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,Ironia,12,6,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Blind Text (SGD, std)",std,Sarcasmo,2,2,3,7
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,95,7,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,11,7,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 1,Step 1 Base (No corr),irony_textual_no_corr,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,5,2,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, raw)",raw,None,92,10,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, raw)",raw,Ironia,10,7,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, raw)",raw,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,95,8,1,104
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,10,8,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, std)",std,None,90,8,6,104
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, std)",std,Ironia,7,5,6,18
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Blind Text (SGD, std)",std,Sarcasmo,4,1,2,7
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,92,11,1,104
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,10,8,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 2,Step 2 Raw (No corr),irony_textual_step2_raw,None (Raw),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, raw)",raw,None,85,9,10,104
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, raw)",raw,Ironia,6,4,8,18
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, raw)",raw,Sarcasmo,3,0,4,7
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,86,18,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,6,12,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,2,4,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, std)",std,None,89,15,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, std)",std,Ironia,8,9,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Blind Text (SGD, std)",std,Sarcasmo,3,3,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,88,14,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,9,8,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 3,"Step 2 Oracle (Train: no rel, Eval: no rel)",irony_textual_corr,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,3,3,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, raw)",raw,None,77,27,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, raw)",raw,Ironia,4,14,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, raw)",raw,Sarcasmo,1,5,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,93,10,1,104
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,8,10,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, std)",std,None,88,16,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, std)",std,Ironia,9,9,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Blind Text (SGD, std)",std,Sarcasmo,3,3,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,97,6,1,104
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,11,7,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 4,"Step 2 Oracle (Train: no rel, Eval: +rel)",irony_textual_corr,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,5,1,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, raw)",raw,None,90,14,0,104
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, raw)",raw,Ironia,11,6,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, raw)",raw,Sarcasmo,4,3,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,88,15,1,104
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,12,5,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,4,3,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, std)",std,None,54,21,29,104
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, std)",std,Ironia,5,10,3,18
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Blind Text (SGD, std)",std,Sarcasmo,3,3,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,87,14,3,104
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,10,6,2,18
+123,Task 2: Irony (Multimodal mm_test),Case 5,"Step 2 Oracle (Train: +rel, Eval: no rel)",irony_textual_corr_with_rel,Oracle (no rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,4,3,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, raw)",raw,None,89,13,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, raw)",raw,Ironia,7,10,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, raw)",raw,Sarcasmo,4,3,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,None,93,9,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Ironia,11,7,0,18
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, raw)",raw,Sarcasmo,4,3,0,7
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, std)",std,None,85,17,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, std)",std,Ironia,11,6,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Blind Text (SGD, std)",std,Sarcasmo,4,2,1,7
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,None,87,15,2,104
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Ironia,7,10,1,18
+123,Task 2: Irony (Multimodal mm_test),Case 6,"Step 2 Oracle (Train: +rel, Eval: +rel)",irony_textual_corr_with_rel,Oracle (+ rel),"Dual-Encoder (UmBERTo + ViT-224, std)",std,Sarcasmo,3,4,0,7

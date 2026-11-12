@@ -1,0 +1,41 @@
+Seed,Task,Regime,Checkpoint,Prompt,Gold_Emotion,Gold_Support,Pred_Amore,Pred_Anticipazione,Pred_Disgusto,Pred_Fiducia,Pred_Gioia,Pred_Neutro,Pred_Paura,Pred_Rabbia,Pred_Sorpresa,Pred_Tristezza,Pred_None
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Amore,49,35,1,2,16,18,1,0,1,1,2,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Anticipazione,25,0,13,3,5,5,1,0,1,3,2,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Disgusto,74,1,3,44,4,4,6,2,18,17,21,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Fiducia,83,21,5,6,45,18,9,2,2,9,8,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Gioia,90,14,3,1,20,56,4,0,0,18,5,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Neutro,52,3,2,6,5,9,22,0,0,12,1,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Paura,12,0,1,3,1,1,2,2,0,7,5,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Rabbia,27,0,1,20,1,0,1,0,12,5,6,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Sorpresa,89,3,1,25,8,22,8,5,12,38,25,0
+123,Task 1: Emotion (Textual me_test),Step 1 Base (Raw),emotion_textual_no_corr,Raw,Tristezza,42,0,2,16,4,2,0,2,7,14,29,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Amore,49,32,0,2,15,13,2,0,1,5,0,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Anticipazione,25,0,16,3,6,1,1,1,1,1,3,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Disgusto,74,1,2,48,7,3,8,0,19,15,23,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Fiducia,83,20,5,6,45,15,9,1,2,12,8,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Gioia,90,13,5,5,19,49,9,0,0,22,3,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Neutro,52,2,2,9,4,11,22,0,0,14,1,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Paura,12,0,1,1,1,0,2,5,0,4,7,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Rabbia,27,0,1,25,0,0,0,0,11,5,7,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Sorpresa,89,3,2,31,7,20,13,3,11,40,27,0
+123,Task 1: Emotion (Textual me_test),Step 2 Raw (Ablation),emotion_textual_step2_raw,Raw,Tristezza,42,0,4,18,4,0,1,2,7,10,27,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Amore,49,34,0,2,14,19,1,0,1,2,1,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Anticipazione,25,0,12,3,4,2,0,1,1,2,6,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Disgusto,74,1,2,48,6,3,7,0,19,20,24,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Fiducia,83,26,5,5,51,18,7,1,2,8,8,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Gioia,90,16,2,2,15,60,5,0,0,19,2,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Neutro,52,4,2,5,2,9,25,0,0,9,3,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Paura,12,0,1,2,1,1,0,4,0,8,7,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Rabbia,27,0,0,22,1,0,0,0,11,8,11,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Sorpresa,89,3,3,27,6,24,9,3,11,39,28,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: no rel),emotion_textual_corr,"Oracle (Train: no rel, Eval: no rel)",Tristezza,42,0,2,18,5,0,1,3,6,14,31,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Amore,49,33,0,2,20,8,1,0,1,3,1,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Anticipazione,25,0,11,4,4,2,1,1,1,1,6,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Disgusto,74,1,1,48,7,1,8,1,20,13,23,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Fiducia,83,23,3,5,53,8,9,1,3,7,12,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Gioia,90,18,0,2,15,50,10,0,1,24,8,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Neutro,52,1,2,2,4,12,28,0,0,8,2,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Paura,12,0,1,3,2,0,2,5,0,5,6,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Rabbia,27,0,0,22,1,1,0,0,12,4,10,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Sorpresa,89,5,0,25,7,18,14,4,13,38,32,0
+123,Task 1: Emotion (Textual me_test),Step 2 Oracle (Train: +rel),emotion_textual_corr_with_rel,"Oracle (Train: +rel, Eval: no rel)",Tristezza,42,0,1,16,6,0,2,3,7,11,32,0

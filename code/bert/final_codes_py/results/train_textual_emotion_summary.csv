@@ -1,4 +1,0 @@
-Task,Stage,Regime,Prefix,Model,Features,N Test,Micro F1,Macro F1,Weighted F1,Accuracy,Notes
-Emotion Detection (10-Class Multi-Label),Textual (me_test),Step 1: EMit A + ME Textual,No,FEEL-IT (fine-tuned),-,405,0.5403445149592022,0.5091674567839571,0.5371104084044526,0.32098765432098764,threshold=0.40
-Emotion Detection (10-Class Multi-Label),Textual (me_test),Step 2 Raw: Step 1 -> ME + MM Train,No,FEEL-IT (fine-tuned),-,405,0.5383244206773619,0.5234541628169536,0.534660214897244,0.3012345679012346,threshold=0.40; A3 ablation
-Emotion Detection (10-Class Multi-Label),Textual (me_test),Step 2 Oracle: Step 1 -> ME + MM Train,Oracle (no rel),FEEL-IT (fine-tuned),-,405,0.5529622980251346,0.5348744352112516,0.5507096772579304,0.32592592592592595,threshold=0.40
