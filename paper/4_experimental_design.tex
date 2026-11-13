@@ -3,7 +3,7 @@
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.92\textwidth]{imgs/pipeline_architecture.pdf}
+\includegraphics[width=0.92\textwidth]{imgs/pipeline_architecture.png}
 \caption{Schematic overview of the MultiEMiT experimental pipeline. Text encoders are fine-tuned sequentially in two steps (warm-up on external corpora followed by in-domain fine-tuning on combined MultiEMiT text). For multimodal classification, frozen representations from the fine-tuned text encoder and a frozen ViT image encoder are concatenated into a joint vector ($d=1536$) and classified with linear SVMs (\texttt{SGDClassifier}). The generative pipeline benchmarks Pixtral 12B under zero-shot, few-shot, and LoRA fine-tuning. Correlation prompting optionally verbalizes gold auxiliary annotations across both paradigms.}
 \label{fig:pipeline_architecture}
 \end{figure*}

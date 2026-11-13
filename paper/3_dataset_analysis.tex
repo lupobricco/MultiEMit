@@ -56,54 +56,56 @@ Under our strict majority-voting protocol (which requires agreement from at leas
 \caption{Inter-Annotator Agreement (Fleiss' $\kappa$) across Pragmatic Dimensions and Multimodal Disambiguation Gain on Paired Posts ($N = 628$)}
 \label{table:fleiss_kappa}
 \footnotesize
-\setlength{\tabcolsep}{3.2pt}
+\setlength{\tabcolsep}{2.5pt}
 \renewcommand{\arraystretch}{1.05}
-\begin{tabular}{l | c | c c | r}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l | c c | r}
 \hline
-\textbf{Pragmatic Dimension} & \textbf{Textual} & \textbf{Text-Only} & \textbf{With Image} & \textbf{Visual Gain} \\
-\textbf{/ Category} & \textbf{($N = 2,023$)} & \multicolumn{2}{c|}{\textbf{(Paired $N = 628$)}} & \textbf{($\Delta\kappa$ / \%)} \\
+\textbf{Pragmatic Dimension} & \textbf{Text-Only} & \textbf{With Image} & \textbf{Visual Gain} \\
+\textbf{/ Category} & \multicolumn{2}{c|}{\textbf{(Paired $N = 628$)}} & \textbf{($\Delta\kappa$ / \%)} \\
 \hline
-\multicolumn{5}{l}{\textit{Emotions (Plutchik)}} \\
+\multicolumn{4}{l}{\textit{Emotions (Plutchik)}} \\
 \hline
-Love & 0.337 & 0.270 & 0.159 & -0.111 (-41.2\%) \\
-Anticipation & 0.350 & 0.469 & 0.573 & +0.105 (+22.3\%) \\
-Disgust & 0.434 & 0.518 & 0.522 & +0.005 (+0.9\%) \\
-Trust & 0.431 & 0.444 & 0.515 & +0.072 (+16.1\%) \\
-Joy & 0.397 & 0.452 & 0.390 & -0.062 (-13.7\%) \\
-Fear & 0.393 & 0.172 & 0.215 & +0.043 (+24.7\%) \\
-Anger & 0.337 & 0.353 & 0.454 & +0.101 (+28.5\%) \\
-Surprise & 0.176 & 0.246 & 0.255 & +0.009 (+3.7\%) \\
-Sadness & 0.431 & 0.273 & 0.312 & +0.039 (+14.5\%) \\
-Neutral & 0.301 & 0.274 & 0.360 & +0.085 (+31.0\%) \\
+Love & 0.270 & 0.159 & $-0.111$ ($-41.2$\%) \\
+Anticipation & 0.469 & 0.573 & +0.104 (+22.3\%) \\
+Disgust & 0.518 & 0.522 & +0.005 (+0.9\%) \\
+Trust & 0.444 & 0.515 & +0.072 (+16.1\%) \\
+Joy & 0.451 & 0.390 & $-0.062$ ($-13.7$\%) \\
+Fear & 0.172 & 0.215 & +0.043 (+24.7\%) \\
+Anger & 0.353 & 0.454 & +0.101 (+28.5\%) \\
+Surprise & 0.246 & 0.255 & +0.009 (+3.7\%) \\
+Sadness & 0.272 & 0.312 & +0.039 (+14.5\%) \\
+Neutral & 0.274 & 0.359 & +0.085 (+31.0\%) \\
 \hline
-\textbf{Emotion Level Mean} & \textbf{0.359} & \textbf{0.347} & \textbf{0.375} & \textbf{+0.028 (+8.2\%)} \\
+\textbf{Emotion Level Mean} & \textbf{0.347} & \textbf{0.375} & \textbf{+0.028 (+8.2\%)} \\
 \hline
-\multicolumn{5}{l}{\textit{Irony and Sarcasm}} \\
+\multicolumn{4}{l}{\textit{Irony and Sarcasm}} \\
 \hline
-Irony & 0.499 & 0.426 & 0.596 & \textbf{+0.171 (+40.0\%)} \\
-Sarcasm & 0.160 & 0.302 & 0.319 & +0.018 (+5.9\%) \\
+Irony & 0.426 & 0.596 & \textbf{+0.171 (+40.0\%)} \\
+Sarcasm & 0.302 & 0.319 & +0.018 (+5.9\%) \\
 \hline
-\multicolumn{5}{l}{\textit{Target}} \\
+\multicolumn{4}{l}{\textit{Target}} \\
 \hline
-Container & 0.523 & 0.512 & 0.546 & +0.034 (+6.6\%) \\
-Content & 0.565 & 0.474 & 0.657 & \textbf{+0.183 (+38.6\%)} \\
+Container & 0.512 & 0.546 & +0.034 (+6.6\%) \\
+Content & 0.474 & 0.657 & \textbf{+0.183 (+38.6\%)} \\
 \hline
-\multicolumn{5}{l}{\textit{Offensiveness}} \\
+\multicolumn{4}{l}{\textit{Offensiveness}} \\
 \hline
-Offensive / Hate Speech & 0.468 & 0.370 & 0.549 & \textbf{+0.180 (+48.6\%)} \\
+Offensive / Hate Speech & 0.370 & 0.549 & \textbf{+0.179 (+48.6\%)} \\
 \hline
-\multicolumn{5}{l}{\textit{Semiotic Relation}} \\
+\multicolumn{4}{l}{\textit{Semiotic Relation}} \\
 \hline
-Additive & -- & -- & 0.461 & -- \\
-Divergent & -- & -- & 0.675 & -- \\
-Parallel & -- & -- & 0.364 & -- \\
+Additive & -- & 0.461 & -- \\
+Divergent & -- & 0.675 & -- \\
+Parallel & -- & 0.364 & -- \\
 \hline
-\textbf{Cumulative Schema Gain} & -- & \textbf{5.553} & \textbf{6.422} & \textbf{+0.869 (+15.6\%)} \\
+\textbf{Cumulative Schema Gain} & \textbf{5.553} & \textbf{6.422} & \textbf{+0.869 (+15.6\%)} \\
 \hline
-\end{tabular}
+\end{tabular}%
+}
 \end{table}
 
-At the same time, providing annotators with the accompanying visual media systematically resolved human interpretive ambiguity. Table~\ref{table:fleiss_kappa} details Inter-Annotator Agreement (Fleiss' $\kappa$) across all five pragmatic dimensions for the Textual partition ($N = 2,023$) alongside a controlled paired evaluation on the multimodal subset ($N = 628$) annotated independently both with and without visual attachments. Access to visual context produces a consistent agreement boost across the entire pragmatic schema ($+15.6\%$ cumulative gain), demonstrating that images anchor viewer interpretation.
+At the same time, providing annotators with the accompanying visual media systematically resolved human interpretive ambiguity. Table~\ref{table:fleiss_kappa} details Inter-Annotator Agreement (Fleiss' $\kappa$) across all five pragmatic dimensions for the controlled paired evaluation on the multimodal subset ($N = 628$) annotated independently both with and without visual attachments. Of the 645 multimodal posts in the consolidated corpus, 628 possess complete three-annotator triads across both with-image and text-only control conditions and constitute the paired disambiguation sample for Table~\ref{table:fleiss_kappa}; the remaining 17 posts were labeled by two raters in the raw logs and are retained in the gold-standard benchmark splits for machine learning. Access to visual context produces a consistent agreement boost across the entire pragmatic schema ($+15.6\%$ cumulative gain), demonstrating that images anchor viewer interpretation.
 
 This disambiguating effect is particularly striking on pragmatic and figurative layers that rely on contextual grounding. On \textit{Offensiveness} and \textit{Irony}, agreement surges by over 40\%, as visual cues readily distinguish genuine hostility from playful banter and reveal figurative inversions that remain imperceptible in isolated text. Similarly, visual context clarifies whether commentary targets the broadcast's political \textit{Content} or production \textit{Container}. Within the affective spectrum, images sharpen consensus around indignant reactions (\textit{Anger} and \textit{Anticipation}), while slightly reducing surface agreement on \textit{Love} and \textit{Joy}---an effect driven by sarcastic memes whose visual incongruity exposes biting satire masked behind superficially positive words. Finally, annotators achieve substantial agreement on \textit{Divergent} semiotic relations ($\kappa = 0.675$), confirming that humans reliably detect conflicting text--image dynamics. These findings offer empirical motivation for multimodal modeling: because visual information actively resolves semantic ambiguity for human readers, multimodal architectures should exploit visual representations to capture complex affective nuance.
 
@@ -115,7 +117,6 @@ As typical of social media discourse, label distributions exhibit pronounced cla
 \centering
 \caption{Label Distribution in the MultiEMiT Textual ($N = 2,023$) and Multimodal ($N = 645$) Datasets}
 \label{table:text_dist}
-\label{table:multi_dist}
 \footnotesize
 \setlength{\tabcolsep}{3.5pt}
 \renewcommand{\arraystretch}{1.05}
@@ -155,9 +156,9 @@ Content & 803 & 207 & 1,010 & 153 & 46 & 199 \\
 \hline
 \multicolumn{7}{l}{\textit{Semiotic Relation}} \\
 \hline
-Additive & - & - & - & 321 & 68 & 389 \\
-Divergent & - & - & - & 120 & 38 & 158 \\
-Parallel & - & - & - & 75 & 23 & 98 \\
+Additive & -- & -- & -- & 321 & 68 & 389 \\
+Divergent & -- & -- & -- & 120 & 38 & 158 \\
+Parallel & -- & -- & -- & 75 & 23 & 98 \\
 \hline
 \end{tabular}
 \end{table}
